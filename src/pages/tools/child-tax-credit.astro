@@ -37,13 +37,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <input id="kids" type="number" inputmode="numeric" min="0" max="10" step="1" placeholder="예: 2" />
 
     <label for="income">연간 총급여액 등 (원)</label>
-    <input id="income" type="number" inputmode="numeric" min="0" placeholder="예: 30000000" />
+    <input id="income" type="text" inputmode="numeric" data-money placeholder="예: 30,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
       근로소득 + 사업소득(조정) 등을 합산한 부부 합산 금액입니다.
     </p>
 
     <label for="property">가구원 재산 합계 (원, 선택)</label>
-    <input id="property" type="number" inputmode="numeric" min="0" placeholder="예: 150000000" />
+    <input id="property" type="text" inputmode="numeric" data-money placeholder="예: 150,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
       재산은 <strong>전년도 6월 1일 기준</strong> 가구원 전체의 주택·토지·건물·예금·자동차 등 합계이며,
       <strong>부채는 차감되지 않습니다.</strong>
@@ -141,6 +141,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </BaseLayout>
 
 <script>
+  import { initMoneyInputs, moneyRaw, moneyValue } from '../../lib/money.js';
+
   // 자녀장려금 산정 (2024년 귀속 기준, 조세특례제한법 시행령 별표11의2 산정식)
   // 홑벌이: 총급여 2,100만 미만 → 자녀수×100만
   //         2,100만 이상 7,000만 미만 → 자녀수×100만 − (총급여−2,100만) × (자녀수×50만 / 4,900만)
@@ -188,11 +190,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   function run() {
     const type = document.querySelector('input[name="htype"]:checked').value;
     const kidsRaw = document.getElementById('kids').value.trim();
-    const incomeRaw = document.getElementById('income').value.trim();
-    const propertyRaw = document.getElementById('property').value.trim();
+    const incomeRaw = moneyRaw('income');
+    const propertyRaw = moneyRaw('property');
     const kids = parseInt(kidsRaw, 10);
-    const income = parseFloat(incomeRaw);
-    const property = parseFloat(propertyRaw);
+    const income = moneyValue('income');
+    const property = moneyValue('property');
     const box = document.getElementById('result');
     const err = document.getElementById('errOut');
 
@@ -235,6 +237,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     box.classList.remove('hidden');
   }
 
+  initMoneyInputs();
   document.getElementById('calcBtn').addEventListener('click', run);
   ['kids', 'income'].forEach((id) => {
     document.getElementById(id).addEventListener('keydown', (e) => {

@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Disclaimer from '../../components/Disclaimer.astro';
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// 2026년 기준 중위소득(월, 원) — 보건복지부 고시. 표와 계산기가 같은 상수를 쓴다.
+import { MEDIAN_2026 as MEDIAN } from '../../lib/median-income';
 
-// 2026년 기준 중위소득(월, 원) — 보건복지부 고시(2025년 발표) 기준
-const MEDIAN = [2_564_238, 4_199_292, 5_359_036, 6_494_738, 7_556_719, 8_555_952];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
 ---
 <BaseLayout
@@ -43,7 +43,7 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
     </p>
 
     <label for="income">가구 월 소득 (세전, 원)</label>
-    <input id="income" type="number" inputmode="numeric" min="0" placeholder="예: 3200000" />
+    <input id="income" type="text" inputmode="numeric" data-money placeholder="예: 3,200,000" />
     <p class="disclaimer" style="margin-top:6px;">
       가구원 전체의 월 소득 합계를 넣으세요. 연 소득만 안다면 12로 나눈 금액을 입력하면 됩니다.
     </p>
@@ -165,11 +165,10 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
     <a href={`${base}/guides/youth-monthly-rent`}>청년월세 특별지원 총정리</a>
   </p>
 
-  <script define:vars={{ MEDIAN }}>
-  // 7인 이상 가구: 1인 증가할 때마다 (6인 − 5인) 차액을 더하는 고시 방식
-  const STEP = MEDIAN[5] - MEDIAN[4];
+  <script>
+  import { medianFor } from '../../lib/median-income';
+  import { initMoneyInputs, moneyRaw, moneyValue } from '../../lib/money.js';
 
-  const medianFor = (size) => (size <= 6 ? MEDIAN[size - 1] : MEDIAN[5] + STEP * (size - 6));
   const won = (n) => Math.round(n).toLocaleString('ko-KR') + '원';
 
   const PROGRAMS = [
@@ -183,8 +182,8 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
 
   function run() {
     const size = parseInt(document.getElementById('hsize').value, 10);
-    const incomeRaw = document.getElementById('income').value.trim();
-    const income = parseFloat(incomeRaw);
+    const incomeRaw = moneyRaw('income');
+    const income = moneyValue('income');
     const box = document.getElementById('result');
     const err = document.getElementById('errOut');
 
@@ -234,6 +233,7 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
     box.classList.remove('hidden');
   }
 
+  initMoneyInputs();
   document.getElementById('calcBtn').addEventListener('click', run);
   document.getElementById('income').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') run();

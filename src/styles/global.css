@@ -215,6 +215,16 @@ th { background: var(--surface); font-weight: 700; }
   background: var(--bg);
   font-family: inherit;
 }
+/* 금액 입력 아래의 한글 환산 힌트 (= 1,500만원) */
+.calc .money-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  min-height: 18px;
+}
+.calc .money-hint:empty { margin: 0; min-height: 0; }
+
 .calc input[type='checkbox'],
 .calc input[type='radio'] {
   width: auto;

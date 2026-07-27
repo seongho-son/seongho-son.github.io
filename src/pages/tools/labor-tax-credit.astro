@@ -31,13 +31,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <label for="income">연간 총급여액 등 (원)</label>
-    <input id="income" type="number" inputmode="numeric" min="0" placeholder="예: 15000000" />
+    <input id="income" type="text" inputmode="numeric" data-money placeholder="예: 15,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
       근로소득 + 사업소득(조정) 등을 합산한 금액입니다. 근로소득만 있으면 연간 총급여를 넣으세요.
     </p>
 
     <label for="property">가구원 재산 합계 (원, 선택)</label>
-    <input id="property" type="number" inputmode="numeric" min="0" placeholder="예: 150000000" />
+    <input id="property" type="text" inputmode="numeric" data-money placeholder="예: 150,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
       재산은 <strong>전년도 6월 1일 기준</strong> 가구원 전체의 주택·토지·건물·예금·자동차 등 합계이며,
       <strong>부채는 차감되지 않습니다.</strong>
@@ -144,6 +144,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </BaseLayout>
 
 <script>
+  import { initMoneyInputs, moneyRaw, moneyValue } from '../../lib/money.js';
+
   // 근로장려금 산정 로직 (2024년 귀속 기준 직선 근사). 실제 지급액은 국세청 산정표(별표11)의 구간별 금액.
   // 각 가구유형: [점증 상한, 최대지급액, 평탄 종료, 총소득 상한]
   const TABLE = {
@@ -198,10 +200,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   function run() {
     const type = document.querySelector('input[name="htype"]:checked').value;
-    const incomeRaw = document.getElementById('income').value.trim();
-    const propertyRaw = document.getElementById('property').value.trim();
-    const income = parseFloat(incomeRaw);
-    const property = parseFloat(propertyRaw);
+    const incomeRaw = moneyRaw('income');
+    const propertyRaw = moneyRaw('property');
+    const income = moneyValue('income');
+    const property = moneyValue('property');
     const box = document.getElementById('result');
     const err = document.getElementById('errOut');
 
@@ -248,6 +250,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     box.classList.remove('hidden');
   }
 
+  initMoneyInputs();
   document.getElementById('calcBtn').addEventListener('click', run);
   document.getElementById('income').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') run();

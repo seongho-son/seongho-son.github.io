@@ -74,7 +74,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </p>
 
     <label for="salary">퇴직 전 3개월 평균 월급여 (원, 세전)</label>
-    <input id="salary" type="number" inputmode="numeric" min="0" placeholder="예: 3000000" />
+    <input id="salary" type="text" inputmode="numeric" data-money placeholder="예: 3,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
       상여·수당을 포함한 세전 기준입니다. 평균임금은 퇴직 전 3개월 임금총액을 그 기간의 총일수로 나눈
       금액이라, 이 계산기는 월급여를 1개월 평균 30.4일로 환산해 <strong>1일 평균임금</strong>을 구합니다.
@@ -246,6 +246,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 </BaseLayout>
 
 <script>
+  import { initMoneyInputs, moneyRaw, moneyValue } from '../../lib/money.js';
   // 구직급여 계산 (2026년 기준). 전부 클라이언트에서만 계산하며 개인정보를 다루지 않는다.
   // 상한 68,100원: 고용보험법 시행령 개정, 2026-01-01 이후 이직자
   // 하한 66,048원: 2026년 최저임금 10,320원 × 80% × 8시간
@@ -307,8 +308,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const reason = document.querySelector('input[name="reason"]:checked').value;
     const period = document.getElementById('years').value;
     const hours = parseFloat(document.getElementById('hours').value);
-    const salaryRaw = document.getElementById('salary').value.trim();
-    const salary = parseFloat(salaryRaw);
+    const salaryRaw = moneyRaw('salary');
+    const salary = moneyValue('salary');
     const box = document.getElementById('result');
     const err = document.getElementById('errorOut');
     const blocker = document.getElementById('blockerOut');
@@ -389,6 +390,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     box.classList.remove('hidden');
   }
 
+  initMoneyInputs();
   document.getElementById('calcBtn').addEventListener('click', run);
   document.getElementById('years').addEventListener('change', syncEligibility);
   document.getElementById('salary').addEventListener('keydown', (e) => {
