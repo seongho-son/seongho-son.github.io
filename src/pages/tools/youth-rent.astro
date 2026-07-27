@@ -35,13 +35,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <label><input type="radio" name="sep" value="no" /><span>부모와 함께 거주</span></label>
     </div>
 
-    <label for="deposit">임차 보증금 (원)</label>
+    <label for="deposit">보증금 (원)</label>
     <input id="deposit" type="text" inputmode="numeric" data-money placeholder="예: 10,000,000" />
 
     <label for="rent">월세 (원)</label>
     <input id="rent" type="text" inputmode="numeric" data-money placeholder="예: 450,000" />
 
-    <label for="size">본인 가구 가구원 수</label>
+    <label for="size">내 가구는 몇 명인가요? (혼자 살면 1인)</label>
     <select id="size">
       <option value="1" selected>1인</option>
       <option value="2">2인</option>
@@ -56,10 +56,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       가산되므로, <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서 확인해 주세요.
     </p>
 
-    <label for="income">본인 가구 월소득 (원)</label>
+    <label for="income">내 가구의 월 소득 (원)</label>
     <input id="income" type="text" inputmode="numeric" data-money placeholder="예: 1,200,000" />
 
-    <label for="psize">원가구(부모 포함) 가구원 수 — 선택</label>
+    <p class="section-note">
+      아래 4개는 <strong>부모님 가구</strong>에 대한 항목입니다. 청년월세는 나뿐 아니라
+      <strong>부모님의 소득·재산도 함께</strong> 보기 때문인데(공고에서는 이를 '원가구'라고 부릅니다),
+      <strong>모르면 비워 두셔도 됩니다.</strong> 비우면 그 요건만 '확인 못 함'으로 표시되고 나머지는 그대로 계산됩니다.
+    </p>
+
+    <label for="psize">부모님 포함 가족은 몇 명인가요? <span class="opt">비워도 됨</span></label>
     <select id="psize">
       <option value="">입력 안 함</option>
       <option value="1">1인</option>
@@ -70,26 +76,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <option value="6">6인</option>
     </select>
 
-    <label for="pincome">원가구 월소득 (원) — 선택</label>
+    <label for="pincome">부모님 가구의 월 소득 (원) <span class="opt">비워도 됨</span></label>
     <input id="pincome" type="text" inputmode="numeric" data-money placeholder="예: 4,500,000" />
 
-    <label for="asset">본인(청년) 가구 총재산가액 (원) — 선택</label>
+    <label for="asset">내 가구의 재산 합계 (원) <span class="opt">비워도 됨</span></label>
     <input id="asset" type="text" inputmode="numeric" data-money placeholder="예: 30,000,000" />
 
-    <label for="passet">원가구 총재산가액 (원) — 선택</label>
+    <label for="passet">부모님 가구의 재산 합계 (원) <span class="opt">비워도 됨</span></label>
     <input id="passet" type="text" inputmode="numeric" data-money placeholder="예: 200,000,000" />
 
     <fieldset class="excl">
-      <legend>제외 대상 확인 (해당하는 항목을 모두 선택)</legend>
+      <legend>이 중 해당되는 게 있나요? (있으면 지원 대상에서 빠집니다)</legend>
       <label><input type="checkbox" name="excl" value="공공임대주택(공무원임대주택 포함) 거주" /> 공공임대주택(공무원임대주택 포함)에 입주자격을 받아 거주 중</label>
-      <label><input type="checkbox" name="excl" value="2촌 이내 혈족 주택 임차" /> 직계존속·형제·자매 등 2촌 이내 혈족(배우자의 2촌 이내 혈족 포함)의 주택을 임차</label>
+      <label><input type="checkbox" name="excl" value="2촌 이내 혈족 주택 임차" /> 부모·조부모·형제자매 등 가까운 친족(2촌 이내, 배우자 쪽 포함)의 집에 세 들어 삶</label>
       <label><input type="checkbox" name="excl" value="국토부·지자체 월세지원 수혜 중" /> 국토부 또는 지자체가 시행하는 청년월세지원을 현재 받고 있음</label>
-      <label><input type="checkbox" name="excl" value="1실 다수 거주 전대차" /> 1실(방)에 다수가 거주하는 전대차 (임대인과 별도 임대차계약을 맺은 경우는 제외)</label>
+      <label><input type="checkbox" name="excl" value="1실 다수 거주 전대차" /> 방 하나에 여러 명이 함께 살며 세입자에게 다시 빌린 경우 (집주인과 직접 계약했다면 해당 없음)</label>
     </fieldset>
 
     <p class="disclaimer" style="margin-top:6px;">
-      원가구 소득·재산을 비워 두면 해당 요건은 <strong>미확인</strong>으로 표시되며 판정에서 제외됩니다.
-      실제 심사는 단순 월급·시세가 아니라 소득평가액·재산평가액(부채 차감 등)으로 이루어집니다.
+      부모님 가구 항목을 비워 두면 그 요건만 <strong>'확인 못 함'</strong>으로 표시되고, 나머지 요건은 그대로 판정합니다.
+      참고로 실제 심사는 통장에 찍히는 월급·시세 그대로가 아니라, 공제와 부채를 반영한 금액으로 이루어져
+      결과가 조금씩 달라질 수 있습니다.
     </p>
 
     <button id="calcBtn">자격 확인하고 계산하기</button>

@@ -131,14 +131,23 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
       <tr><td>30% 이하</td><td>생계급여</td></tr>
       <tr><td>40% 이하</td><td>의료급여</td></tr>
       <tr><td>48% 이하</td><td>주거급여</td></tr>
-      <tr><td>50% 이하</td><td>교육급여, 차상위 사업, 청년내일저축계좌 등</td></tr>
+      <tr><td>50% 이하</td><td>교육급여, 차상위 사업 등</td></tr>
       <tr><td>60% 이하</td><td>청년월세 특별지원(청년 본인 기준) 등</td></tr>
+      <tr><td>100% 이하</td><td>청년내일저축계좌(가구소득 기준) 등</td></tr>
       <tr><td>150% 이하</td><td>비교적 넓은 대상의 청년·재난 관련 지원</td></tr>
+      <tr><td>250% 이하</td><td>청년도약계좌(가구소득 기준)</td></tr>
     </tbody>
   </table>
   <p>
     청년월세 특별지원처럼 <strong>청년 본인 소득(60%)과 원가구 소득(100%)을 함께 보는</strong> 제도도 있어
-    가구 기준이 제도마다 다릅니다. 자세한 내용은 아래 글에서 확인하세요.
+    가구 기준이 제도마다 다릅니다.
+  </p>
+  <p class="notice-box">
+    <strong>청년도약계좌·청년내일저축계좌는 가구소득 외에 '본인 소득' 요건이 따로 있습니다.</strong>
+    이 계산기는 <strong>가구소득 요건만</strong> 봅니다. 예를 들어 청년도약계좌는 가구소득이 중위 250%
+    이하여도 개인 총급여 상한(연 7,500만원 수준)을 넘으면 가입할 수 없고, 청년내일저축계좌는 반대로
+    본인 근로소득이 일정액 <strong>이상</strong>이어야 합니다. 나이 요건도 별도입니다.
+    자세한 내용은 아래 글에서 확인하세요.
   </p>
 
   <div class="ad-slot" aria-hidden="true"></div>
@@ -162,7 +171,9 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
     관련 정보 →
     <a href={`${base}/guides/median-income-2026`}>기준 중위소득이란? 2026 금액표</a> ·
     <a href={`${base}/guides/basic-livelihood`}>기초생활수급자 자격과 급여 종류</a> ·
-    <a href={`${base}/guides/youth-monthly-rent`}>청년월세 특별지원 총정리</a>
+    <a href={`${base}/guides/youth-monthly-rent`}>청년월세 특별지원 총정리</a> ·
+    <a href={`${base}/guides/youth-leap-account`}>청년도약계좌</a> ·
+    <a href={`${base}/guides/youth-tomorrow-savings`}>청년내일저축계좌</a>
   </p>
 
   <script>
@@ -175,9 +186,11 @@ const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
     { pct: 30, name: '생계급여' },
     { pct: 40, name: '의료급여' },
     { pct: 48, name: '주거급여' },
-    { pct: 50, name: '교육급여 · 차상위 사업 · 청년내일저축계좌' },
+    { pct: 50, name: '교육급여 · 차상위 사업' },
     { pct: 60, name: '청년월세 특별지원(청년 본인 소득 기준)' },
+    { pct: 100, name: '청년내일저축계좌(가구소득 기준)' },
     { pct: 150, name: '기준 중위소득 150% 이하 대상 지원' },
+    { pct: 250, name: '청년도약계좌(가구소득 기준)' },
   ];
 
   function run() {

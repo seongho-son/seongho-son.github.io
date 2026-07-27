@@ -265,6 +265,29 @@ th { background: var(--surface); font-weight: 700; }
   flex: none;
   margin: 0;
 }
+/* 선택 입력 배지 — "— 선택"은 '선택하라'는 뜻으로 읽혀 오해를 부른다. 결과를 알려주는 문구로 쓴다. */
+.calc .opt {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.calc .section-note {
+  margin: 22px 0 4px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
 .calc .row { display: flex; gap: 12px; }
 .calc .row > div { flex: 1; }
 .calc button {
