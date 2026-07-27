@@ -8,12 +8,12 @@ const posts = (await getCollection('blog')).sort(
 );
 ---
 <BaseLayout
-  title="생활정보"
-  description="전기요금·난방비·이사·살림 절약을 위한 실용 생활정보 모음."
+  title="지원금 정보"
+  description="근로장려금·실업급여·청년월세·출산지원금 등 정부지원금의 자격과 신청 방법을 정리한 글 모음."
   wide
 >
-  <h1>생활정보</h1>
-  <p class="lead">생활비를 아끼는 데 실제로 도움이 되는 글만 모았습니다.</p>
+  <h1>지원금 정보</h1>
+  <p class="lead">받을 수 있는 지원금을 놓치지 않도록, 자격과 신청 방법을 하나씩 정리했습니다.</p>
 
   <ul class="post-list">
     {posts.map((post) => (

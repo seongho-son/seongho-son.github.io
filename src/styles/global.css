@@ -142,19 +142,54 @@ th { background: var(--surface); font-weight: 700; }
   margin-bottom: 8px;
 }
 
-/* Ad slot */
+/* Ad slot
+   - 콘텐츠(결과 카드/버튼)와 혼동되지 않도록 배경·테두리를 두지 않는다.
+   - 광고가 실제로 삽입된 경우에만 상단에 "광고" 라벨을 상시 노출한다.
+   - 승인 전 빈 슬롯은 아무것도 보이지 않되 min-height로 자리만 예약(CLS 방지). */
 .ad-slot {
-  margin: 32px 0;
+  margin: 48px 0;
   min-height: 90px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px dashed var(--border);
+  background: none;
+  border: none;
+}
+.ad-slot:not(:empty)::before {
+  content: "광고";
+  display: block;
+  align-self: flex-start;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+/* 콘텐츠 CTA — 광고 슬롯과 클래스/스타일을 절대 공유하지 않는다 */
+.cta-box {
+  margin: 32px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--accent);
   border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  text-align: center;
+}
+.cta-box a { color: var(--accent); }
+
+/* 글 하단 일괄 면책 문구 */
+.post-disclaimer {
+  margin: 40px 0 0;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 13px;
-  background: var(--surface);
+  line-height: 1.6;
 }
+.post-disclaimer p { margin: 0; }
 
 /* Calculator */
 .calc {

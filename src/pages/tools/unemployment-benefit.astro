@@ -14,7 +14,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     개인정보는 받지 않고, 계산은 브라우저 안에서만 이루어집니다.
   </p>
 
-  <Disclaimer source="고용노동부·고용보험법 시행령, 2026년 기준" updated="2026-07-27" />
+  <Disclaimer source="고용노동부고시 제2025-47호(2026년 최저임금)·고용보험법 시행령(2026.1.1. 시행)·고용보험법 별표1(소정급여일수), 2026년 기준" updated="2026-07-27" />
 
   <blockquote>
     ⚠️ <strong>계산 전에 꼭 확인하세요.</strong> 실업급여는 금액보다 <strong>수급자격</strong>이 먼저입니다.
@@ -35,6 +35,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="pills">
       <label><input type="radio" name="reason" value="involuntary" checked /><span>비자발적 이직</span></label>
       <label><input type="radio" name="reason" value="voluntary" /><span>자발적 퇴사</span></label>
+      <label><input type="radio" name="reason" value="misconduct" /><span>중대한 귀책사유로 인한 해고</span></label>
     </div>
 
     <label for="years">고용보험 가입기간 (피보험기간)</label>
@@ -46,6 +47,32 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <option value="gte10">10년 이상</option>
     </select>
 
+    <div id="eligibilityWrap" class="checkrow hidden">
+      <label for="over180">
+        <input id="over180" type="checkbox" />
+        <span>이직일 이전 <strong>18개월간 피보험단위기간이 180일 이상</strong>입니다.</span>
+      </label>
+      <p class="disclaimer" style="margin-top:6px;">
+        가입기간이 1년 미만이면 180일 요건을 못 채우는 경우가 많습니다.
+        피보험단위기간은 재직일수가 아니라 <strong>보수 지급의 기초가 된 날</strong>만 세므로,
+        주 5일 근무라면 실제 근무 8~9개월이 필요할 수 있습니다.
+      </p>
+    </div>
+
+    <label for="hours">1일 소정근로시간</label>
+    <select id="hours">
+      <option value="8" selected>8시간 (주 40시간 · 전일제)</option>
+      <option value="7">7시간</option>
+      <option value="6">6시간</option>
+      <option value="5">5시간</option>
+      <option value="4">4시간</option>
+      <option value="3">3시간</option>
+    </select>
+    <p class="disclaimer" style="margin-top:6px;">
+      구직급여 <strong>하한액은 1일 소정근로시간에 비례</strong>합니다.
+      단시간 근로자는 하한액도 그만큼 줄어듭니다. (1일 소정근로시간이 3시간 미만이면 3시간으로 봅니다)
+    </p>
+
     <label for="salary">퇴직 전 3개월 평균 월급여 (원, 세전)</label>
     <input id="salary" type="number" inputmode="numeric" min="0" placeholder="예: 3000000" />
     <p class="disclaimer" style="margin-top:6px;">
@@ -55,19 +82,37 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <button id="calcBtn">실업급여 계산하기</button>
 
+    <p class="error hidden" id="errorOut" role="alert"></p>
+
     <div id="result" class="result hidden">
-      <div>예상 총 수령액</div>
-      <div class="total" id="totalOut">–</div>
-      <table>
-        <tbody>
-          <tr><td>1일 평균임금</td><td id="dailyWageOut">–</td></tr>
-          <tr><td>1일 구직급여액</td><td id="dailyOut">–</td></tr>
-          <tr><td>상·하한 적용</td><td id="capOut">–</td></tr>
-          <tr><td>소정급여일수</td><td id="daysOut">–</td></tr>
-          <tr><td>월 환산액 (30일 기준)</td><td id="monthlyOut">–</td></tr>
-        </tbody>
-      </table>
+      <p class="blocker hidden" id="blockerOut" role="alert"></p>
+
+      <div id="amountWrap">
+        <div>최대 예상 총 수령액</div>
+        <div class="total" id="totalOut">–</div>
+        <table>
+          <tbody>
+            <tr><td>1일 평균임금</td><td id="dailyWageOut">–</td></tr>
+            <tr><td>1일 구직급여액</td><td id="dailyOut">–</td></tr>
+            <tr><td>상·하한 적용</td><td id="capOut">–</td></tr>
+            <tr><td>소정급여일수</td><td id="daysOut">–</td></tr>
+            <tr><td>월 환산액 (30일 기준)</td><td id="monthlyOut">–</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="disclaimer" id="warnOut"></p>
       <p class="disclaimer" id="noteOut"></p>
+      <p class="disclaimer">
+        ※ 이직 후 <strong>대기기간 7일은 지급되지 않습니다.</strong> 이 7일은 소정급여일수에서 차감되지는 않지만,
+        첫 회차 실수령액은 위 “월 환산액”보다 적을 수 있습니다.
+        <br />
+        ※ 위 1일 평균임금은 월급여를 30.4167일로 나눈 <strong>근사값</strong>입니다.
+        실제 평균임금은 이직 전 3개월 임금총액을 그 기간의 실제 총일수(89~92일)로 나눈 값이라
+        <strong>상·하한에 걸리지 않는 좁은 구간에서만</strong> 결과가 조금 달라집니다.
+        <br />
+        ※ 최근 5년 내 반복수급자에 대한 <strong>구직급여 감액·대기기간 연장 제도(시행 예정)는 이 계산기에 반영되어 있지 않습니다.</strong>
+      </p>
       <p class="disclaimer">
         ※ 실제 지급 여부와 금액은 <strong>고용센터의 수급자격 심사 결과</strong>에 따라 달라집니다.
         소정급여일수는 최대 지급 가능 일수이며, 재취업하면 그 시점에 지급이 끝납니다.
@@ -77,7 +122,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </div>
 
-  <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+  <div class="ad-slot" aria-hidden="true"></div>
 
   <h2>실업급여는 어떻게 계산되나요?</h2>
   <p>
@@ -99,7 +144,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </thead>
     <tbody>
       <tr><td>상한액</td><td>68,100원</td><td>고용보험법 시행령 개정 (2026년 1월 1일 이후 이직자)</td></tr>
-      <tr><td>하한액</td><td>66,048원</td><td>2026년 최저임금 10,320원 × 80% × 8시간</td></tr>
+      <tr><td>하한액</td><td>66,048원</td><td>2026년 최저임금 10,320원 × 80% × 8시간 (1일 8시간 기준, 근로시간 비례)</td></tr>
     </tbody>
   </table>
   <p>
@@ -149,6 +194,31 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     해당 여부는 개인이 판단할 수 없고 <strong>고용센터가 심사</strong>합니다.
   </p>
 
+  <h2>대기기간 7일은 지급되지 않습니다</h2>
+  <p>
+    수급자격을 인정받아도 <strong>이직 후 첫 7일(대기기간)은 구직급여가 나오지 않습니다.</strong>
+    다만 이 7일이 소정급여일수에서 깎이는 것은 아니어서, 총 수령액 자체는 줄지 않고
+    <strong>첫 회차에 받는 금액만 적어집니다.</strong>
+    계산기의 “월 환산액(30일 기준)”은 대기기간을 반영하지 않은 값이므로
+    첫 달 실수령액은 이보다 적을 수 있습니다.
+  </p>
+
+  <h2 id="repeat">반복수급자 감액 제도 (이 계산기 미반영)</h2>
+  <p>
+    정부가 추진 중인 고용보험법 개정에 따르면
+    <strong>최근 5년 동안 3회 이상 구직급여를 받은 반복수급자</strong>는
+    수급 횟수에 따라 급여액이 <strong>10~50% 감액</strong>되고,
+    <strong>대기기간도 최대 4주까지 연장</strong>될 수 있습니다.
+    (고용노동부 발표 기준 3회 10%, 4회 25%, 5회 40%, 6회 이상 50%.
+    저임금 근로자·일용근로자 등은 반복수급 횟수에서 제외되며, 횟수는 법 시행 이후 수급분부터 셉니다.)
+  </p>
+  <p class="disclaimer">
+    구체적인 <strong>시행일은 이 페이지 작성 시점(2026-07-27)에 공식 법령으로 확인하지 못했습니다.</strong>
+    2026년 하반기 시행이 예고된 제도이며, <strong>이 계산기는 반복수급 감액을 반영하지 않습니다.</strong>
+    반복수급에 해당한다면 실제 수령액은 위 계산 결과보다 적을 수 있으니
+    고용24 또는 관할 고용센터에서 확인하세요.
+  </p>
+
   <h2>신청은 언제, 어디서?</h2>
   <p>
     퇴사 후 <strong>이직확인서와 피보험자격 상실신고</strong>가 처리되면 고용24에서 구직등록을 하고,
@@ -158,7 +228,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     이후에는 1~4주마다 실업인정을 받으며 재취업 활동을 증명해야 합니다.
   </p>
 
-  <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+  <div class="ad-slot" aria-hidden="true"></div>
 
   <blockquote>
     이 페이지는 공개된 기준으로 금액을 미리 가늠해 보는 <strong>자가진단 도구</strong>이며,
@@ -181,9 +251,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   // 하한 66,048원: 2026년 최저임금 10,320원 × 80% × 8시간
   const DAILY_CAP = 68_100;
   const MIN_WAGE_2026 = 10_320;
-  const DAILY_FLOOR = Math.round(MIN_WAGE_2026 * 0.8 * 8); // 66,048
   const RATE = 0.6;
   const DAYS_PER_MONTH = 365 / 12; // 30.4167일
+  // 최저임금 월 환산액(주 40시간·주휴 포함 209시간) — 이보다 낮은 입력은 경고
+  const MIN_MONTHLY_2026 = MIN_WAGE_2026 * 209; // 2,156,880
+
+  // 하한액은 1일 소정근로시간에 비례한다(고용보험법 제46조).
+  // 1일 소정근로시간이 3시간 미만이면 3시간으로 본다.
+  function dailyFloorFor(hours) {
+    const h = Math.max(3, Math.min(8, Number(hours) || 8));
+    return Math.round(MIN_WAGE_2026 * 0.8 * h);
+  }
 
   // 소정급여일수 [50세 미만, 50세 이상 또는 장애인]
   const DAYS = {
@@ -196,12 +274,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   const won = (n) => Math.round(n).toLocaleString('ko-KR') + '원';
 
-  function calcDaily(monthlySalary) {
+  function calcDaily(monthlySalary, hours) {
+    const floor = dailyFloorFor(hours);
     const dailyWage = monthlySalary / DAYS_PER_MONTH;
     const raw = Math.floor(dailyWage * RATE);
-    if (raw > DAILY_CAP) return { dailyWage, raw, daily: DAILY_CAP, cap: 'cap' };
-    if (raw < DAILY_FLOOR) return { dailyWage, raw, daily: DAILY_FLOOR, cap: 'floor' };
-    return { dailyWage, raw, daily: raw, cap: 'none' };
+    // 하한이 최종 우선하도록 max(min(...)) 순서로 고정한다.
+    const daily = Math.max(Math.min(raw, DAILY_CAP), floor);
+    const cap = daily === raw ? 'none' : daily === floor ? 'floor' : 'cap';
+    return { dailyWage, raw, daily, cap, floor };
   }
 
   const CAP_TEXT = {
@@ -210,19 +290,65 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     none: '상·하한 미적용 (평균임금의 60% 그대로)',
   };
 
+  function syncEligibility() {
+    const period = document.getElementById('years').value;
+    document.getElementById('eligibilityWrap').classList.toggle('hidden', period !== 'lt1');
+  }
+
+  function showError(msg) {
+    const err = document.getElementById('errorOut');
+    err.textContent = msg;
+    err.classList.remove('hidden');
+    document.getElementById('result').classList.add('hidden');
+  }
+
   function run() {
     const ageKey = document.querySelector('input[name="age"]:checked').value;
     const reason = document.querySelector('input[name="reason"]:checked').value;
     const period = document.getElementById('years').value;
-    const salary = parseFloat(document.getElementById('salary').value);
+    const hours = parseFloat(document.getElementById('hours').value);
+    const salaryRaw = document.getElementById('salary').value.trim();
+    const salary = parseFloat(salaryRaw);
     const box = document.getElementById('result');
+    const err = document.getElementById('errorOut');
+    const blocker = document.getElementById('blockerOut');
+    const amountWrap = document.getElementById('amountWrap');
 
-    if (isNaN(salary) || salary <= 0) {
-      box.classList.add('hidden');
+    // 입력 검증 — 조용히 숨기지 않고 사유를 알린다.
+    if (salaryRaw === '') return showError('⚠️ 퇴직 전 3개월 평균 월급여를 입력해 주세요.');
+    if (isNaN(salary)) return showError('⚠️ 월급여는 숫자로 입력해 주세요. (예: 3000000)');
+    if (salary <= 0) return showError('⚠️ 월급여는 0원보다 커야 합니다. 세전 금액을 원 단위로 입력해 주세요.');
+    if (salary > 100_000_000) return showError('⚠️ 월급여 입력값이 너무 큽니다. 연봉이 아닌 월 단위 금액인지 확인해 주세요.');
+    err.classList.add('hidden');
+
+    // 수급자격 하드 게이트 — 180일 미충족이면 금액 대신 안내를 낸다.
+    const need180 = period === 'lt1';
+    const has180 = document.getElementById('over180').checked;
+    if (need180 && !has180) {
+      blocker.textContent =
+        '수급자격 미충족 — 구직급여를 받을 수 없습니다. 이직일 이전 18개월간 피보험단위기간이 180일 이상이어야 구직급여를 받을 수 있습니다. 가입기간이 1년 미만이라면 위 확인란을 체크한 경우에만 금액을 계산합니다.';
+      blocker.classList.remove('hidden');
+      amountWrap.classList.add('hidden');
+      document.getElementById('warnOut').textContent = '';
+      document.getElementById('noteOut').textContent =
+        '※ 피보험단위기간은 재직일수가 아니라 보수 지급의 기초가 된 날만 계산합니다. 정확한 일수는 이직확인서 또는 고용24에서 확인하세요.';
+      box.classList.remove('hidden');
       return;
     }
+    blocker.classList.add('hidden');
 
-    const { dailyWage, raw, daily, cap } = calcDaily(salary);
+    const ineligible = reason === 'voluntary' || reason === 'misconduct';
+    if (ineligible) {
+      blocker.textContent =
+        reason === 'voluntary'
+          ? '원칙적으로 수급 불가 — 자발적 퇴사는 구직급여 수급 대상이 아닙니다. 아래 금액은 임금체불·통근곤란 등 법에서 정한 정당한 이직 사유가 인정될 경우를 가정한 참고값일 뿐이며, 인정 여부는 고용센터가 심사합니다.'
+          : '원칙적으로 수급 불가 — 중대한 귀책사유로 인한 해고는 구직급여 수급 대상에서 제외됩니다. 아래 금액은 예외적으로 수급자격이 인정될 경우를 가정한 참고값입니다.';
+      blocker.classList.remove('hidden');
+    }
+    amountWrap.classList.toggle('dimmed', ineligible);
+    amountWrap.classList.remove('hidden');
+
+    const { dailyWage, raw, daily, cap, floor } = calcDaily(salary, hours);
     const row = DAYS[period];
     const days = row[ageKey];
     const total = daily * days;
@@ -236,16 +362,88 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       days + '일 (' + row.label + ' · ' + (ageKey === 'over50' ? '50세 이상·장애인' : '50세 미만') + ')';
     document.getElementById('monthlyOut').textContent = won(daily * 30);
 
+    const warns = [];
+    if (salary < MIN_MONTHLY_2026) {
+      warns.push(
+        '⚠️ 입력하신 월급여(' +
+          won(salary) +
+          ')는 2026년 최저임금 월 환산액 ' +
+          won(MIN_MONTHLY_2026) +
+          '(주 40시간 기준)보다 낮습니다. 단시간 근로가 아니라면 입력값을 다시 확인해 주세요. 하한액이 적용되어 금액이 실제보다 커 보일 수 있습니다.'
+      );
+    }
+    if (cap === 'floor') {
+      warns.push(
+        '※ 하한액(1일 소정근로시간 ' +
+          hours +
+          '시간 기준 ' +
+          won(floor) +
+          ')이 적용되었습니다. 하한액은 근로시간에 비례하므로 소정근로시간을 정확히 선택해야 합니다.'
+      );
+    }
+    document.getElementById('warnOut').textContent = warns.join(' ');
+
     document.getElementById('noteOut').textContent =
-      reason === 'voluntary'
-        ? '⚠️ 자발적 퇴사를 선택하셨습니다. 자발적 이직은 원칙적으로 구직급여 수급 대상이 아니며, 위 금액은 예외적으로 수급자격이 인정될 경우를 가정한 참고값입니다. 정당한 이직 사유 해당 여부는 고용센터가 판단합니다.'
-        : '※ 수급자격(18개월간 피보험단위기간 180일 이상, 비자발적 이직)이 인정된다고 가정한 참고용 예상액입니다.';
+      '※ 수급자격(18개월간 피보험단위기간 180일 이상, 비자발적 이직)이 인정된다고 가정한 참고용 최대 예상액입니다. 소정급여일수는 최대 지급 가능 일수이며 재취업 시 그 시점에 지급이 끝납니다.';
 
     box.classList.remove('hidden');
   }
 
   document.getElementById('calcBtn').addEventListener('click', run);
+  document.getElementById('years').addEventListener('change', syncEligibility);
   document.getElementById('salary').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') run();
   });
+  syncEligibility();
 </script>
+
+<style>
+  .hidden { display: none !important; }
+
+  .checkrow {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border, #ddd);
+    border-radius: 8px;
+  }
+  .checkrow > label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .checkrow input[type='checkbox'] {
+    width: auto;
+    margin: 3px 0 0;
+    flex: none;
+  }
+
+  .error {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff4f4;
+    border: 1px solid #f0b7b7;
+    color: #a11;
+    font-size: 14px;
+  }
+
+  .blocker {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #fff4f4;
+    border: 1px solid #f0b7b7;
+    color: #a11;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  /* 원칙적 수급 불가인 경우 금액을 흐리게 처리해 오독을 막는다. */
+  .dimmed {
+    opacity: 0.45;
+    filter: grayscale(1);
+  }
+</style>

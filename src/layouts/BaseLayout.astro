@@ -37,7 +37,10 @@ const ADSENSE_CLIENT = ''; // 예: 'ca-pub-1234567890123456'
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content="ko_KR" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <!-- og:image가 없으므로 summary(작은 카드)로 유지. 대표 이미지를 추가하면
+         og:image와 함께 summary_large_image로 올릴 것.
+         ⚠️ 정부 상징(태극·무궁화·부처 로고)은 사칭 이슈가 되므로 사용 금지. -->
+    <meta name="twitter:card" content="summary" />
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c2410c'/><text x='50' y='54' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,AppleSDGothicNeo-Bold,Malgun Gothic,sans-serif' font-size='64' font-weight='800' fill='%23ffffff'>얼</text></svg>" />
 
