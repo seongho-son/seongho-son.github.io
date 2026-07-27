@@ -57,6 +57,9 @@ img { max-width: 100%; height: auto; }
   font-size: 21px;
   letter-spacing: -0.01em;
   color: var(--text);
+  /* 좁은 화면에서 "얼 받 / 마 지" 로 쪼개지지 않도록 고정 */
+  white-space: nowrap;
+  flex: none;
 }
 .brand:hover { text-decoration: none; }
 .brand-emoji {
@@ -74,7 +77,31 @@ img { max-width: 100%; height: auto; }
   transition: transform 0.15s ease;
 }
 .brand:hover .brand-excl { transform: rotate(-8deg) translateY(-3px) scale(1.1); }
-.nav a { color: var(--text); margin-left: 18px; font-size: 15px; font-weight: 500; }
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  /* 항목이 넘치면 줄바꿈으로 무너지는 대신 헤더 안에서 가로 스크롤 */
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav a {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.nav a.on { color: var(--accent); font-weight: 700; }
+.nav .lbl-short { display: none; }
+@media (max-width: 480px) {
+  .site-header .container { gap: 10px; }
+  .nav { gap: 14px; }
+  .nav a { font-size: 14px; }
+  .nav .lbl-full { display: none; }
+  .nav .lbl-short { display: inline; }
+}
 
 /* Footer */
 .site-footer {

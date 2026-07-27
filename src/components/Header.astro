@@ -1,15 +1,30 @@
 ---
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = Astro.url.pathname.replace(/\/$/, '');
+
+// 메뉴는 4개로 고정. 모바일(375px)에서 로고 + 5개 항목은 줄바꿈으로 무너진다.
+// '소개'는 푸터에 이미 있으므로 헤더에서 뺀다.
+// short 는 480px 이하에서만 쓰는 축약 라벨 — 4개가 한 줄에 다 들어가야 스크롤 없이 보인다.
+const nav = [
+  { href: '/check', label: '지원금 진단', short: '진단', on: (p: string) => p === '/check' },
+  { href: '/tools', label: '계산기', short: '계산기', on: (p: string) => p.startsWith('/tools') },
+  { href: '/regions', label: '지역별', short: '지역', on: (p: string) => p.startsWith('/regions') },
+  { href: '/guides', label: '정보', short: '정보', on: (p: string) => p.startsWith('/guides') },
+];
 ---
 <header class="site-header">
   <div class="container wide">
     <a class="brand" href={`${base}/`}>얼마<span class="brand-accent">받지</span></a>
     <nav class="nav">
-      <a href={`${base}/check`}>지원금 진단</a>
-      <a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a>
-      <a href={`${base}/regions`}>지역별 지원금</a>
-      <a href={`${base}/guides`}>지원금 정보</a>
-      <a href={`${base}/about`}>소개</a>
+      {nav.map((n) => (
+        <a
+          href={`${base}${n.href}`}
+          class={n.on(path) ? 'on' : ''}
+          aria-current={n.on(path) ? 'page' : undefined}
+        >
+          <span class="lbl-full">{n.label}</span><span class="lbl-short">{n.short}</span>
+        </a>
+      ))}
     </nav>
   </div>
 </header>
