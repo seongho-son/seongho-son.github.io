@@ -151,11 +151,17 @@ th { background: var(--surface); font-weight: 700; }
 
 /* Cards / post list */
 .hero { padding: 28px 0 8px; }
-.post-list { list-style: none; padding: 0; margin: 0; }
+/* 글 목록은 카드로 구분한다. 밑줄만 있으면 자동 광고가 항목 사이에 삽입됐을 때
+   목록의 한 항목처럼 읽혀(콘텐츠 오인) 정책상 위험하다. 광고 자리는 그대로 두고 경계만 세운다. */
+.post-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .post-list li {
-  padding: 20px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  transition: border-color 0.15s ease;
 }
+.post-list li:hover { border-color: var(--accent); }
 .post-list h3 { margin: 0 0 4px; font-size: 20px; }
 .post-list .excerpt { color: var(--muted); margin: 0; font-size: 15px; }
 .badge {
