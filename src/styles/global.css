@@ -151,75 +151,18 @@ th { background: var(--surface); font-weight: 700; }
 
 /* Cards / post list */
 /* ── Hero ──────────────────────────────────────────────
-   텍스트만 있던 화면에 시선이 멈출 곳을 만든다: 아이브로우 → 큰 제목 → CTA → 신뢰 지표.
-   장식은 최소로 하고 대비와 여백으로 위계를 만든다. */
-.hero {
-  padding: 56px 0 40px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-.hero-eyebrow {
-  display: inline-block;
-  margin: 0 0 14px;
-  padding: 5px 14px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-.hero h1 {
-  font-size: 48px;
-  line-height: 1.22;
-  letter-spacing: -0.03em;
-  margin: 0 0 16px;
-}
-.hero .lead { font-size: 18px; margin: 0 auto 28px; max-width: 620px; }
-.hero-cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.btn-ghost {
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-weight: 600;
-  margin-top: 8px;
-}
-.btn-ghost:hover { text-decoration: none; border-color: var(--accent); color: var(--accent); }
-.hero-note { margin: 16px 0 0; font-size: 13px; color: var(--muted); }
-.stat-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 32px;
-  flex-wrap: wrap;
-}
-.stat {
-  flex: 1 1 150px;
-  max-width: 200px;
-  padding: 16px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-.stat strong { display: block; font-size: 24px; color: var(--accent); letter-spacing: -0.02em; }
-.stat span { font-size: 13px; color: var(--muted); }
-.br-pc { display: none; }
-@media (min-width: 700px) { .br-pc { display: inline; } }
+   랜딩페이지가 아니라 '도구 사이트' 홈이다. 검색으로 들어온 사람은 바로 계산하러 오므로,
+   머리말은 얇게 두고 첫 화면에서 계산기 목록이 보이게 한다. */
+.hero { padding: 26px 0 22px; }
+.hero h1 { font-size: 30px; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.02em; }
+.hero .lead { font-size: 16px; margin: 0 0 16px; }
+.hero-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.hero-cta .btn-tool { margin-top: 0; padding: 11px 18px; font-size: 15px; }
+.hero-meta { font-size: 13px; color: var(--muted); }
 @media (max-width: 640px) {
-  .hero { padding: 36px 0 28px; }
-  .hero h1 { font-size: 34px; }
-  .hero .lead { font-size: 16px; }
-  /* 3개가 2+1 로 깨지지 않게 한 줄 고정 */
-  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .stat { max-width: none; padding: 12px 6px; }
-  .stat strong { font-size: 17px; }
-  .stat span { font-size: 11px; }
-  .hero-cta { flex-direction: column; }
-  .hero-cta .btn-tool, .hero-cta .btn-ghost { width: 100%; text-align: center; }
+  .hero h1 { font-size: 25px; }
+  .hero .lead { font-size: 15px; }
+  .hero-cta { gap: 10px; }
 }
 
 /* 지역 칩 */
