@@ -1,0 +1,242 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// 2026년 기준 중위소득(월, 원) — 보건복지부 고시(2025년 발표) 기준
+const MEDIAN = [2_564_238, 4_199_292, 5_359_036, 6_494_738, 7_556_719, 8_555_952];
+const won = (n: number) => Math.round(n).toLocaleString('ko-KR');
+---
+<BaseLayout
+  title="기준 중위소득 계산기 — 내 소득은 몇 %인가"
+  description="가구원 수와 월 소득만 입력하면 2026년 기준 중위소득 대비 몇 %인지, 생계·의료·주거·교육급여와 청년월세 등 어떤 지원의 커트라인에 들어가는지 바로 확인합니다. 개인정보 없이 브라우저에서 자가진단."
+>
+  <h1>기준 중위소득 계산기</h1>
+  <p class="lead">
+    가구원 수와 월 소득을 넣으면 <strong>2026년 기준 중위소득 대비 몇 %</strong>인지 계산하고,
+    그 %가 어떤 복지사업의 커트라인에 해당하는지 함께 보여드립니다.
+    개인정보는 받지 않고, 계산은 브라우저 안에서만 이루어집니다.
+  </p>
+
+  <Disclaimer source="보건복지부 2026년 기준 중위소득 고시" updated="2026-07-27" />
+
+  <p class="notice-box">
+    <strong>실제 복지 심사는 '소득인정액'으로 판정합니다.</strong>
+    소득인정액 = 소득평가액 + 재산의 소득환산액이라서, 단순 월급으로 계산한 아래 %와
+    실제 판정 결과는 다를 수 있습니다. 대략적인 위치를 가늠하는 용도로 사용하세요.
+  </p>
+
+  <div class="calc">
+    <label for="hsize">가구원 수</label>
+    <select id="hsize">
+      <option value="1">1인 가구</option>
+      <option value="2">2인 가구</option>
+      <option value="3">3인 가구</option>
+      <option value="4" selected>4인 가구</option>
+      <option value="5">5인 가구</option>
+      <option value="6">6인 가구</option>
+      <option value="7">7인 가구</option>
+      <option value="8">8인 가구</option>
+    </select>
+    <p class="disclaimer" style="margin-top:6px;">
+      주민등록표상 함께 거주하는 가구원 수를 기준으로 합니다(생계·주거를 같이하는 가족).
+    </p>
+
+    <label for="income">가구 월 소득 (세전, 원)</label>
+    <input id="income" type="number" inputmode="numeric" min="0" placeholder="예: 3200000" />
+    <p class="disclaimer" style="margin-top:6px;">
+      가구원 전체의 월 소득 합계를 넣으세요. 연 소득만 안다면 12로 나눈 금액을 입력하면 됩니다.
+    </p>
+
+    <button id="calcBtn">기준 중위소득 대비 % 계산하기</button>
+
+    <p id="errOut" class="calc-error hidden" role="alert"></p>
+
+    <div id="result" class="result hidden">
+      <div>기준 중위소득 대비</div>
+      <div class="total" id="totalOut">–</div>
+      <div class="total-sub" id="subOut">참고용 추정</div>
+      <table>
+        <tbody>
+          <tr><td>가구원 수</td><td id="sizeOut">–</td></tr>
+          <tr><td>2026년 기준 중위소득(월)</td><td id="medOut">–</td></tr>
+          <tr><td>입력한 월 소득</td><td id="incOut">–</td></tr>
+        </tbody>
+      </table>
+      <div id="matchOut" class="match"></div>
+      <p class="disclaimer">
+        ※ 위 목록은 각 제도가 흔히 사용하는 <strong>기준 중위소득 % 커트라인</strong>을 단순 비교한
+        결과입니다. 제도마다 재산 기준·연령·가구 요건이 따로 있어 %만으로 대상이 확정되지 않습니다.
+      </p>
+    </div>
+  </div>
+
+  <style>
+    .calc-error { color: #b42318; font-size: 14px; margin-top: 10px; font-weight: 600; }
+    .calc-error.hidden { display: none; }
+    .total-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .notice-box {
+      border: 1px solid var(--border, #ddd);
+      border-left: 4px solid #b54708;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .match { margin-top: 16px; }
+    .match h4 { margin: 0 0 8px; font-size: 15px; }
+    .match ul { margin: 0; padding-left: 18px; }
+    .match li { font-size: 14px; margin-bottom: 4px; }
+    .match .no { color: var(--muted); }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border, #ddd);
+      border-radius: 6px;
+      font-size: 16px;
+      background: #fff;
+    }
+  </style>
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>2026년 가구원수별 기준 중위소득</h2>
+  <table>
+    <thead>
+      <tr><th>가구원 수</th><th>기준 중위소득(월)</th><th>50%</th><th>60%</th></tr>
+    </thead>
+    <tbody>
+      {MEDIAN.map((m, i) => (
+        <tr>
+          <td>{i + 1}인</td>
+          <td>{won(m)}원</td>
+          <td>{won(m * 0.5)}원</td>
+          <td>{won(m * 0.6)}원</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="disclaimer">
+    2026년 기준, 출처: 보건복지부 고시. <strong>7인 이상 가구</strong>는 1인 늘어날 때마다
+    6인 가구와 5인 가구의 차액({won(MEDIAN[5] - MEDIAN[4])}원)을 더해 산정하며, 계산기도 같은 방식을
+    사용합니다. 정확한 고시 금액은 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서 확인하세요.
+  </p>
+
+  <h2>%별로 어떤 지원에 쓰이나</h2>
+  <table>
+    <thead>
+      <tr><th>기준</th><th>대표 제도</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>30% 이하</td><td>생계급여</td></tr>
+      <tr><td>40% 이하</td><td>의료급여</td></tr>
+      <tr><td>48% 이하</td><td>주거급여</td></tr>
+      <tr><td>50% 이하</td><td>교육급여, 차상위 사업, 청년내일저축계좌 등</td></tr>
+      <tr><td>60% 이하</td><td>청년월세 특별지원(청년 본인 기준) 등</td></tr>
+      <tr><td>150% 이하</td><td>비교적 넓은 대상의 청년·재난 관련 지원</td></tr>
+    </tbody>
+  </table>
+  <p>
+    청년월세 특별지원처럼 <strong>청년 본인 소득(60%)과 원가구 소득(100%)을 함께 보는</strong> 제도도 있어
+    가구 기준이 제도마다 다릅니다. 자세한 내용은 아래 글에서 확인하세요.
+  </p>
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>소득인정액과는 무엇이 다른가</h2>
+  <p>
+    기초생활보장처럼 재산까지 보는 제도는 월급이 아니라 <strong>소득인정액</strong>으로 판정합니다.
+    소득인정액은 실제 소득에서 근로소득공제 등을 뺀 <strong>소득평가액</strong>과, 보유 재산을 월 소득으로
+    환산한 <strong>재산의 소득환산액</strong>을 더한 값입니다. 그래서 월급이 커트라인보다 낮아도 재산이 많으면
+    탈락할 수 있고, 반대의 경우도 있습니다.
+  </p>
+
+  <blockquote>
+    정확한 대상 여부 확인과 신청은 <strong>복지로</strong>의 '복지서비스 모의계산'과 관할
+    주민센터에서 하셔야 합니다. 이 계산기의 결과는 참고용 추정입니다.
+    <br />
+    👉 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로에서 모의계산·신청하기</a>
+  </blockquote>
+
+  <p style="margin-top:24px;">
+    관련 정보 →
+    <a href={`${base}/guides/median-income-2026`}>기준 중위소득이란? 2026 금액표</a> ·
+    <a href={`${base}/guides/basic-livelihood`}>기초생활수급자 자격과 급여 종류</a> ·
+    <a href={`${base}/guides/youth-monthly-rent`}>청년월세 특별지원 총정리</a>
+  </p>
+
+  <script define:vars={{ MEDIAN }}>
+  // 7인 이상 가구: 1인 증가할 때마다 (6인 − 5인) 차액을 더하는 고시 방식
+  const STEP = MEDIAN[5] - MEDIAN[4];
+
+  const medianFor = (size) => (size <= 6 ? MEDIAN[size - 1] : MEDIAN[5] + STEP * (size - 6));
+  const won = (n) => Math.round(n).toLocaleString('ko-KR') + '원';
+
+  const PROGRAMS = [
+    { pct: 30, name: '생계급여' },
+    { pct: 40, name: '의료급여' },
+    { pct: 48, name: '주거급여' },
+    { pct: 50, name: '교육급여 · 차상위 사업 · 청년내일저축계좌' },
+    { pct: 60, name: '청년월세 특별지원(청년 본인 소득 기준)' },
+    { pct: 150, name: '기준 중위소득 150% 이하 대상 지원' },
+  ];
+
+  function run() {
+    const size = parseInt(document.getElementById('hsize').value, 10);
+    const incomeRaw = document.getElementById('income').value.trim();
+    const income = parseFloat(incomeRaw);
+    const box = document.getElementById('result');
+    const err = document.getElementById('errOut');
+
+    const fail = (msg) => {
+      err.textContent = msg;
+      err.classList.remove('hidden');
+      box.classList.add('hidden');
+    };
+
+    if (incomeRaw === '') return fail('가구 월 소득을 입력해 주세요.');
+    if (isNaN(income)) return fail('가구 월 소득은 숫자로 입력해 주세요.');
+    if (income < 0) return fail('가구 월 소득은 0원 이상이어야 합니다.');
+    err.classList.add('hidden');
+
+    const med = medianFor(size);
+    const pct = (income / med) * 100;
+
+    document.getElementById('totalOut').textContent = pct.toFixed(1) + '%';
+    document.getElementById('subOut').textContent =
+      pct <= 100 ? '중위소득보다 낮음 (참고용 추정)' : '중위소득보다 높음 (참고용 추정)';
+    document.getElementById('sizeOut').textContent =
+      size + '인 가구' + (size >= 7 ? ' (6인 기준 + 차액 산정)' : '');
+    document.getElementById('medOut').textContent = won(med);
+    document.getElementById('incOut').textContent = won(income);
+
+    const inRange = PROGRAMS.filter((p) => pct <= p.pct);
+    const outRange = PROGRAMS.filter((p) => pct > p.pct);
+
+    const list = (items, cls) =>
+      items
+        .map(
+          (p) =>
+            `<li class="${cls}">${p.pct}% 이하 — ${p.name} <span class="no">(${size}인 가구 커트라인 ${won(
+              (med * p.pct) / 100
+            )})</span></li>`
+        )
+        .join('');
+
+    document.getElementById('matchOut').innerHTML =
+      (inRange.length
+        ? `<h4>✅ 소득 기준상 살펴볼 만한 제도</h4><ul>${list(inRange, '')}</ul>`
+        : '<h4>소득 기준으로 들어가는 대표 제도가 없습니다</h4>') +
+      (outRange.length
+        ? `<h4 style="margin-top:14px;">기준을 넘는 제도</h4><ul>${list(outRange, 'no')}</ul>`
+        : '');
+
+    box.classList.remove('hidden');
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', run);
+  document.getElementById('income').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') run();
+  });
+</script>
+</BaseLayout>

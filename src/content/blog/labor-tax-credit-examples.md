@@ -88,6 +88,8 @@ relatedTool: "/tools/labor-tax-credit"
 
 지금 바로 내 예상액 확인 → [근로장려금 계산기로 계산하기](/tools/labor-tax-credit)
 
+부양자녀가 있다면 중복 수급이 가능한 → [자녀장려금 계산기](/tools/child-tax-credit)도 함께 확인하세요.
+
 ---
 
 실제 지급 여부·금액은 관계 기관의 심사에 따라 다를 수 있습니다.

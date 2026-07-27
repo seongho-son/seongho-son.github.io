@@ -75,6 +75,8 @@ relatedTool: "/tools/labor-tax-credit"
 
 내 조건으로 예상액을 보려면 → [근로장려금 계산기로 지금 계산하기](/tools/labor-tax-credit)
 
+재산 요건이 동일하게 적용되는 → [자녀장려금 계산기](/tools/child-tax-credit)도 함께 확인해 보세요.
+
 ---
 
 실제 지급 여부·금액·재산 평가액은 관계 기관의 심사에 따라 다를 수 있습니다.

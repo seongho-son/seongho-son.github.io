@@ -36,7 +36,7 @@ git add -A && git commit -m "deploy" && git push origin gh-pages
 
 ## 2. 완료된 것 (건드릴 필요 없음)
 
-- 사이트 라이브, 계산기 4종(근로장려금·출산육아·청년월세·실업급여, 계산 검증 완료), 정보 글 21개.
+- 사이트 라이브, 계산기 **6종**(근로장려금·자녀장려금·출산육아·청년월세·실업급여·기준중위소득, 계산 검증 완료), 정보 글 **25개**.
 - 애드센스 필수 페이지: 개인정보처리방침·소개·문의·면책 + 사칭방지 고지.
 - **애드센스 코드 세팅됨**: 게시자 ID `ca-pub-5644793210860513` (BaseLayout head 스크립트) + `public/ads.txt` 레코드. CMP(EEA 동의) 제출 완료.
 - SEO: 페이지별 title/description/canonical, sitemap, robots, JSON-LD(WebSite·Organization·Article), og:image(og-image.png), 커스텀 404, 모바일 대응.
@@ -57,8 +57,10 @@ git add -A && git commit -m "deploy" && git push origin gh-pages
    - **지자체복지서비스 `data.go.kr/data/15108347`** (지역 롱테일 핵심)
    - 공공서비스(혜택) `data.go.kr/data/15113968`
    - 주의: API 데이터를 그대로 대량 복붙 말고 요약·구조화 + 출처 링크. 개인정보 수집 없음(클라이언트/빌드타임만).
-2. **콘텐츠 완성·확장** — `CONTENT-PLAN.md`의 20개 계획 참고. 기존 21개 글 품질 점검 + 부족 주제 추가. 글 하나당 1,000자+, 내부 링크 2개+(계산기/다른 글), frontmatter category/tags/relatedTool.
-3. **계산기 증축** — 기준중위소득 계산기, 자녀장려금 등. 참고 모범 파일: `src/pages/tools/labor-tax-credit.astro` + `src/components/Disclaimer.astro`.
+   - ⏸️ **현재 블로커**: 저장소·환경 어디에도 공공데이터포털 인증키가 없음(`.env` 없음). 사용자가 data.go.kr 가입 후 위 3개 API **활용신청 → 인증키 발급**을 해야 착수 가능. 발급되면 `.env`(gitignore)에 `DATA_GO_KR_KEY=` 로 넣고 빌드타임 수집 스크립트로 페이지 생성할 것.
+2. **콘텐츠 완성·확장** — `CONTENT-PLAN.md`의 20개 계획은 **전부 작성 완료**(2026-07-27 확인). 이후 3개 추가되어 현재 **25개**: `child-tax-credit-examples`(자녀장려금 계산 예시), `income-recognition-amount`(소득인정액·재산의 소득환산액), `housing-benefit`(주거급여). 다음 후보 주제: 의료급여 본인부담, 차상위계층, 국민연금 크레딧, 청년내일채움공제 후속, 지자체 출산장려금 비교. 글 하나당 1,000자+, 내부 링크 2개+(계산기/다른 글), frontmatter category/tags/relatedTool.
+3. **계산기 증축** — ✅ 기준중위소득 계산기(`/tools/median-income`)·자녀장려금 계산기(`/tools/child-tax-credit`) 추가 완료(2026-07-27, 총 6종). 다음 후보: 주거급여 기준임대료 계산기(급지·가구원수 표 고시값 확보 필요), 소득인정액 모의계산기(기본재산액·환산율 고시값 필요), 육아휴직급여 계산기. 참고 모범 파일: `src/pages/tools/labor-tax-credit.astro` + `src/components/Disclaimer.astro`.
+   - ⚠️ 계산기 수치 갱신 포인트: 기준중위소득은 매년 8월경 다음해 고시 → `median-income.astro`의 `MEDIAN` 배열과 `median-income-2026.md` 표를 함께 수정. 근로·자녀장려금은 귀속연도 산정표 변경 시 `TABLE` 상수 수정.
 4. **커스텀 도메인**(선택, 승인률·브랜딩↑) — 도메인 구매 후 GitHub Pages 커스텀 도메인 설정 + `astro.config.mjs`의 `site`를 그 도메인으로 변경 + 재배포. (현재 `site: 'https://seongho-son.github.io'`)
 5. **광고 실배치**(승인 후) — 자동광고 ON이면 자동. 수동 제어 원하면 애드센스에서 광고단위 생성 → slot ID로 각 페이지 `.ad-slot` 위치(결과박스 직후·본문 중간, 이미 배치됨)에 `<ins class="adsbygoogle">` 삽입. `.ad-slot:empty`는 숨김 처리돼 있음.
 

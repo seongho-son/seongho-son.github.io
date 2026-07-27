@@ -4,7 +4,7 @@ description: "자녀장려금은 누가, 얼마나 받을 수 있을까요? 소�
 pubDate: 2026-06-01
 category: "근로장려금"
 tags: ["자녀장려금", "근로장려금", "국세청", "홈택스", "정부지원금"]
-relatedTool: "/tools/labor-tax-credit"
+relatedTool: "/tools/child-tax-credit"
 ---
 
 자녀장려금은 **부양자녀가 있는 저소득 가구의 양육을 지원**하기 위해 국세청이 지급하는 제도입니다.
@@ -13,7 +13,8 @@ relatedTool: "/tools/labor-tax-credit"
 2024년 귀속 기준으로 정리했습니다.
 
 > 내 예상 지급액이 먼저 궁금하다면
-> [근로장려금 계산기](/tools/labor-tax-credit)로 확인해 보세요. (개인정보 입력 없음)
+> [자녀장려금 계산기](/tools/child-tax-credit)로 확인해 보세요. (개인정보 입력 없음)
+> 근로장려금은 [근로장려금 계산기](/tools/labor-tax-credit)에서 따로 계산할 수 있습니다.
 
 ## 자녀장려금이란?
 
@@ -66,7 +67,7 @@ relatedTool: "/tools/labor-tax-credit"
 - 재산 2.4억 미만, 1.7억 이상이면 50% 감액
 - **근로장려금과 중복 수급 가능**, 홈택스에서 한 번에 신청
 
-내 예상 지급액이 궁금하다면 → [근로장려금 계산기로 지금 계산하기](/tools/labor-tax-credit)
+내 예상 지급액이 궁금하다면 → [자녀장려금 계산기로 지금 계산하기](/tools/child-tax-credit)
 
 ---
 
