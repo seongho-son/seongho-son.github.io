@@ -168,8 +168,8 @@ relatedTool: "/tools/unemployment-benefit"
 
 ## 함께 보면 좋은 글
 
-- [국민취업지원제도 1·2유형 차이와 자격](/blog/national-employment-support) — 실업급여 대상이 아니거나 종료된 경우
-- [청년월세 특별지원 자격·신청 총정리](/blog/youth-monthly-rent) — 소득이 끊긴 기간의 주거비 지원
+- [국민취업지원제도 1·2유형 차이와 자격](/guides/national-employment-support) — 실업급여 대상이 아니거나 종료된 경우
+- [청년월세 특별지원 자격·신청 총정리](/guides/youth-monthly-rent) — 소득이 끊긴 기간의 주거비 지원
 - 내 예상 수령액이 궁금하다면 → [실업급여 계산기로 지금 계산하기](/tools/unemployment-benefit)
 
 ---

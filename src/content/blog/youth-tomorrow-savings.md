@@ -65,8 +65,8 @@ relatedTool: "/tools/labor-tax-credit"
 
 ## 함께 보면 좋은 글
 
-- [청년도약계좌 조건과 만기 수령액 정리](/blog/youth-leap-account)
-- [국민취업지원제도 1·2유형 차이와 자격](/blog/national-employment-support)
+- [청년도약계좌 조건과 만기 수령액 정리](/guides/youth-leap-account)
+- [국민취업지원제도 1·2유형 차이와 자격](/guides/national-employment-support)
 - 근로소득 환급이 궁금하다면 → [근로장려금 계산기](/tools/labor-tax-credit)
 
 ---

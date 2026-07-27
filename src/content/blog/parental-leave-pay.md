@@ -13,7 +13,7 @@ relatedTool: "/tools/parenting-benefit"
 정리했습니다.
 
 > 출산·육아로 받는 다른 현금 지원까지 한눈에 보려면
-> [출산하면 받는 돈 총정리](/blog/childbirth-benefits-total)를 참고하세요.
+> [출산하면 받는 돈 총정리](/guides/childbirth-benefits-total)를 참고하세요.
 
 ## 누가 받을 수 있나 — 지급 요건
 
@@ -73,8 +73,8 @@ relatedTool: "/tools/parenting-benefit"
 - 사후지급금 방식은 개편 중
 - **6+6 부모육아휴직제**로 부부가 함께 쓰면 초기 6개월 수령액 대폭 증가
 
-출산·육아로 받는 다른 지원은 [부모급여 총정리](/blog/parental-benefit-2026)와
-[출산하면 받는 돈 총정리](/blog/childbirth-benefits-total)에서 확인하세요.
+출산·육아로 받는 다른 지원은 [부모급여 총정리](/guides/parental-benefit-2026)와
+[출산하면 받는 돈 총정리](/guides/childbirth-benefits-total)에서 확인하세요.
 
 *실제 지급 여부와 금액은 통상임금·고용보험 이력·제도 변경에 따라 달라집니다. 본 글은 2026년
 기준 참고용이며, 최신 정보는 고용24 등 공식 안내에서 확인하세요.*

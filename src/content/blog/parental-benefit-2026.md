@@ -64,8 +64,8 @@ relatedTool: "/tools/parenting-benefit"
 다만 **부모급여와 가정양육수당은 중복 수급이 되지 않습니다.** 부모급여가 기존 가정양육수당을
 대체하는 구조여서, 부모급여를 받는 만 0~1세 동안에는 가정양육수당이 지급되지 않고
 부모급여 종료 후 가정양육수당으로 이어집니다. 무엇을 언제 신청하는지는
-[출산하면 받는 돈 총정리](/blog/childbirth-benefits-total)와
-[아동수당 vs 부모급여 차이](/blog/child-allowance-vs-parental) 글에서 확인하세요.
+[출산하면 받는 돈 총정리](/guides/childbirth-benefits-total)와
+[아동수당 vs 부모급여 차이](/guides/child-allowance-vs-parental) 글에서 확인하세요.
 
 ## 정리
 

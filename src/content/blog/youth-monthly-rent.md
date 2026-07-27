@@ -79,8 +79,8 @@ relatedTool: "/tools/youth-rent"
 
 ## 함께 보면 좋은 글
 
-- [국민취업지원제도 1·2유형 차이와 자격](/blog/national-employment-support)
-- [청년도약계좌 조건과 만기 수령액 정리](/blog/youth-leap-account)
+- [국민취업지원제도 1·2유형 차이와 자격](/guides/national-employment-support)
+- [청년도약계좌 조건과 만기 수령액 정리](/guides/youth-leap-account)
 - 내가 대상인지 30초 만에 확인하려면 → [청년월세 지원 자격 체크](/tools/youth-rent)
 - 예상 근로장려금이 궁금하다면 → [근로장려금 계산기](/tools/labor-tax-credit)
 

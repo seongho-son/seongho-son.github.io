@@ -44,7 +44,7 @@ relatedTool: "/tools/labor-tax-credit"
 3. **ARS 전화 신청**: 안내문에 개별인증번호가 있는 경우 전화 신청 가능
 
 지급 시기는 정기분보다 늦으므로,
-[근로장려금 지급일, 언제 들어오나](/blog/labor-tax-credit-payment-date) 글도 함께 참고하세요.
+[근로장려금 지급일, 언제 들어오나](/guides/labor-tax-credit-payment-date) 글도 함께 참고하세요.
 
 ## 주의사항
 
@@ -63,7 +63,7 @@ relatedTool: "/tools/labor-tax-credit"
 - 요건은 정기와 동일, 마감 전 빨리 신청할수록 유리
 - 신청은 **홈택스/손택스**에서, 대행·개인정보 요구는 사칭
 
-기본 자격이 헷갈린다면 → [근로장려금 자격·신청방법 총정리](/blog/labor-tax-credit-guide)
+기본 자격이 헷갈린다면 → [근로장려금 자격·신청방법 총정리](/guides/labor-tax-credit-guide)
 
 ---
 

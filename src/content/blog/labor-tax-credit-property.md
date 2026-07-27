@@ -53,7 +53,7 @@ relatedTool: "/tools/labor-tax-credit"
 - **예시 C**: 주택 2.3억 + 예금 3천만 = 재산 합계 약 2.6억 → **2.4억 이상, 지급 제외**
 
 같은 소득이라도 재산에 따라 결과가 크게 달라지므로,
-[근로장려금 사례별 계산 예시](/blog/labor-tax-credit-examples) 글도 함께 보면 도움이 됩니다.
+[근로장려금 사례별 계산 예시](/guides/labor-tax-credit-examples) 글도 함께 보면 도움이 됩니다.
 
 ## 주의사항
 

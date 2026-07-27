@@ -74,13 +74,13 @@ const tools = [
     <section>
       <div class="section-title">
         <h2>지원금 정보</h2>
-        <a href={`${base}/blog`}>전체 보기 →</a>
+        <a href={`${base}/guides`}>전체 보기 →</a>
       </div>
       <ul class="post-list">
         {posts.map((post) => (
           <li>
             <span class="badge">{post.data.category}</span>
-            <h3><a href={`${base}/blog/${post.slug}`}>{post.data.title}</a></h3>
+            <h3><a href={`${base}/guides/${post.slug}`}>{post.data.title}</a></h3>
             <p class="excerpt">{post.data.description}</p>
           </li>
         ))}

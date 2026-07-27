@@ -61,8 +61,8 @@ relatedTool: "/tools/unemployment-benefit"
 
 ## 함께 보면 좋은 글
 
-- [청년월세 특별지원 자격·신청 총정리](/blog/youth-monthly-rent)
-- [청년내일저축계좌 자격·신청 방법](/blog/youth-tomorrow-savings)
+- [청년월세 특별지원 자격·신청 총정리](/guides/youth-monthly-rent)
+- [청년내일저축계좌 자격·신청 방법](/guides/youth-tomorrow-savings)
 - 근로소득 환급이 궁금하다면 → [근로장려금 계산기](/tools/labor-tax-credit)
 
 ---

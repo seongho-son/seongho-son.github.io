@@ -31,7 +31,7 @@ relatedTool: "/tools/labor-tax-credit"
 지급됩니다. 또한 기한 후 신청분은 산정액에서 일정 비율이 감액되므로 주의가 필요합니다.
 
 기한 후 신청의 감액률과 방법은
-[근로장려금 기한 후 신청 방법과 감액률](/blog/labor-tax-credit-late-apply) 글에서 자세히 다뤘습니다.
+[근로장려금 기한 후 신청 방법과 감액률](/guides/labor-tax-credit-late-apply) 글에서 자세히 다뤘습니다.
 
 ## 지급 조회 방법 (홈택스)
 
@@ -63,7 +63,7 @@ relatedTool: "/tools/labor-tax-credit"
 - 지급·심사 조회는 **홈택스/손택스** 또는 국세청 126
 - 미지급 시 심사 중·계좌 오류·요건 미충족 등을 확인
 
-지급액 기준이 헷갈린다면 → [근로장려금 자격·신청방법 총정리](/blog/labor-tax-credit-guide)
+지급액 기준이 헷갈린다면 → [근로장려금 자격·신청방법 총정리](/guides/labor-tax-credit-guide)
 
 ---
 

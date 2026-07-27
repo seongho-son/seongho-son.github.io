@@ -64,11 +64,11 @@ relatedTool: "/tools/parenting-benefit"
 
 ## 함께 챙길 지원
 
-첫만남이용권은 [부모급여](/blog/parental-benefit-2026)(만 0세 월 100만원, 2023년 이후
+첫만남이용권은 [부모급여](/guides/parental-benefit-2026)(만 0세 월 100만원, 2023년 이후
 출생아부터)와 아동수당(2026년 기준 만 9세 미만 월 10만원)과 **별도로 중복 수급**됩니다.
 다만 **부모급여와 가정양육수당은 서로 중복되지 않습니다**(부모급여가 대체).
 출산 시 받는 전체 지원을 한눈에 보려면
-[출산하면 받는 돈 총정리](/blog/childbirth-benefits-total)를 참고하세요.
+[출산하면 받는 돈 총정리](/guides/childbirth-benefits-total)를 참고하세요.
 
 ## 정리
 
