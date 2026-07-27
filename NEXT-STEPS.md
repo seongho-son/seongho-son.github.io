@@ -69,7 +69,7 @@ git add -A && git commit -m "deploy" && git push origin gh-pages
    - ✅ **2026-07-27 1단계 완료**: 지자체복지서비스(15108347) 활용신청 승인 → `.env`의 `DATA_GO_KR_KEY_ENCODED`(gitignore) + `node scripts/fetch-welfare.mjs` 로 **4,282건 수집 → `src/data/welfare-local.json` 커밋**(빌드 시 API 불필요·재현 가능). 페이지: `/regions`(허브) · `/regions/[sido]`(15개) · `/regions/[sido]/[sigungu]`(200개).
    - ⚠️ **시군구 200페이지는 현재 꺼져 있음**: `src/lib/regions.ts`의 `ENABLE_SIGUNGU_PAGES = false`. 애드센스 심사 중 자동생성 페이지가 기존 콘텐츠(25개)를 압도해 "낮은 가치 콘텐츠"로 잡히는 것을 피하려는 의도적 게이트. **승인되면 `true`로 바꾸고 재빌드·재배포하면 200페이지가 열린다**(코드 변경 그 한 줄뿐).
    - 데이터 갱신: `node scripts/fetch-welfare.mjs` 재실행(목록만 받으므로 호출 9회, 개발계정 트래픽 여유). 중앙부처(15090532)·공공서비스(15113968)는 아직 활용신청 미승인 → 승인되면 같은 방식으로 확장.
-2. **콘텐츠 완성·확장** — `CONTENT-PLAN.md`의 20개 계획은 **전부 작성 완료**(2026-07-27 확인). 이후 3개 추가되어 현재 **25개**: `child-tax-credit-examples`(자녀장려금 계산 예시), `income-recognition-amount`(소득인정액·재산의 소득환산액), `housing-benefit`(주거급여). 다음 후보 주제: 의료급여 본인부담, 차상위계층, 국민연금 크레딧, 청년내일채움공제 후속, 지자체 출산장려금 비교. 글 하나당 1,000자+, 내부 링크 2개+(계산기/다른 글), frontmatter category/tags/relatedTool.
+2. **콘텐츠 완성·확장** — `CONTENT-PLAN.md`의 20개 계획은 **전부 작성 완료**(2026-07-27 확인). 이후 3개 추가되어 현재 **27개**: `child-tax-credit-examples`(자녀장려금 계산 예시), `income-recognition-amount`(소득인정액·재산의 소득환산액), `housing-benefit`(주거급여), `marriage-tax-credit`(혼인 세액공제), `newlywed-benefits`(신혼부부 총정리). 다음 후보 주제: 의료급여 본인부담, 차상위계층, 국민연금 크레딧, 청년내일채움공제 후속, 지자체 출산장려금 비교. 글 하나당 1,000자+, 내부 링크 2개+(계산기/다른 글), frontmatter category/tags/relatedTool.
 3. **계산기 증축** — ✅ 기준중위소득 계산기(`/tools/median-income`)·자녀장려금 계산기(`/tools/child-tax-credit`) 추가 완료(2026-07-27, 총 6종). 다음 후보: 주거급여 기준임대료 계산기(급지·가구원수 표 고시값 확보 필요), 소득인정액 모의계산기(기본재산액·환산율 고시값 필요), 육아휴직급여 계산기. 참고 모범 파일: `src/pages/tools/labor-tax-credit.astro` + `src/components/Disclaimer.astro`.
    - ⚠️ 계산기 수치 갱신 포인트: 기준중위소득은 매년 8월경 다음해 고시 → `median-income.astro`의 `MEDIAN` 배열과 `median-income-2026.md` 표를 함께 수정. 근로·자녀장려금은 귀속연도 산정표 변경 시 `TABLE` 상수 수정.
 4. **커스텀 도메인**(선택, 승인률·브랜딩↑) — 도메인 구매 후 GitHub Pages 커스텀 도메인 설정 + `astro.config.mjs`의 `site`를 그 도메인으로 변경 + 재배포. (현재 `site: 'https://seongho-son.github.io'`)
@@ -88,6 +88,10 @@ git add -A && git commit -m "deploy" && git push origin gh-pages
 - `CONTENT-PLAN.md` — 콘텐츠 클러스터 20개 계획
 - `HANDOFF-B-parenting-calculator.md` — 출산·육아 계산기 사양(+아동수당 만9세 확대 감사 메모)
 - `SEARCH-CONSOLE.md` — 서치콘솔 등록 절차 (있으면)
+
+## 7-1. 글쓰기 원칙 (필수)
+
+**`WRITING-GUIDE.md`** — 이 사이트의 존재 이유는 공공문서를 일반인이 알아듣게 옮기는 것. 관공서 용어 사전(왼쪽 쓰지 말고 오른쪽으로), 못 없애는 제도 용어의 첫 등장 풀이 규칙, 폼 문구 규칙, 새 글 체크리스트가 들어 있다. 2026-07-27 기존 27개 글 전수 점검해 산정액·귀속·이직일·원가구·점증/점감 등을 쉬운 말로 교체 완료.
 
 ## 8. 핵심 값
 
