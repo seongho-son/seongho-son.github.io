@@ -478,13 +478,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     font-size: 0.95em;
   }
   .excl label {
-    display: block;
-    margin: 6px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 10px 0;
     font-weight: 400;
     line-height: 1.5;
+    cursor: pointer;
   }
   .excl input[type='checkbox'] {
-    margin-right: 6px;
+    width: auto;
+    flex: none;
+    /* 텍스트 첫 줄 중앙에 오도록 미세 조정 */
+    margin-top: 4px;
   }
   .warnbox {
     margin: 10px 0 14px;

@@ -203,7 +203,10 @@ th { background: var(--surface); font-weight: 700; }
 }
 .calc h3 { margin-top: 0; }
 .calc label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
-.calc input, .calc select {
+/* 체크박스·라디오는 제외 — 이 규칙(width:100%)이 적용되면 컨트롤이 한 줄을 통째로 차지해
+   라벨 텍스트가 아래로 밀려난다. */
+.calc input:not([type='checkbox']):not([type='radio']),
+.calc select {
   width: 100%;
   padding: 12px 14px;
   font-size: 16px;
@@ -211,6 +214,12 @@ th { background: var(--surface); font-weight: 700; }
   border-radius: 8px;
   background: var(--bg);
   font-family: inherit;
+}
+.calc input[type='checkbox'],
+.calc input[type='radio'] {
+  width: auto;
+  flex: none;
+  margin: 0;
 }
 .calc .row { display: flex; gap: 12px; }
 .calc .row > div { flex: 1; }
