@@ -151,18 +151,23 @@ th { background: var(--surface); font-weight: 700; }
 
 /* Cards / post list */
 .hero { padding: 28px 0 8px; }
-/* 글 목록은 카드로 구분한다. 밑줄만 있으면 자동 광고가 항목 사이에 삽입됐을 때
-   목록의 한 항목처럼 읽혀(콘텐츠 오인) 정책상 위험하다. 광고 자리는 그대로 두고 경계만 세운다. */
+/* 글 목록 항목은 카드 '전체를 <a>로' 감싼다.
+   테두리만 둘렀을 때는 자동 광고가 제목과 설명 사이(카드 안쪽)에 삽입돼 오히려 글의 일부처럼 보였다.
+   자동 광고는 링크 요소 내부는 건드리지 않으므로, 앵커로 감싸면 광고가 항목 '사이'로 밀려난다.
+   덤으로 카드 전체가 클릭 영역이 되어 목록→글 이동률도 올라간다. (계산기 tool-card 와 같은 구조) */
 .post-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-.post-list li {
+.post-list li { margin: 0; }
+.post-card {
+  display: block;
   padding: 18px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
+  color: var(--text);
   transition: border-color 0.15s ease;
 }
-.post-list li:hover { border-color: var(--accent); }
-.post-list h3 { margin: 0 0 4px; font-size: 20px; }
+.post-card:hover { border-color: var(--accent); text-decoration: none; }
+.post-list h3 { margin: 0 0 4px; font-size: 20px; color: var(--accent); }
 .post-list .excerpt { color: var(--muted); margin: 0; font-size: 15px; }
 .badge {
   display: inline-block;

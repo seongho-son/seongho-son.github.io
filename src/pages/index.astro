@@ -66,9 +66,11 @@ const posts = (await getCollection('blog')).sort(
       <ul class="post-list">
         {posts.map((post) => (
           <li>
-            <span class="badge">{post.data.category}</span>
-            <h3><a href={`${base}/guides/${post.slug}`}>{post.data.title}</a></h3>
-            <p class="excerpt">{post.data.description}</p>
+            <a class="post-card" href={`${base}/guides/${post.slug}`}>
+              <span class="badge">{post.data.category}</span>
+              <h3>{post.data.title}</h3>
+              <p class="excerpt">{post.data.description}</p>
+            </a>
           </li>
         ))}
       </ul>
