@@ -1,0 +1,54 @@
+---
+// 지자체 복지서비스 목록 카드. 원문 전재가 아니라 요약·구조화 + 공식 원문(복지로) 링크.
+import type { Service } from '../lib/regions';
+export interface Props {
+  services: Service[];
+  showRegion?: boolean;
+}
+const { services, showRegion = false } = Astro.props;
+---
+<ul class="svc-list">
+  {services.map((s) => (
+    <li class="svc">
+      <h3>
+        <a href={s.link} target="_blank" rel="noopener">{s.name}</a>
+      </h3>
+      {s.summary && <p class="svc-sum">{s.summary}</p>}
+      <p class="svc-meta">
+        {showRegion && s.sigungu && <span class="tag">{s.sigungu}</span>}
+        {s.provision && <span class="tag">{s.provision}</span>}
+        {s.cycle && <span class="tag">지원주기 {s.cycle}</span>}
+        {s.applyMethod && <span class="tag">신청 {s.applyMethod}</span>}
+        {s.lifecycle && <span class="tag">{s.lifecycle}</span>}
+      </p>
+      {s.dept && <p class="svc-dept">담당: {s.dept}</p>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .svc-list { list-style: none; padding: 0; margin: 16px 0 0; }
+  .svc {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  .svc h3 { margin: 0 0 4px; font-size: 16px; line-height: 1.4; }
+  .svc h3 a { text-decoration: none; }
+  .svc h3 a:hover { text-decoration: underline; }
+  .svc-sum {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .svc-meta { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .svc-dept { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+</style>

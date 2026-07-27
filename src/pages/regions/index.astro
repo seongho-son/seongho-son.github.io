@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+import { sidoGroups, TOTAL_SERVICES, SOURCE, FETCHED_AT } from '../../lib/regions';
+const ALL_SIDO = ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'];
+const missing = ALL_SIDO.filter((s) => !sidoGroups.some((g) => g.short === s));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pageCount = sidoGroups.reduce((n, g) => n + g.sigungus.filter((s) => s.hasPage).length, 0);
+---
+<BaseLayout
+  title="지역별 지원금 찾기 — 시·도별 지자체 복지서비스 디렉터리"
+  description={`전국 지자체가 시행하는 복지서비스 ${TOTAL_SERVICES.toLocaleString('ko-KR')}건을 시·도와 시군구별로 정리했습니다. 내가 사는 지역에서 신청할 수 있는 지원금을 지역명으로 찾아보세요.`}
+  wide
+>
+  <h1>지역별 지원금 찾기</h1>
+  <p class="lead">
+    정부지원금에는 전국 공통 제도 외에, <strong>내가 사는 지자체만 시행하는 제도</strong>가 따로 있습니다.
+    같은 소득이라도 지역에 따라 받을 수 있는 지원이 달라지는 이유입니다.
+    전국 지자체 복지서비스 <strong>{TOTAL_SERVICES.toLocaleString('ko-KR')}건</strong>을
+    시·도 → 시군구 순으로 정리했으니, 사는 지역부터 확인해 보세요.
+  </p>
+
+  <Disclaimer source={`${SOURCE} (공공데이터포털 오픈API)`} updated={FETCHED_AT} subject="이 목록은" />
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>시·도별로 보기</h2>
+  <div class="region-grid">
+    {sidoGroups.map((g) => (
+      <a class="region-card" href={`${base}/regions/${g.slug}`}>
+        <strong>{g.short}</strong>
+        <span>{g.total.toLocaleString('ko-KR')}건</span>
+        <small>{g.sigungus.length > 0 ? `시군구 ${g.sigungus.length}곳` : '광역 사업'}</small>
+      </a>
+    ))}
+  </div>
+
+  <style>
+    .region-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 16px 0 8px;
+    }
+    .region-card {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      background: var(--surface);
+    }
+    .region-card:hover { border-color: var(--accent); }
+    .region-card strong { font-size: 16px; }
+    .region-card span { font-size: 14px; color: var(--accent); font-weight: 600; }
+    .region-card small { font-size: 12px; color: var(--muted); }
+  </style>
+
+  <h2>이 디렉터리는 이렇게 쓰세요</h2>
+  <ol>
+    <li>사는 <strong>시·도</strong>를 고르고, 그 안에서 <strong>시·군·구</strong>를 선택합니다.</li>
+    <li>제목을 누르면 <strong>복지로 공식 페이지</strong>로 이동해 지원대상·선정기준·신청서류를 확인할 수 있습니다.</li>
+    <li>전국 공통 제도(근로장려금·부모급여 등)의 예상 수령액은
+      <a href={`${base}/`}>계산기</a>에서 먼저 확인하는 편이 빠릅니다.</li>
+  </ol>
+  <p class="disclaimer">
+    현재 데이터에는 지자체가 등록한 사업만 포함되며, 등록 시점·갱신 주기에 따라 일부 지역·사업이 빠져 있을 수 있습니다.
+    시군구 페이지는 등록 사업이 5건 이상인 {pageCount.toLocaleString('ko-KR')}개 지역에 대해 제공하고,
+    그보다 적은 지역은 시·도 페이지에서 함께 확인할 수 있습니다.
+    {missing.length > 0 && (
+      <> 현재 <strong>{missing.join('·')}</strong>은(는) 이 데이터셋에 등록된 사업이 없어 목록에 나오지 않습니다 —
+      해당 지역 주민은 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서 직접 조회하세요.</>
+    )}
+  </p>
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>먼저 확인하면 좋은 전국 공통 제도</h2>
+  <ul>
+    <li><a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a> — 일하는 저소득 가구 대상, 5월 신청</li>
+    <li><a href={`${base}/tools/median-income`}>기준 중위소득 계산기</a> — 대부분의 복지 커트라인이 이 기준을 씁니다</li>
+    <li><a href={`${base}/guides/find-hidden-benefits`}>내가 받을 수 있는 지원금 찾는 법</a> — 복지로·보조금24 활용</li>
+  </ul>
+
+  <blockquote>
+    신청과 정확한 자격 확인은 <strong>복지로</strong>와 관할 <strong>주민센터</strong>에서 하셔야 합니다.
+    <br />
+    👉 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로 바로가기</a>
+  </blockquote>
+</BaseLayout>

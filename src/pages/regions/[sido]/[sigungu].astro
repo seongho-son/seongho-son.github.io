@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Disclaimer from '../../../components/Disclaimer.astro';
+import ServiceList from '../../../components/ServiceList.astro';
+import { sidoGroups, topThemes, lifecycleCounts, josa, SOURCE, FETCHED_AT } from '../../../lib/regions';
+
+export function getStaticPaths() {
+  return sidoGroups.flatMap((g) =>
+    g.sigungus
+      .filter((s) => s.hasPage)
+      .map((s) => ({
+        params: { sido: g.slug, sigungu: s.slug },
+        props: { group: g, sgg: s },
+      }))
+  );
+}
+
+const { group, sgg } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const services = [...sgg.services].sort((a, b) => b.views - a.views);
+const themes = topThemes(services);
+const life = lifecycleCounts(services).slice(0, 4);
+const cash = services.filter((s) => s.provision.includes('현금')).length;
+const wideCount = group.wideServices.length;
+---
+<BaseLayout
+  title={`${sgg.name} 지원금 목록 — ${group.short} ${sgg.name} 복지서비스 ${services.length}건`}
+  description={`${group.name} ${sgg.name}에서 신청할 수 있는 지자체 복지서비스 ${services.length}건을 정리했습니다. ${sgg.name} 지원금·수당·바우처와 담당 부서, 신청 방법을 한 번에 확인하세요.`}
+  wide
+>
+  <p class="crumb">
+    <a href={`${base}/regions`}>지역별 지원금</a> ›
+    <a href={`${base}/regions/${group.slug}`}>{group.short}</a> › {sgg.name}
+  </p>
+  <h1>{sgg.name} 지원금 목록</h1>
+  <p class="lead">
+    {group.name} {sgg.name}{josa(sgg.name, '이', '가')} 자체적으로 시행하는 복지서비스는 <strong>{services.length}건</strong>입니다.
+    {themes.length > 0 && <>분야는 <strong>{themes.join(' · ')}</strong> 순으로 많고, </>}
+    이 중 현금성 지원(현금지급)으로 등록된 사업은 <strong>{cash}건</strong>입니다.
+    여기에 더해 {group.short}{josa(group.short, '이', '가')} 전역에 시행하는 사업 {wideCount.toLocaleString('ko-KR')}건도 함께 신청할 수 있습니다.
+  </p>
+
+  <Disclaimer source={`${SOURCE} (공공데이터포털 오픈API)`} updated={FETCHED_AT} subject="이 목록은" />
+
+  {life.length > 0 && (
+    <p class="disclaimer">
+      생애주기별: {life.map(([k, v]) => `${k} ${v}건`).join(' · ')}
+      (한 사업이 여러 주기에 걸칠 수 있습니다.)
+    </p>
+  )}
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>{sgg.name} 복지서비스 {services.length}건</h2>
+  <p class="disclaimer">
+    제목을 누르면 복지로 공식 상세 페이지로 이동합니다. 지원대상·선정기준·구비서류는 그곳에서 확인하세요.
+  </p>
+  <ServiceList services={services} />
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>{group.short} 전역 사업 · 전국 공통 제도</h2>
+  <ul>
+    <li><a href={`${base}/regions/${group.slug}`}>{group.short}{josa(group.short, '이', '가')} 직접 시행하는 사업 보기</a> ({wideCount.toLocaleString('ko-KR')}건)</li>
+    <li><a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a> — 예상 수령액 30초 계산</li>
+    <li><a href={`${base}/tools/median-income`}>기준 중위소득 계산기</a> — 지역 사업 대부분이 쓰는 소득 기준</li>
+    <li><a href={`${base}/guides/find-hidden-benefits`}>숨은 지원금 찾는 법</a> — 복지로·보조금24 활용</li>
+  </ul>
+
+  <h2>신청 전 확인할 것</h2>
+  <ol>
+    <li><strong>소득·재산 요건</strong>: 대부분 기준 중위소득 %로 정해집니다. 내 위치는 <a href={`${base}/tools/median-income`}>계산기</a>에서 확인하세요.</li>
+    <li><strong>신청 기간</strong>: 예산 소진 시 조기 마감되는 지자체 사업이 많습니다.</li>
+    <li><strong>중복 수급 여부</strong>: 유사한 국가 제도와 중복이 제한되는 경우가 있습니다.</li>
+    <li><strong>신청 창구</strong>: 주민센터 방문이 기본이며, 일부는 복지로·정부24 온라인 신청이 가능합니다.</li>
+  </ol>
+
+  <style>
+    .crumb { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+    .crumb a { color: var(--muted); }
+  </style>
+
+  <blockquote>
+    지원 대상·금액·신청 기간은 {sgg.name} 공고에 따라 달라집니다. 신청 전 반드시
+    <strong>복지로</strong> 또는 <strong>{sgg.name} 주민센터</strong>에서 최신 내용을 확인하세요.
+    얼마받지는 정부기관이 아니며 신청을 대행하지 않습니다.
+    <br />
+    👉 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로에서 확인하기</a>
+  </blockquote>
+</BaseLayout>
