@@ -44,3 +44,15 @@ export const TOOLS: Tool[] = [
     desc: '내 소득이 중위소득 몇 %인지, 어떤 복지 커트라인에 드는지 확인',
   },
 ];
+
+/**
+ * relatedTool 경로 → 링크 문구.
+ * 글 하단 CTA가 "관련 계산기"라고만 하면 어디로 가는지 알 수 없어, 무관한 계산기가 떠도
+ * 사용자는 클릭한 뒤에야 안다(실제로 청년내일저축계좌 글에 근로장려금 계산기가 걸려 있었다).
+ * 도구 이름을 그대로 노출해 클릭 전에 기대가 맞도록 한다.
+ */
+export function toolLabel(href: string): string | null {
+  if (href === '/check') return '내가 받을 수 있는 지원금 한 번에 진단하기';
+  const t = TOOLS.find((x) => x.href === href);
+  return t ? `${t.title}로 계산해보기` : null;
+}

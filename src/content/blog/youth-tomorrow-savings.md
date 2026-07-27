@@ -4,7 +4,7 @@ description: "청년내일저축계좌의 매칭적립 구조, 소득·재산 �
 pubDate: 2026-06-17
 category: "청년지원"
 tags: ["청년내일저축계좌", "청년지원", "매칭적립", "복지로", "정부지원금"]
-relatedTool: "/tools/labor-tax-credit"
+relatedTool: "/tools/median-income"
 ---
 
 **청년내일저축계좌**는 일하는 저소득 청년이 매달 저축하면 정부가 같은 금액을 매칭해 얹어주는

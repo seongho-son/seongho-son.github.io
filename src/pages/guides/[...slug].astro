@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { toolLabel } from '../../lib/tools';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -37,9 +38,9 @@ const fmt = (d) =>
 
     <Content />
 
-    {post.data.relatedTool && (
+    {post.data.relatedTool && toolLabel(post.data.relatedTool) && (
       <div class="cta-box">
-        <a href={`${base}${post.data.relatedTool}`}>👉 관련 계산기로 내게 해당하는 금액 직접 계산해보기</a>
+        <a href={`${base}${post.data.relatedTool}`}>👉 {toolLabel(post.data.relatedTool)}</a>
       </div>
     )}
 

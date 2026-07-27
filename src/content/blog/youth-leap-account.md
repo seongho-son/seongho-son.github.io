@@ -4,7 +4,7 @@ description: "청년도약계좌 가입 나이·소득 요건, 정부기여금�
 pubDate: 2026-06-13
 category: "청년지원"
 tags: ["청년도약계좌", "청년지원", "정부기여금", "목돈마련", "정부지원금"]
-relatedTool: "/tools/labor-tax-credit"
+relatedTool: "/tools/median-income"
 ---
 
 **청년도약계좌**는 청년이 매달 저축하면 정부가 기여금을 얹어주고 이자소득에 비과세 혜택까지 주는
