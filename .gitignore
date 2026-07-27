@@ -1,0 +1,23 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# environment
+.env
+.env.production
+
+# macOS
+.DS_Store
+
+# logs
+*.log
+npm-debug.log*
+
+# workflow는 OAuth workflow 스코프 없어 푸시 불가 — gh-pages 브랜치로 수동 배포
+.github/workflows/

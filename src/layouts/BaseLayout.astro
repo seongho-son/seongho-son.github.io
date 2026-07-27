@@ -1,0 +1,61 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** 이 페이지가 글(article)인지 여부 — OG type 결정 */
+  article?: boolean;
+  /** 넓은 레이아웃(홈/목록)인지 여부 */
+  wide?: boolean;
+}
+
+const { title, description, article = false, wide = false } = Astro.props;
+const siteName = '얼마받지';
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+
+// ⚠️ 애드센스 승인 후 발급받는 본인 게시자 ID로 교체하세요 (ca-pub-XXXXXXXXXXXXXXXX).
+// 값을 넣으면 자동으로 광고 스크립트가 로드됩니다. 비워두면 로드되지 않습니다.
+const ADSENSE_CLIENT = ''; // 예: 'ca-pub-1234567890123456'
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c2410c'/><text x='50' y='54' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,AppleSDGothicNeo-Bold,Malgun Gothic,sans-serif' font-size='64' font-weight='800' fill='%23ffffff'>얼</text></svg>" />
+
+    {ADSENSE_CLIENT && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class={wide ? 'container wide' : 'container'}>
+        <slot />
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const fmt = (d) =>
+  d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={post.data.title} description={post.data.description} article>
+  <article>
+    <span class="badge">{post.data.category}</span>
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      {fmt(post.data.pubDate)}
+      {post.data.updatedDate && ` · 수정 ${fmt(post.data.updatedDate)}`}
+    </p>
+
+    {/* 상단 광고 — 제목 바로 아래, 가시성 최상 */}
+    <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+
+    <Content />
+
+    {post.data.relatedTool && (
+      <div class="ad-slot" style="border-style:solid;background:var(--accent-soft);color:var(--accent);">
+        <a href={`${base}${post.data.relatedTool}`}>👉 관련 계산기로 내게 해당하는 금액 직접 계산해보기</a>
+      </div>
+    )}
+  </article>
+</BaseLayout>

@@ -1,0 +1,181 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout
+  title="출산·육아 지원금 총액 계산기 — 부모급여+첫만남+아동수당"
+  description="아이 출생 순서와 현재 개월수만 입력하면 부모급여·첫만남이용권·아동수당을 합친 총 지원금과 남은 수령액을 바로 계산합니다. 개인정보 없이 브라우저에서 자가진단."
+>
+  <h1>출산·육아 지원금 총액 계산기</h1>
+  <p class="lead">
+    아이 한 명당 국가가 주는 <strong>부모급여 · 첫만남이용권 · 아동수당</strong>을 합쳐
+    총 얼마를 받게 되는지, 그중 앞으로 남은 금액은 얼마인지 계산해 드립니다.
+    개인정보는 받지 않고, 계산은 브라우저 안에서만 이루어집니다.
+  </p>
+
+  <Disclaimer source="보건복지부, 2026년 기준" updated="2026-07-27" />
+
+  <div class="calc">
+    <label>출생 순서</label>
+    <div class="pills">
+      <label><input type="radio" name="order" value="first" checked /><span>첫째아</span></label>
+      <label><input type="radio" name="order" value="second" /><span>둘째아 이상</span></label>
+    </div>
+
+    <label>아이 상태</label>
+    <div class="pills">
+      <label><input type="radio" name="stage" value="born" checked /><span>이미 출생</span></label>
+      <label><input type="radio" name="stage" value="unborn" /><span>출생 예정</span></label>
+    </div>
+
+    <label for="months">현재 개월수 (만 나이 기준, 0~95)</label>
+    <input id="months" type="number" inputmode="numeric" min="0" max="95" placeholder="예: 7" />
+    <p class="disclaimer" style="margin-top:6px;">
+      태어난 달을 0개월로 봅니다. 만 8세(96개월)가 되면 아동수당이 끝나므로 95까지만 입력하세요.
+      출생 예정을 선택하면 개월수는 무시됩니다.
+    </p>
+
+    <button id="calcBtn">지원금 총액 계산하기</button>
+
+    <div id="result" class="result hidden">
+      <div>아이 1명당 총 수령액 (만 8세까지)</div>
+      <div class="total" id="totalOut">–</div>
+      <table>
+        <tbody>
+          <tr><td>부모급여 (만 0~1세)</td><td id="parentOut">–</td></tr>
+          <tr><td>첫만남이용권 (출생 시 1회)</td><td id="firstOut">–</td></tr>
+          <tr><td>아동수당 (만 8세 미만)</td><td id="childOut">–</td></tr>
+          <tr><td><strong>이미 받은 금액</strong></td><td id="pastOut">–</td></tr>
+          <tr><td><strong>앞으로 받을 금액</strong></td><td id="futureOut">–</td></tr>
+        </tbody>
+      </table>
+      <p class="disclaimer" id="noteOut"></p>
+      <p class="disclaimer">
+        👉 신청·조회는 <a href="https://www.gov.kr" target="_blank" rel="noopener">정부24</a> 또는
+        <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서 하실 수 있습니다.
+      </p>
+    </div>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+
+  <h2>세 가지 지원금, 무엇이 다른가요?</h2>
+  <p>
+    출산 직후 받는 현금성 지원은 크게 세 가지입니다. 이름이 비슷해 헷갈리지만
+    <strong>지급 기간과 방식이 모두 다르고, 셋은 중복해서 받을 수 있습니다.</strong>
+  </p>
+  <table>
+    <thead>
+      <tr><th>지원금</th><th>대상 연령</th><th>금액</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>부모급여</td><td>만 0세 (0~11개월)</td><td>월 100만원</td></tr>
+      <tr><td>부모급여</td><td>만 1세 (12~23개월)</td><td>월 50만원</td></tr>
+      <tr><td>첫만남이용권</td><td>출생 시 1회</td><td>첫째 200만원 / 둘째 이상 300만원</td></tr>
+      <tr><td>아동수당</td><td>만 8세 미만 (0~95개월)</td><td>월 10만원</td></tr>
+    </tbody>
+  </table>
+
+  <h2>그래서 총 얼마인가요?</h2>
+  <p>
+    태어나서 만 8세가 될 때까지 빠짐없이 받는다고 가정하면 아이 한 명당
+    <strong>첫째는 약 2,960만원, 둘째 이상은 약 3,060만원</strong>입니다.
+    부모급여 1,800만원 + 아동수당 960만원은 순서와 관계없이 같고,
+    첫만남이용권만 100만원 차이가 납니다.
+  </p>
+
+  <h2>시기별로 받는 금액</h2>
+  <table>
+    <thead>
+      <tr><th>시기</th><th>월 수령액</th><th>구성</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>출생 시</td><td>200~300만원 (1회)</td><td>첫만남이용권</td></tr>
+      <tr><td>0~11개월</td><td>월 110만원</td><td>부모급여 100 + 아동수당 10</td></tr>
+      <tr><td>12~23개월</td><td>월 60만원</td><td>부모급여 50 + 아동수당 10</td></tr>
+      <tr><td>24~95개월</td><td>월 10만원</td><td>아동수당</td></tr>
+    </tbody>
+  </table>
+
+  <h2>주의할 점</h2>
+  <p>
+    부모급여는 어린이집을 이용하면 보육료 바우처로 우선 차감되고 차액만 현금으로 지급됩니다.
+    첫만남이용권은 현금이 아니라 <strong>국민행복카드 바우처</strong>(사용 기한 있음)로 지급됩니다.
+    또한 이 계산기에는 <strong>지자체 출산장려금이 포함되어 있지 않습니다.</strong>
+    지역별로 수십만원에서 수천만원까지 천차만별이므로, 거주 지자체 공고를 별도로 확인하세요.
+  </p>
+
+  <blockquote>
+    정확한 자격 판정과 신청은 <strong>정부24·복지로</strong> 또는 주민센터에서 하셔야 합니다.
+    이 계산기의 결과는 참고용 예상액이며, 실제 지급은 심사·거주지에 따라 다를 수 있습니다.
+    <br />
+    👉 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로에서 출산·육아 지원금 확인하기</a>
+  </blockquote>
+
+  <p style="margin-top:24px;">
+    관련 계산기 → <a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a>
+    · 관련 정보 → <a href={`${base}/blog/labor-tax-credit-guide`}>근로장려금 자격·신청 방법 총정리</a>
+  </p>
+</BaseLayout>
+
+<script>
+  // 출산·육아 지원금 (2026년 기준). 모두 클라이언트에서만 계산.
+  const PARENT_AGE0 = 1_000_000; // 부모급여 만 0세 월 100만원 (0~11개월)
+  const PARENT_AGE1 = 500_000; // 부모급여 만 1세 월 50만원 (12~23개월)
+  const CHILD_ALLOWANCE = 100_000; // 아동수당 월 10만원 (0~95개월)
+  const CHILD_MONTHS = 96;
+  const FIRST_MEET = { first: 2_000_000, second: 3_000_000 };
+  const ORDER_LABEL = { first: '첫째아', second: '둘째아 이상' };
+
+  const won = (n) => Math.round(n).toLocaleString('ko-KR') + '원';
+  const clamp = (n, lo, hi) => Math.min(Math.max(n, lo), hi);
+
+  // 지난 m개월(0..m-1개월분) 동안 지급된 부모급여 누계
+  function parentPaidBy(m) {
+    return PARENT_AGE0 * clamp(m, 0, 12) + PARENT_AGE1 * clamp(m - 12, 0, 12);
+  }
+
+  function run() {
+    const order = document.querySelector('input[name="order"]:checked').value;
+    const unborn = document.querySelector('input[name="stage"]:checked').value === 'unborn';
+    const raw = parseFloat(document.getElementById('months').value);
+    const box = document.getElementById('result');
+
+    if (!unborn && (isNaN(raw) || raw < 0)) {
+      box.classList.add('hidden');
+      return;
+    }
+    const months = unborn ? 0 : clamp(Math.floor(raw), 0, CHILD_MONTHS);
+
+    const parentTotal = parentPaidBy(24);
+    const firstMeet = FIRST_MEET[order];
+    const childTotal = CHILD_ALLOWANCE * CHILD_MONTHS;
+    const total = parentTotal + firstMeet + childTotal;
+
+    // 이미 받은 금액: 첫만남은 출생 시 지급되므로 출생 전이면 0
+    const past = unborn
+      ? 0
+      : parentPaidBy(months) + firstMeet + CHILD_ALLOWANCE * clamp(months, 0, CHILD_MONTHS);
+    const future = total - past;
+
+    document.getElementById('totalOut').textContent = won(total);
+    document.getElementById('parentOut').textContent = won(parentTotal) + ' (100만×12 + 50만×12)';
+    document.getElementById('firstOut').textContent =
+      won(firstMeet) + ' (' + ORDER_LABEL[order] + ')';
+    document.getElementById('childOut').textContent = won(childTotal) + ' (10만×96)';
+    document.getElementById('pastOut').textContent = won(past);
+    document.getElementById('futureOut').textContent = won(future);
+    document.getElementById('noteOut').textContent = unborn
+      ? '※ 출생 예정 기준이라 아직 받은 금액이 없습니다. 출생 신고 후 첫만남이용권부터 지급됩니다. 지자체 출산장려금은 포함되지 않았습니다.'
+      : '※ 현재 ' +
+        months +
+        '개월 기준 참고용 예상액입니다. 실제 지급액은 심사·거주지·보육료 바우처 차감 여부에 따라 달라질 수 있으며, 지자체 출산장려금은 포함되지 않았습니다.';
+    box.classList.remove('hidden');
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', run);
+  document.getElementById('months').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') run();
+  });
+</script>

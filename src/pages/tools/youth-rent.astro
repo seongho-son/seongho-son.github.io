@@ -1,0 +1,316 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout
+  title="청년월세 특별지원 계산기 — 자격 체크 + 예상 수령액"
+  description="나이·무주택·보증금·월세·소득만 입력하면 청년월세 특별지원 대상 여부를 항목별로 판정하고, 월 최대 20만원 × 12개월 기준 예상 수령액을 계산합니다. 개인정보 없이 브라우저에서 자가진단."
+>
+  <h1>청년월세 특별지원 계산기</h1>
+  <p class="lead">
+    나이·거주 형태·보증금·월세·소득을 입력하면 <strong>청년월세 특별지원 대상 여부를 요건별로</strong>
+    확인하고, 대상일 경우 예상 월 수령액과 12개월 총액을 계산해 드립니다.
+    이름·주민등록번호·계좌 같은 개인정보는 받지 않으며, 계산은 브라우저 안에서만 이루어집니다.
+  </p>
+
+  <Disclaimer source="국토교통부·복지로, 2026년 기준" updated="2026-07-27" />
+
+  <div class="calc">
+    <label for="age">만 나이 (세)</label>
+    <input id="age" type="number" inputmode="numeric" min="0" max="120" placeholder="예: 28" />
+
+    <label>주택 소유 여부</label>
+    <div class="pills">
+      <label><input type="radio" name="own" value="no" checked /><span>무주택</span></label>
+      <label><input type="radio" name="own" value="yes" /><span>주택 소유</span></label>
+    </div>
+
+    <label>부모와 별도 거주 여부</label>
+    <div class="pills">
+      <label><input type="radio" name="sep" value="yes" checked /><span>별도 거주</span></label>
+      <label><input type="radio" name="sep" value="no" /><span>부모와 함께 거주</span></label>
+    </div>
+
+    <label for="deposit">임차 보증금 (원)</label>
+    <input id="deposit" type="number" inputmode="numeric" min="0" placeholder="예: 10000000" />
+
+    <label for="rent">월세 (원)</label>
+    <input id="rent" type="number" inputmode="numeric" min="0" placeholder="예: 450000" />
+
+    <label for="size">본인 가구 가구원 수</label>
+    <select id="size">
+      <option value="1" selected>1인</option>
+      <option value="2">2인</option>
+      <option value="3">3인</option>
+      <option value="4">4인</option>
+      <option value="5">5인</option>
+      <option value="6">6인</option>
+    </select>
+
+    <label for="income">본인 가구 월소득 (원)</label>
+    <input id="income" type="number" inputmode="numeric" min="0" placeholder="예: 1800000" />
+
+    <label for="psize">원가구(부모 포함) 가구원 수 — 선택</label>
+    <select id="psize">
+      <option value="">입력 안 함</option>
+      <option value="1">1인</option>
+      <option value="2">2인</option>
+      <option value="3" selected>3인</option>
+      <option value="4">4인</option>
+      <option value="5">5인</option>
+      <option value="6">6인</option>
+    </select>
+
+    <label for="pincome">원가구 월소득 (원) — 선택</label>
+    <input id="pincome" type="number" inputmode="numeric" min="0" placeholder="예: 4500000" />
+    <p class="disclaimer" style="margin-top:6px;">
+      원가구 소득을 비워 두면 해당 요건은 <strong>미확인</strong>으로 표시되며 판정에서 제외됩니다.
+      가구 재산 상한 요건은 금액 기준이 차수마다 달라 이 계산기에서 판정하지 않습니다.
+    </p>
+
+    <button id="calcBtn">자격 확인하고 계산하기</button>
+
+    <div id="result" class="result hidden">
+      <div id="headOut">예상 지원 총액 (최대 12개월)</div>
+      <div class="total" id="totalOut">–</div>
+      <table>
+        <tbody id="checkOut"></tbody>
+      </table>
+      <p class="disclaimer" id="noteOut"></p>
+      <p class="disclaimer">
+        👉 실제 자격 판정과 신청은
+        <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a> 또는
+        <a href="https://www.gov.kr" target="_blank" rel="noopener">정부24</a>,
+        주소지 관할 주민센터에서 하실 수 있습니다.
+        이 도구는 자가진단까지만 도와드리며, 신청을 대행하지 않습니다.
+      </p>
+    </div>
+  </div>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+
+  <blockquote>
+    ⚠️ 청년월세 특별지원은 <strong>사업 차수마다 요건과 접수 일정이 달라지는 제도</strong>입니다.
+    지금 신청이 가능한지, 올해 기준 상한이 얼마인지는 반드시
+    <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로 공고</a>에서
+    직접 확인하세요.
+  </blockquote>
+
+  <h2>얼마를 몇 개월 받나요?</h2>
+  <p>
+    지원 금액은 <strong>월 최대 약 20만원</strong>, 지원 기간은 <strong>최대 12개월</strong>입니다.
+    실제 월세가 20만원보다 적으면 그 실제 임차료 범위 안에서 지급되므로,
+    예상 총액은 <strong>min(실 월세, 20만원) × 12개월</strong>로 계산됩니다.
+    "매달 20만원이 무조건 12번 들어온다"는 뜻이 아닙니다.
+  </p>
+  <p>
+    2026년부터 한시사업에서 <strong>상시(계속)사업으로 전환</strong>되어, 12개월 지원이 끝난 뒤
+    <strong>재신청 시 추가로 최대 12개월(합계 약 24개월·최대 약 480만원)</strong>까지 받을 수 있는 것으로
+    안내되고 있습니다. 다만 개월 수·재신청 조건은 개편·차수에 따라 달라질 수 있으니 최신 내용은
+    <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로 공고</a>에서 확인하세요.
+    (이 계산기는 1회 지원 기준인 12개월 총액을 보여 드립니다.)
+  </p>
+
+  <h2>자격 요건 한눈에 보기</h2>
+  <table>
+    <thead>
+      <tr><th>구분</th><th>기준</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>나이</td><td>만 19~34세</td></tr>
+      <tr><td>주택 소유</td><td>무주택</td></tr>
+      <tr><td>거주 형태</td><td>부모와 별도 거주</td></tr>
+      <tr><td>보증금</td><td>약 5,000만원 이하</td></tr>
+      <tr><td>월세</td><td>약 70만원 이하</td></tr>
+      <tr><td>본인 가구 소득</td><td>기준 중위소득 60% 이하</td></tr>
+      <tr><td>원가구(부모 포함) 소득</td><td>기준 중위소득 100% 이하</td></tr>
+      <tr><td>재산</td><td>가구별 재산 상한 있음 (차수별 상이)</td></tr>
+    </tbody>
+  </table>
+  <p>
+    월세가 상한을 넘더라도 보증금 환산액과 합산해 일정 기준 이내면 인정되는 경우가 있으므로,
+    아슬아슬하게 넘는다면 복지로에서 한 번 더 확인해 보시는 것이 좋습니다.
+  </p>
+
+  <h2>판정에 쓰는 2026년 기준 중위소득</h2>
+  <table>
+    <thead>
+      <tr><th>가구원 수</th><th>기준 중위소득(월)</th><th>60%</th><th>100%</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1인</td><td>2,564,238원</td><td>1,538,542원</td><td>2,564,238원</td></tr>
+      <tr><td>2인</td><td>4,199,292원</td><td>2,519,575원</td><td>4,199,292원</td></tr>
+      <tr><td>3인</td><td>5,359,036원</td><td>3,215,421원</td><td>5,359,036원</td></tr>
+      <tr><td>4인</td><td>6,494,738원</td><td>3,896,842원</td><td>6,494,738원</td></tr>
+      <tr><td>5인</td><td>7,556,719원</td><td>4,534,031원</td><td>7,556,719원</td></tr>
+      <tr><td>6인</td><td>8,555,952원</td><td>5,133,571원</td><td>8,555,952원</td></tr>
+    </tbody>
+  </table>
+  <p>
+    2026년 기준, 출처: 보건복지부(2025년 고시). 실제 심사는 단순 월급이 아니라 재산을 소득으로
+    환산해 합친 <strong>소득인정액</strong>으로 하므로, 위 커트라인과 실제 판정 결과는 다를 수 있습니다.
+  </p>
+
+  <h2>어떻게 신청하나요?</h2>
+  <p>
+    온라인은 <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서,
+    오프라인은 주소지 관할 주민센터에서 신청합니다. 임대차계약서, 월세 이체 증빙,
+    소득·재산 확인 서류 등이 필요하며 사업 안내에 따라 달라집니다.
+  </p>
+  <p>
+    ⚠️ <strong>사칭·피싱 주의</strong>: 문자·전화로 주민등록번호, 계좌 비밀번호, 카드정보,
+    수수료를 요구하면 사기입니다. 신청은 반드시 공식 채널에서만 하세요.
+  </p>
+
+  <div class="ad-slot">광고 영역 (애드센스 승인 후 자동 노출)</div>
+
+  <p style="margin-top:24px;">
+    관련 정보 → <a href={`${base}/blog/youth-monthly-rent`}>청년월세 특별지원 자격·신청 총정리</a>
+    · <a href={`${base}/blog/median-income-2026`}>2026년 기준 중위소득 금액표</a>
+    <br />
+    관련 계산기 → <a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a>
+    · <a href={`${base}/tools/parenting-benefit`}>출산·육아 지원금 총액 계산기</a>
+  </p>
+</BaseLayout>
+
+<script>
+  // 청년월세 특별지원 자가진단 (2026년 기준). 서버 전송 없이 브라우저에서만 계산.
+  // 2026년 기준 중위소득 (보건복지부 2025년 고시) — 가구원수별 월 금액
+  const MEDIAN = {
+    1: 2_564_238,
+    2: 4_199_292,
+    3: 5_359_036,
+    4: 6_494_738,
+    5: 7_556_719,
+    6: 8_555_952,
+  };
+  const AGE_MIN = 19;
+  const AGE_MAX = 34;
+  const DEPOSIT_CAP = 50_000_000; // 보증금 약 5천만원 이하
+  const RENT_CAP = 700_000; // 월세 약 70만원 이하 (2026년 기준)
+  const MONTHLY_CAP = 200_000; // 월 최대 약 20만원
+  const MONTHS = 12; // 최대 12개월
+  const SELF_RATE = 0.6; // 본인 가구: 기준 중위소득 60% 이하
+  const PARENT_RATE = 1.0; // 원가구: 기준 중위소득 100% 이하
+
+  const won = (n) => Math.round(n).toLocaleString('ko-KR') + '원';
+  const num = (id) => parseFloat((document.getElementById(id) as HTMLInputElement).value);
+  const pick = (name) =>
+    (document.querySelector('input[name="' + name + '"]:checked') as HTMLInputElement).value;
+
+  function judge(input) {
+    const checks = [];
+    const add = (label, status, detail) => checks.push({ label, status, detail });
+
+    add(
+      '나이 (만 19~34세)',
+      input.age >= AGE_MIN && input.age <= AGE_MAX ? 'ok' : 'no',
+      '만 ' + input.age + '세'
+    );
+    add('무주택 여부', input.own === 'no' ? 'ok' : 'no', input.own === 'no' ? '무주택' : '주택 소유');
+    add(
+      '부모와 별도 거주',
+      input.sep === 'yes' ? 'ok' : 'no',
+      input.sep === 'yes' ? '별도 거주' : '부모와 함께 거주'
+    );
+    add(
+      '보증금 (5,000만원 이하)',
+      input.deposit <= DEPOSIT_CAP ? 'ok' : 'no',
+      won(input.deposit)
+    );
+    add('월세 (70만원 이하)', input.rent <= RENT_CAP ? 'ok' : 'no', won(input.rent));
+
+    const selfCut = MEDIAN[input.size] * SELF_RATE;
+    add(
+      '본인 가구 소득 (중위 60% 이하)',
+      input.income <= selfCut ? 'ok' : 'no',
+      won(input.income) + ' / 기준 ' + won(selfCut)
+    );
+
+    if (input.psize && !isNaN(input.pincome)) {
+      const pCut = MEDIAN[input.psize] * PARENT_RATE;
+      add(
+        '원가구 소득 (중위 100% 이하)',
+        input.pincome <= pCut ? 'ok' : 'no',
+        won(input.pincome) + ' / 기준 ' + won(pCut)
+      );
+    } else {
+      add('원가구 소득 (중위 100% 이하)', 'skip', '미입력 — 판정 제외');
+    }
+
+    add('가구 재산 상한', 'skip', '차수별 기준 상이 — 복지로에서 확인');
+
+    const failed = checks.filter((c) => c.status === 'no');
+    return { checks, failed };
+  }
+
+  function run() {
+    const box = document.getElementById('result');
+    const input = {
+      age: num('age'),
+      own: pick('own'),
+      sep: pick('sep'),
+      deposit: num('deposit'),
+      rent: num('rent'),
+      size: (document.getElementById('size') as HTMLSelectElement).value,
+      income: num('income'),
+      psize: (document.getElementById('psize') as HTMLSelectElement).value,
+      pincome: num('pincome'),
+    };
+
+    if (
+      isNaN(input.age) ||
+      isNaN(input.deposit) ||
+      isNaN(input.rent) ||
+      isNaN(input.income) ||
+      input.age < 0 ||
+      input.deposit < 0 ||
+      input.rent < 0 ||
+      input.income < 0
+    ) {
+      box.classList.remove('hidden');
+      document.getElementById('headOut').textContent = '입력값을 확인해 주세요';
+      document.getElementById('totalOut').textContent = '–';
+      document.getElementById('checkOut').innerHTML = '';
+      document.getElementById('noteOut').textContent =
+        '※ 나이, 보증금, 월세, 본인 가구 월소득을 모두 숫자로 입력해 주세요.';
+      return;
+    }
+
+    const { checks, failed } = judge(input);
+    const rows = checks
+      .map((c) => {
+        const mark = c.status === 'ok' ? '✅ 충족' : c.status === 'no' ? '❌ 미충족' : '➖ 미확인';
+        return '<tr><td>' + c.label + '</td><td>' + mark + ' · ' + c.detail + '</td></tr>';
+      })
+      .join('');
+    document.getElementById('checkOut').innerHTML = rows;
+
+    const monthly = Math.min(input.rent, MONTHLY_CAP);
+    const total = monthly * MONTHS;
+
+    if (failed.length === 0) {
+      document.getElementById('headOut').textContent =
+        '예상 지원 총액 (월 ' + won(monthly) + ' × 최대 ' + MONTHS + '개월)';
+      document.getElementById('totalOut').textContent = won(total);
+      document.getElementById('noteOut').textContent =
+        '※ 입력하신 조건으로는 요건을 충족할 가능성이 있습니다. 월 지원액은 실 월세와 상한 20만원 중 작은 금액이며, 실제 지급은 사업 차수·심사·거주지에 따라 다를 수 있습니다. 최신 기준은 복지로 공고를 확인하세요.';
+    } else {
+      document.getElementById('headOut').textContent = '미충족 요건 ' + failed.length + '개';
+      document.getElementById('totalOut').textContent = '지원 대상 아님(예상)';
+      document.getElementById('noteOut').textContent =
+        '※ ' +
+        failed.map((c) => c.label).join(', ') +
+        ' 항목에서 기준을 넘었습니다. 다만 실제 지급은 사업 차수·심사·거주지에 따라 다를 수 있으니, 최종 판정은 복지로 공고와 모의계산으로 확인하세요.';
+    }
+    box.classList.remove('hidden');
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', run);
+  ['age', 'deposit', 'rent', 'income', 'pincome'].forEach((id) => {
+    document.getElementById(id).addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Enter') run();
+    });
+  });
+</script>

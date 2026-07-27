@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout title="소개" description="얼마받지는 근로장려금·청년월세·부모급여 등 정부지원금의 예상 수령액과 자격을 쉽게 계산해 주는 민간 정보 사이트입니다.">
+  <h1>얼마받지 소개</h1>
+  <p class="lead">복잡한 정부지원금 자격, 30초 만에 계산하세요.</p>
+
+  <p>
+    정부지원금은 종류도 많고 자격 조건도 복잡해서, 정작 "내가 받을 수 있는지, 얼마나 받는지"를
+    알기 어렵습니다. <strong>얼마받지</strong>는 흩어져 있는 지원금 정보를 쉽게 풀어 정리하고,
+    직접 숫자를 넣어 예상 수령액을 확인할 수 있는 계산기를 제공합니다.
+  </p>
+
+  <h2>이런 걸 다룹니다</h2>
+  <ul>
+    <li><strong>근로·자녀장려금</strong> — 가구유형·소득별 예상 지급액 계산</li>
+    <li><strong>청년 지원</strong> — 청년월세·청년도약계좌 등 자격 체크</li>
+    <li><strong>출산·육아</strong> — 부모급여·첫만남이용권·아동수당 총액</li>
+    <li><strong>에너지·생활</strong> — 에너지바우처 등 계절 지원</li>
+  </ul>
+
+  <h2>우리가 지키는 원칙</h2>
+  <ul>
+    <li>🔒 <strong>개인정보를 받지 않습니다.</strong> 모든 계산은 이용자 브라우저 안에서만 이뤄집니다.</li>
+    <li>🏛 <strong>정부기관이 아닙니다.</strong> 정확한 신청은 언제나 공식 사이트로 안내합니다.</li>
+    <li>📌 <strong>출처를 밝힙니다.</strong> 모든 수치에 기준연도와 출처를 함께 표기합니다.</li>
+  </ul>
+
+  <h2>계산기 먼저 써보기</h2>
+  <p>
+    가장 많이 찾는 <a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a>부터 사용해 보세요.
+  </p>
+
+  <p>
+    제휴·오류 제보 등 문의는 <a href={`${base}/contact`}>문의하기</a> 페이지로 보내주세요.
+    본 사이트의 성격과 한계는 <a href={`${base}/disclaimer`}>면책조항</a>을 참고하세요.
+  </p>
+</BaseLayout>
