@@ -274,6 +274,7 @@ th { background: var(--surface); font-weight: 700; }
   margin-top: 8px;
 }
 .btn-tool:hover { text-decoration: none; opacity: 0.92; }
+.hero-sub { margin-top: 14px; font-size: 15px; color: var(--muted); }
 
 .section-title { display: flex; align-items: baseline; justify-content: space-between; }
 .section-title a { font-size: 14px; font-weight: 600; }
@@ -339,3 +340,45 @@ th { background: var(--surface); font-weight: 700; }
 .pills input { display: none; }
 .pills input:checked + span { color: var(--accent); }
 .pills label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+
+/* 통합 진단(/check) 결과 카드 — JS가 innerHTML 로 주입하므로 Astro scoped 스타일이 붙지 않는다.
+   따라서 반드시 전역에 둔다. (scoped 로 두면 스타일이 통째로 사라짐) */
+.bcard {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 12px 0;
+  background: var(--bg);
+}
+.bcard.yes { border-left-color: #087443; }
+.bcard.maybe { border-left-color: #b54708; }
+.bcard.no { border-left-color: var(--border); opacity: 0.75; }
+.bcard-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.bcard h3 { margin: 0; font-size: 17px; }
+.bcard .amt { font-weight: 800; color: var(--accent); white-space: nowrap; }
+.bcard .status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+.bcard.yes .status { background: #e7f5ef; color: #087443; }
+.bcard.maybe .status { background: #fff4e6; color: #b54708; }
+.bcard.no .status { background: var(--surface); color: var(--muted); }
+.bcard p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; }
+.bcard .why { color: var(--muted); }
+.bcard .links { margin-top: 8px; font-size: 14px; }
+.bcard .links a { margin-right: 12px; }
+.dupbox {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 14px;
+}
+.dupbox h3 { margin: 0 0 8px; font-size: 16px; }
+.dupbox ul { margin: 0; padding-left: 18px; }

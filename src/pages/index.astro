@@ -61,10 +61,15 @@ const tools = [
   <section class="hero">
     <h1>내 정부지원금, 얼마 받지?</h1>
     <p class="lead">
-      복잡한 자격 조건을 일일이 찾아볼 필요 없이, 가구·소득 정보만 넣으면
-      예상 지원금을 30초 만에 계산해 드립니다. 개인정보는 받지 않습니다.
+      제도마다 사이트를 옮겨다닐 필요 없이, 가구·소득 정보만 넣으면
+      받을 수 있는 지원금을 한 번에 찾아 드립니다. 개인정보는 받지 않습니다.
     </p>
-    <a class="btn-tool" href={`${base}/tools/labor-tax-credit`}>💸 근로장려금 계산기 바로가기</a>
+    <a class="btn-tool" href={`${base}/check`}>🔎 내가 받을 수 있는 지원금 진단하기</a>
+    <p class="hero-sub">
+      한 번만 입력하면 근로장려금·자녀장려금·청년월세·주거급여·부모급여를 한 화면에서 판정하고,
+      중복 수급 가능 여부까지 알려드립니다. 제도 하나만 볼 거라면
+      <a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a>로 바로 가세요.
+    </p>
   </section>
 
   <div class="ad-slot" aria-hidden="true"></div>

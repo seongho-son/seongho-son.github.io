@@ -1,0 +1,399 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Disclaimer from '../components/Disclaimer.astro';
+import { sidoGroups } from '../lib/regions';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.total })).sort((a, b) => a.short.localeCompare(b.short, 'ko'));
+---
+<BaseLayout
+  title="내가 받을 수 있는 지원금 한 번에 진단"
+  description="소득·가구·나이·주거 정보를 한 번만 입력하면 근로장려금·자녀장려금·청년월세·주거급여·부모급여 등 받을 수 있는 제도를 한 화면에서 진단합니다. 중복 수급 가능 여부까지 확인하세요. 개인정보 없이 브라우저에서 계산."
+  wide
+>
+  <h1>내가 받을 수 있는 지원금, 한 번에 진단</h1>
+  <p class="lead">
+    제도마다 사이트를 옮겨다니며 조건을 확인할 필요 없이, <strong>한 번만 입력하면</strong>
+    근로장려금·자녀장려금·청년월세·주거급여·부모급여 등을 한 화면에서 판정합니다.
+    <strong>중복해서 받을 수 있는지</strong>도 함께 알려드립니다.
+    개인정보는 받지 않고, 계산은 브라우저 안에서만 이루어집니다.
+  </p>
+
+  <Disclaimer
+    source="국세청 근로·자녀장려금 산정표(2024년 귀속) · 보건복지부 2026년 기준 중위소득 · 국토교통부 청년월세 특별지원 매뉴얼"
+    updated="2026-07-27"
+    subject="이 진단은"
+  />
+
+  <div class="calc">
+    <h3 style="margin-bottom:2px;">1. 가구 정보</h3>
+
+    <label for="size">가구원 수</label>
+    <select id="size">
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+        <option value={n} selected={n === 1}>{n}인 가구</option>
+      ))}
+    </select>
+
+    <label for="age">만 나이 (본인)</label>
+    <input id="age" type="number" inputmode="numeric" min="0" max="120" placeholder="예: 32" />
+
+    <label>배우자</label>
+    <div class="pills">
+      <label><input type="radio" name="spouse" value="none" checked /><span>없음</span></label>
+      <label><input type="radio" name="spouse" value="single" /><span>있음 (외벌이)</span></label>
+      <label><input type="radio" name="spouse" value="dual" /><span>있음 (맞벌이)</span></label>
+    </div>
+    <p class="disclaimer" style="margin-top:6px;">
+      맞벌이는 배우자 각각 총급여액 등이 연 300만원 이상인 경우입니다.
+    </p>
+
+    <label for="kids">부양자녀 수 (만 18세 미만)</label>
+    <input id="kids" type="number" inputmode="numeric" min="0" max="10" placeholder="예: 0" />
+
+    <label for="baby">막내 자녀 나이</label>
+    <select id="baby">
+      <option value="none" selected>해당 없음 / 자녀 없음</option>
+      <option value="0">0세 (만 0세)</option>
+      <option value="1">1세</option>
+      <option value="2">2~7세</option>
+      <option value="8">8세 이상</option>
+    </select>
+
+    <h3>2. 소득·재산</h3>
+
+    <label for="income">연간 총급여액 등 (원)</label>
+    <input id="income" type="text" inputmode="numeric" data-money placeholder="예: 30,000,000" />
+    <p class="disclaimer" style="margin-top:6px;">
+      가구 전체의 연 소득 합계(근로소득 + 사업소득 조정 등). 월급만 안다면 ×12 해서 넣으세요.
+    </p>
+
+    <label for="property">가구 재산 합계 (원, 선택)</label>
+    <input id="property" type="text" inputmode="numeric" data-money placeholder="예: 80,000,000" />
+
+    <h3>3. 주거</h3>
+
+    <label>주거 형태</label>
+    <div class="pills">
+      <label><input type="radio" name="housing" value="monthly" checked /><span>월세</span></label>
+      <label><input type="radio" name="housing" value="jeonse" /><span>전세</span></label>
+      <label><input type="radio" name="housing" value="own" /><span>자가</span></label>
+    </div>
+
+    <label for="rent">월세 (원, 월세인 경우)</label>
+    <input id="rent" type="text" inputmode="numeric" data-money placeholder="예: 500,000" />
+
+    <label for="deposit">보증금 (원, 선택)</label>
+    <input id="deposit" type="text" inputmode="numeric" data-money placeholder="예: 10,000,000" />
+
+    <label for="sido">거주 지역 (선택)</label>
+    <select id="sido">
+      <option value="" selected>선택 안 함</option>
+      {sidos.map((s) => <option value={s.slug}>{s.short}</option>)}
+    </select>
+
+    <button id="calcBtn">받을 수 있는 지원금 진단하기</button>
+    <p id="errOut" class="calc-error hidden" role="alert"></p>
+  </div>
+
+  <div id="result" class="hidden">
+    <div class="summary">
+      <div class="sum-label">예상 현금성 지원 합계 (연간 환산)</div>
+      <div class="sum-total" id="sumOut">–</div>
+      <div class="sum-note" id="sumNoteOut"></div>
+    </div>
+
+    <div class="ad-slot" aria-hidden="true"></div>
+
+    <h2>진단 결과</h2>
+    <div id="cardsOut"></div>
+
+    <div id="dupOut"></div>
+
+    <p class="disclaimer">
+      ※ 이 진단은 입력값만으로 판단한 <strong>참고용 자가진단</strong>입니다. 실제 심사는 소득평가액·
+      재산의 소득환산액 등 정밀 기준으로 이루어지며, 제도별 세부 요건(가입기간·거주기간·연령 특례 등)이
+      추가로 적용됩니다. 반드시 공식 창구에서 최종 확인하세요.
+    </p>
+  </div>
+
+  <style>
+    .calc h3 { margin: 26px 0 4px; font-size: 17px; }
+    .calc h3:first-of-type { margin-top: 0; }
+    .calc-error { color: #b42318; font-size: 14px; margin-top: 10px; font-weight: 600; }
+    .calc-error.hidden { display: none; }
+    #result.hidden { display: none; }
+    .summary {
+      margin: 28px 0 8px;
+      padding: 22px;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      background: var(--accent-soft);
+      text-align: center;
+    }
+    .sum-label { font-size: 14px; font-weight: 600; color: var(--accent); }
+    .sum-total { font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0; }
+    .sum-note { font-size: 13px; color: var(--muted); }
+  </style>
+
+  <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>이 진단이 공식 모의계산과 다른 점</h2>
+  <p>
+    국세청 홈택스는 근로·자녀장려금만, 복지로는 복지사업만 계산해 줍니다. 제도가 기관별로 나뉘어 있어
+    <strong>"내 조건으로 받을 수 있는 것 전부"를 한 번에 보여주는 곳이 없습니다.</strong>
+    이 페이지는 그 빈틈을 메우는 용도이고, 각 제도의 정밀 판정은 아래 공식 창구가 정확합니다.
+  </p>
+  <ul>
+    <li>근로·자녀장려금 정밀 계산·신청 → <a href="https://www.hometax.go.kr" target="_blank" rel="noopener">국세청 홈택스</a></li>
+    <li>복지서비스 모의계산·신청 → <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a></li>
+    <li>정부 혜택 통합 조회 → <a href="https://www.gov.kr" target="_blank" rel="noopener">정부24</a></li>
+  </ul>
+
+  <h2>제도별로 더 자세히</h2>
+  <ul>
+    <li><a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a> · <a href={`${base}/tools/child-tax-credit`}>자녀장려금 계산기</a></li>
+    <li><a href={`${base}/tools/youth-rent`}>청년월세 자격 체크</a> · <a href={`${base}/tools/median-income`}>기준 중위소득 계산기</a></li>
+    <li><a href={`${base}/tools/parenting-benefit`}>출산·육아 지원금 계산기</a> · <a href={`${base}/tools/unemployment-benefit`}>실업급여 계산기</a></li>
+    <li><a href={`${base}/regions`}>지역별 지원금 찾기</a> — 지자체 자체 사업</li>
+  </ul>
+</BaseLayout>
+
+<script>
+  import { initMoneyInputs, moneyValue } from '../lib/money.js';
+  import {
+    medianFor,
+    MEDIAN_CUTS,
+    laborCredit,
+    childCredit,
+    applyProperty,
+    roundPayout,
+    YOUTH_RENT,
+    convertedRent,
+    PARENTING,
+    won,
+  } from '../lib/benefits.js';
+
+  const $ = (id) => document.getElementById(id);
+  const pick = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
+  const man = (n) => Math.round(n / 10_000).toLocaleString('ko-KR') + '만원';
+
+  /** 카드 하나 = 제도 하나. status: yes(대상 가능) / maybe(조건 확인) / no(대상 아님) */
+  function card({ status, title, amount, why, links = [] }) {
+    const labels = { yes: '받을 수 있음', maybe: '조건 확인 필요', no: '대상 아님' };
+    return `
+      <div class="bcard ${status}">
+        <span class="status">${labels[status]}</span>
+        <div class="bcard-head">
+          <h3>${title}</h3>
+          ${amount ? `<span class="amt">${amount}</span>` : ''}
+        </div>
+        <p class="why">${why}</p>
+        ${links.length ? `<p class="links">${links.map((l) => `<a href="${l.href}">${l.text} →</a>`).join('')}</p>` : ''}
+      </div>`;
+  }
+
+  function run() {
+    const size = parseInt($('size').value, 10);
+    const age = parseInt($('age').value, 10);
+    const kids = parseInt($('kids').value || '0', 10);
+    const baby = $('baby').value;
+    const spouse = pick('spouse');
+    const housing = pick('housing');
+    const income = moneyValue('income');
+    const property = moneyValue('property');
+    const rent = moneyValue('rent');
+    const deposit = moneyValue('deposit');
+    const sido = $('sido').value;
+    const err = $('errOut');
+    const box = $('result');
+
+    const fail = (msg) => {
+      err.textContent = msg;
+      err.classList.remove('hidden');
+      box.classList.add('hidden');
+    };
+
+    if (isNaN(age)) return fail('만 나이를 입력해 주세요.');
+    if (age < 0 || age > 120) return fail('만 나이를 다시 확인해 주세요.');
+    if (isNaN(income)) return fail('연간 총급여액 등을 입력해 주세요.');
+    if (kids < 0 || kids > 10) return fail('부양자녀 수를 다시 확인해 주세요.');
+    err.classList.add('hidden');
+
+    const cards = [];
+    const notes = [];
+    let cashTotal = 0; // 연간 환산 현금성 지원 합계
+
+    /* ── 기준 중위소득 위치 ── */
+    const median = medianFor(size);
+    const monthly = income / 12;
+    const ratio = (monthly / median) * 100;
+
+    /* ── 근로장려금 ── */
+    const laborType = spouse === 'dual' ? 'dual' : kids > 0 || spouse === 'single' ? 'one' : 'single';
+    const labor = laborCredit(laborType, income);
+    const laborProp = applyProperty(labor.amount, property);
+    const laborFinal = roundPayout(laborProp.amount);
+    cashTotal += laborFinal;
+    cards.push(
+      card({
+        status: laborFinal > 0 ? 'yes' : 'no',
+        title: '근로장려금',
+        amount: laborFinal > 0 ? won(laborFinal) : '',
+        why: `${labor.t.label} 기준 · ${labor.phase}${property > 0 ? ` · ${laborProp.note}` : ' · 재산 미입력(감액 미반영)'}`,
+        links: [{ href: '/tools/labor-tax-credit', text: '근로장려금 계산기' }],
+      })
+    );
+
+    /* ── 자녀장려금 ── */
+    if (kids > 0) {
+      const childType = spouse === 'dual' ? 'dual' : 'one';
+      const child = childCredit(childType, kids, income);
+      const childProp = applyProperty(child.amount, property);
+      const childFinal = roundPayout(childProp.amount);
+      cashTotal += childFinal;
+      cards.push(
+        card({
+          status: childFinal > 0 ? 'yes' : 'no',
+          title: '자녀장려금',
+          amount: childFinal > 0 ? won(childFinal) : '',
+          why: `부양자녀 ${kids}명 · ${child.phase}`,
+          links: [{ href: '/tools/child-tax-credit', text: '자녀장려금 계산기' }],
+        })
+      );
+      if (laborFinal > 0 && childFinal > 0) {
+        notes.push('<strong>근로장려금 + 자녀장려금은 중복 수급이 가능합니다.</strong> 홈택스에서 한 번에 신청하면 각각 심사합니다.');
+      }
+    }
+
+    /* ── 기초생활보장 4대 급여 ── */
+    const cuts = Object.entries(MEDIAN_CUTS).filter(([, pct]) => ratio <= pct);
+    cards.push(
+      card({
+        status: cuts.length ? 'maybe' : 'no',
+        title: '기초생활보장 급여 (생계·의료·주거·교육)',
+        why: cuts.length
+          ? `월소득 ${man(monthly)}은 ${size}인 가구 기준 중위소득의 <strong>약 ${ratio.toFixed(1)}%</strong> — ${cuts
+              .map(([k, v]) => `${k}(${v}%)`)
+              .join(' · ')} 커트라인 안에 듭니다. 다만 실제 판정은 재산을 소득으로 환산한 <strong>소득인정액</strong>으로 하므로 확인이 필요합니다.`
+          : `월소득 ${man(monthly)}은 ${size}인 가구 기준 중위소득의 약 ${ratio.toFixed(1)}%로, 4대 급여 커트라인(최대 50%)을 넘습니다.`,
+        links: [
+          { href: '/tools/median-income', text: '기준 중위소득 계산기' },
+          { href: '/guides/income-recognition-amount', text: '소득인정액 계산법' },
+        ],
+      })
+    );
+
+    /* ── 주거급여 ── */
+    const housingEligible = ratio <= MEDIAN_CUTS.주거급여;
+    if (housing !== 'own') {
+      cards.push(
+        card({
+          status: housingEligible ? 'maybe' : 'no',
+          title: '주거급여',
+          why: housingEligible
+            ? `소득이 중위 48% 이하 구간이고 임차 거주라 대상이 될 수 있습니다. 지급액은 지역 급지·가구원수별 <strong>기준임대료</strong>와 실제 임차료 중 낮은 금액이 기준입니다. 부양의무자 기준은 없습니다.`
+            : `소득이 중위소득의 약 ${ratio.toFixed(1)}%로 주거급여 기준(48% 이하)을 넘습니다.`,
+          links: [{ href: '/guides/housing-benefit', text: '주거급여 자세히' }],
+        })
+      );
+    }
+
+    /* ── 청년월세 특별지원 ── */
+    if (housing === 'monthly') {
+      const inAge = age >= YOUTH_RENT.ageMin && age <= YOUTH_RENT.ageMax;
+      const rentOk = rent > 0 && (rent <= YOUTH_RENT.rentCap || convertedRent(deposit || 0) + rent <= YOUTH_RENT.convertedCap);
+      const depositOk = !deposit || deposit <= YOUTH_RENT.depositCap;
+      const incomeOk = ratio <= YOUTH_RENT.selfIncomeRatio * 100;
+      const ok = inAge && rentOk && depositOk && incomeOk;
+      const monthlyPay = Math.min(rent || 0, YOUTH_RENT.monthlyMax);
+      const totalPay = monthlyPay * YOUTH_RENT.months;
+      const reasons = [];
+      if (!inAge) reasons.push(`만 ${YOUTH_RENT.ageMin}~${YOUTH_RENT.ageMax}세가 아님(현재 만 ${age}세)`);
+      if (rent <= 0) reasons.push('월세 미입력');
+      else if (!rentOk) reasons.push('월세·보증금 환산액이 기준 초과');
+      if (!depositOk) reasons.push('보증금 5,000만원 초과');
+      if (!incomeOk) reasons.push(`소득이 중위 60% 초과(약 ${ratio.toFixed(1)}%)`);
+      cards.push(
+        card({
+          status: ok ? 'yes' : reasons.length === 1 && rent <= 0 ? 'maybe' : 'no',
+          title: '청년월세 특별지원',
+          amount: ok ? `월 ${won(monthlyPay)} · 최대 ${won(totalPay)}` : '',
+          why: ok
+            ? `나이·월세·소득 요건을 입력값 기준으로 충족합니다. 월 최대 20만원을 최대 24개월 지원합니다. 원가구(부모) 소득·재산 요건이 추가로 있습니다.`
+            : `대상이 아닐 수 있습니다 — ${reasons.join(', ')}.`,
+          links: [{ href: '/tools/youth-rent', text: '청년월세 자격 체크' }],
+        })
+      );
+      if (ok && housingEligible) {
+        notes.push('⚠️ <strong>주거급여와 청년월세 특별지원은 중복 수급이 되지 않습니다.</strong> 두 제도 모두 가능해 보인다면 지원 금액이 큰 쪽을 선택하세요(주거급여 수급자는 청년월세 대상에서 제외).');
+      }
+      if (ok) cashTotal += monthlyPay * 12;
+    }
+
+    /* ── 출산·육아 ── */
+    if (baby !== 'none') {
+      const babyAge = parseInt(baby, 10);
+      const parts = [];
+      let yearly = 0;
+      if (babyAge === 0) {
+        yearly += PARENTING.parentalBenefit0 * 12;
+        parts.push(`부모급여 월 ${man(PARENTING.parentalBenefit0)}`);
+      } else if (babyAge === 1) {
+        yearly += PARENTING.parentalBenefit1 * 12;
+        parts.push(`부모급여 월 ${man(PARENTING.parentalBenefit1)}`);
+      }
+      if (babyAge < PARENTING.childAllowanceUntilAge) {
+        yearly += PARENTING.childAllowance * 12;
+        parts.push(`아동수당 월 ${man(PARENTING.childAllowance)}`);
+      }
+      cashTotal += yearly;
+      cards.push(
+        card({
+          status: parts.length ? 'yes' : 'no',
+          title: '부모급여 · 아동수당',
+          amount: yearly ? `연 ${won(yearly)}` : '',
+          why: parts.length
+            ? `${parts.join(' + ')} — 소득·재산과 무관하게 지급되며 <strong>서로 중복 수급됩니다.</strong> 출생 60일 이내 신청해야 출생월분부터 소급됩니다.`
+            : '막내가 8세 이상이라 아동수당·부모급여 대상이 아닙니다.',
+          links: [{ href: '/tools/parenting-benefit', text: '출산·육아 지원금 계산기' }],
+        })
+      );
+    }
+
+    /* ── 지역 사업 ── */
+    if (sido) {
+      cards.push(
+        card({
+          status: 'maybe',
+          title: '거주 지역 지자체 사업',
+          why: '전국 공통 제도 외에, 사는 지자체가 자체 예산으로 하는 지원금이 따로 있습니다. 소득 요건이 국가 제도보다 느슨한 경우도 많습니다.',
+          links: [{ href: `/regions/${sido}`, text: '우리 지역 지원금 보기' }],
+        })
+      );
+    }
+
+    /* ── 렌더 ── */
+    const order = { yes: 0, maybe: 1, no: 2 };
+    $('cardsOut').innerHTML = cards
+      .map((html) => ({ html, s: html.match(/class="bcard (\w+)"/)[1] }))
+      .sort((a, b) => order[a.s] - order[b.s])
+      .map((c) => c.html)
+      .join('');
+
+    $('sumOut').textContent = cashTotal > 0 ? won(cashTotal) : '해당 없음';
+    $('sumNoteOut').innerHTML =
+      cashTotal > 0
+        ? '장려금(연 1회)·수당(월)·청년월세(월)를 연간 기준으로 더한 참고값입니다. 실제 지급 시기와 방식은 제도마다 다릅니다.'
+        : '입력하신 조건에서는 현금성 지원 대상이 확인되지 않았습니다. 아래 개별 제도와 지역 사업을 확인해 보세요.';
+
+    $('dupOut').innerHTML = notes.length
+      ? `<div class="dupbox"><h3>중복 수급 안내</h3><ul>${notes.map((n) => `<li>${n}</li>`).join('')}</ul></div>`
+      : '';
+
+    box.classList.remove('hidden');
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  initMoneyInputs();
+  $('calcBtn').addEventListener('click', run);
+</script>
