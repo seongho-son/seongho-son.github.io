@@ -1,16 +1,1 @@
-# ads.txt — Authorized Digital Sellers (IAB Tech Lab)
-#
-# ▼▼▼ 사용자 입력 필요 ▼▼▼
-# 애드센스 승인 후 발급받은 본인 게시자 ID로 아래 한 줄의 주석(#)을 풀고
-# pub-XXXXXXXXXXXXXXXX 부분을 교체하세요. (숫자 16자리)
-# 게시자 ID 확인: 애드센스 > 계정 > 설정 > 계정 정보
-#
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
-#
-# ▲▲▲ 위 줄의 '#'을 제거해야 실제 레코드로 인식됩니다 ▲▲▲
-#
-# 형식 설명:
-#   <광고시스템 도메인>, <게시자 ID>, <DIRECT|RESELLER>, <인증기관 ID>
-#   f08c47fec0942fa0 은 Google의 TAG ID로, 모든 게시자가 동일하게 사용합니다.
-#
-# 주의: 유효 레코드가 0줄인 현재 상태에서는 ads.txt가 없는 것과 동일하게 처리됩니다.
+google.com, pub-5644793210860513, DIRECT, f08c47fec0942fa0

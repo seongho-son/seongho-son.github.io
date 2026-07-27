@@ -156,6 +156,8 @@ th { background: var(--surface); font-weight: 700; }
   background: none;
   border: none;
 }
+/* 실제 광고가 채워지기 전 빈 슬롯은 공간을 차지하지 않도록 숨김 */
+.ad-slot:empty { display: none; }
 .ad-slot:not(:empty)::before {
   content: "광고";
   display: block;

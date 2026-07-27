@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fff4ed"/>
+  <rect x="0" y="0" width="1200" height="14" fill="#c2410c"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">
+    <text x="100" y="250" font-size="120" font-weight="800" fill="#1a1a1a">얼마<tspan fill="#c2410c">받지</tspan></text>
+    <text x="104" y="345" font-size="46" font-weight="700" fill="#1a1a1a">내 정부지원금, 얼마 받지?</text>
+    <text x="104" y="415" font-size="34" font-weight="500" fill="#6b6b6b">근로장려금·청년월세·부모급여·실업급여</text>
+    <text x="104" y="465" font-size="34" font-weight="500" fill="#6b6b6b">예상 수령액을 30초 만에 계산</text>
+    <text x="104" y="560" font-size="26" font-weight="600" fill="#c2410c">개인정보 없이 · 브라우저에서 바로 · 참고용 자가진단</text>
+  </g>
+</svg>

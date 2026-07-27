@@ -17,7 +17,13 @@ const { Content } = await post.render();
 const fmt = (d) =>
   d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
-<BaseLayout title={post.data.title} description={post.data.description} article>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  article
+  publishedDate={post.data.pubDate.toISOString()}
+  modifiedDate={post.data.updatedDate ? post.data.updatedDate.toISOString() : undefined}
+>
   <article>
     <span class="badge">{post.data.category}</span>
     <h1>{post.data.title}</h1>

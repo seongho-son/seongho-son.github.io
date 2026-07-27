@@ -6,26 +6,48 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description: string;
-  /** 이 페이지가 글(article)인지 여부 — OG type 결정 */
+  /** 이 페이지가 글(article)인지 여부 — OG type / Article 스키마 결정 */
   article?: boolean;
   /** 넓은 레이아웃(홈/목록)인지 여부 */
   wide?: boolean;
+  /** 글 발행일(ISO) — Article 스키마 datePublished */
+  publishedDate?: string;
+  /** 글 수정일(ISO) — Article 스키마 dateModified */
+  modifiedDate?: string;
 }
 
-const { title, description, article = false, wide = false } = Astro.props;
+const { title, description, article = false, wide = false, publishedDate, modifiedDate } = Astro.props;
 const siteName = '얼마받지';
+const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://seongho-son.github.io';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+const ogImage = `${siteUrl}/og-image.png`;
 
-// ⚠️ 애드센스 승인 후 발급받는 본인 게시자 ID로 교체하세요 (ca-pub-XXXXXXXXXXXXXXXX).
-// 값을 넣으면 자동으로 광고 스크립트가 로드됩니다. 비워두면 로드되지 않습니다.
-const ADSENSE_CLIENT = ''; // 예: 'ca-pub-1234567890123456'
+// 애드센스 게시자 ID. head에 스크립트가 로드되어 사이트 연결·자동광고가 활성화됩니다.
+const ADSENSE_CLIENT = 'ca-pub-5644793210860513';
 
-// ⚠️ 구글 서치콘솔(GSC)에서 발급받은 사이트 인증 코드를 입력하세요.
-// GSC > 속성 추가 > "HTML 태그" 방식 선택 시 나오는 content 값만 붙여넣습니다.
-// 값을 넣으면 인증 메타태그가 렌더링됩니다. 비워두면 렌더링되지 않습니다.
-// 자세한 절차는 저장소 루트의 SEARCH-CONSOLE.md 참고.
-const GSC_VERIFICATION = ''; // 예: 'abc123def456...'
+// 구글 서치콘솔 메타 인증(선택). HTML 파일 방식(public/google….html)으로 이미 인증했다면 비워둬도 됨.
+const GSC_VERIFICATION = '';
+
+// JSON-LD 구조화 데이터 (WebSite + Organization 전역, 글이면 Article 추가)
+const graph = [
+  { '@type': 'WebSite', name: siteName, url: siteUrl + '/', inLanguage: 'ko-KR' },
+  { '@type': 'Organization', name: siteName, url: siteUrl + '/' },
+];
+if (article && publishedDate) {
+  graph.push({
+    '@type': 'Article',
+    headline: title,
+    description,
+    inLanguage: 'ko-KR',
+    datePublished: publishedDate,
+    dateModified: modifiedDate || publishedDate,
+    mainEntityOfPage: canonical,
+    author: { '@type': 'Organization', name: siteName },
+    publisher: { '@type': 'Organization', name: siteName },
+  });
+}
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 ---
 <!doctype html>
 <html lang="ko">
@@ -47,12 +69,18 @@ const GSC_VERIFICATION = ''; // 예: 'abc123def456...'
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content="ko_KR" />
-    <!-- og:image가 없으므로 summary(작은 카드)로 유지. 대표 이미지를 추가하면
-         og:image와 함께 summary_large_image로 올릴 것.
-         ⚠️ 정부 상징(태극·무궁화·부처 로고)은 사칭 이슈가 되므로 사용 금지. -->
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c2410c'/><text x='50' y='54' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,AppleSDGothicNeo-Bold,Malgun Gothic,sans-serif' font-size='64' font-weight='800' fill='%23ffffff'>얼</text></svg>" />
+
+    <!-- 구조화 데이터 (JSON-LD) -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     {ADSENSE_CLIENT && (
       <script
