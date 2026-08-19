@@ -43,6 +43,12 @@ export const TOOLS: Tool[] = [
     title: '기준 중위소득 계산기',
     desc: '내 소득이 중위소득 몇 %인지, 어떤 복지 커트라인에 드는지 확인',
   },
+  {
+    href: '/tools/basic-pension',
+    emoji: '👵',
+    title: '기초연금 계산기',
+    desc: '만 65세 이상, 소득인정액으로 대상 여부와 예상 월 수령액을 계산',
+  },
 ];
 
 /**
