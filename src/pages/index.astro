@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { TOOLS as tools } from '../lib/tools';
-import { sidoGroups, TOTAL_SERVICES } from '../lib/regions';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = (await getCollection('blog')).sort(
@@ -12,9 +11,7 @@ const posts = (await getCollection('blog')).sort(
 const stats = [
   { n: `${tools.length}종`, label: '지원금 계산기' },
   { n: `${posts.length}개`, label: '제도 안내 글' },
-  { n: `${TOTAL_SERVICES.toLocaleString('ko-KR')}건`, label: '지자체 지원사업' },
 ];
-const topSido = sidoGroups.slice(0, 8);
 
 ---
 <BaseLayout
@@ -59,23 +56,6 @@ const topSido = sidoGroups.slice(0, 8);
           </div>
         </a>
       ))}
-    </div>
-  </section>
-
-  <section>
-    <div class="section-title">
-      <h2>지역별 지원금</h2>
-      <a href={`${base}/regions`}>전체 보기 →</a>
-    </div>
-    <p>
-      전국 공통 제도 외에, 내가 사는 지자체만 시행하는 지원금이 따로 있습니다.
-      같은 소득이어도 사는 곳에 따라 받을 수 있는 게 달라집니다.
-    </p>
-    <div class="chip-row">
-      {topSido.map((g) => (
-        <a class="chip" href={`${base}/regions/${g.slug}`}>{g.short} <span>{g.total}</span></a>
-      ))}
-      <a class="chip chip-more" href={`${base}/regions`}>전체 지역 →</a>
     </div>
   </section>
 

@@ -18,7 +18,7 @@ export interface Props {
 
 const { title, description, article = false, wide = false, publishedDate, modifiedDate } = Astro.props;
 const siteName = '얼마받지';
-const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://seongho-son.github.io';
+const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://gibalpeople.com';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
 const ogImage = `${siteUrl}/og-image.png`;

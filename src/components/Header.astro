@@ -8,7 +8,6 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 const nav = [
   { href: '/check', label: '지원금 진단', short: '진단', on: (p: string) => p === '/check' },
   { href: '/tools', label: '계산기', short: '계산기', on: (p: string) => p.startsWith('/tools') },
-  { href: '/regions', label: '지역별', short: '지역', on: (p: string) => p.startsWith('/regions') },
   { href: '/guides', label: '정보', short: '정보', on: (p: string) => p.startsWith('/guides') },
 ];
 ---

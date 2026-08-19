@@ -1,9 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Disclaimer from '../components/Disclaimer.astro';
-import { sidoGroups } from '../lib/regions';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.total })).sort((a, b) => a.short.localeCompare(b.short, 'ko'));
 ---
 <BaseLayout
   title="내가 받을 수 있는 지원금 한 번에 진단"
@@ -85,12 +83,6 @@ const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.to
     <label for="deposit">보증금 (원, 선택)</label>
     <input id="deposit" type="text" inputmode="numeric" data-money placeholder="예: 10,000,000" />
 
-    <label for="sido">거주 지역 (선택)</label>
-    <select id="sido">
-      <option value="" selected>선택 안 함</option>
-      {sidos.map((s) => <option value={s.slug}>{s.short}</option>)}
-    </select>
-
     <button id="calcBtn">받을 수 있는 지원금 진단하기</button>
     <p id="errOut" class="calc-error hidden" role="alert"></p>
   </div>
@@ -154,7 +146,6 @@ const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.to
     <li><a href={`${base}/tools/labor-tax-credit`}>근로장려금 계산기</a> · <a href={`${base}/tools/child-tax-credit`}>자녀장려금 계산기</a></li>
     <li><a href={`${base}/tools/youth-rent`}>청년월세 자격 체크</a> · <a href={`${base}/tools/median-income`}>기준 중위소득 계산기</a></li>
     <li><a href={`${base}/tools/parenting-benefit`}>출산·육아 지원금 계산기</a> · <a href={`${base}/tools/unemployment-benefit`}>실업급여 계산기</a></li>
-    <li><a href={`${base}/regions`}>지역별 지원금 찾기</a> — 지자체 자체 사업</li>
   </ul>
 </BaseLayout>
 
@@ -203,7 +194,6 @@ const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.to
     const property = moneyValue('property');
     const rent = moneyValue('rent');
     const deposit = moneyValue('deposit');
-    const sido = $('sido').value;
     const err = $('errOut');
     const box = $('result');
 
@@ -361,16 +351,14 @@ const sidos = sidoGroups.map((g) => ({ slug: g.slug, short: g.short, total: g.to
     }
 
     /* ── 지역 사업 ── */
-    if (sido) {
-      cards.push(
-        card({
-          status: 'maybe',
-          title: '거주 지역 지자체 사업',
-          why: '전국 공통 제도 외에, 사는 지자체가 자체 예산으로 하는 지원금이 따로 있습니다. 소득 요건이 국가 제도보다 느슨한 경우도 많습니다.',
-          links: [{ href: `/regions/${sido}`, text: '우리 지역 지원금 보기' }],
-        })
-      );
-    }
+    cards.push(
+      card({
+        status: 'maybe',
+        title: '거주 지역 지자체 사업',
+        why: '전국 공통 제도 외에, 사는 지자체가 자체 예산으로 하는 지원금이 따로 있습니다. 소득 요건이 국가 제도보다 느슨한 경우도 많습니다. 복지로에서 거주 지역을 선택해 확인하세요.',
+        links: [{ href: 'https://www.bokjiro.go.kr', text: '복지로에서 우리 지역 지원금 보기' }],
+      })
+    );
 
     /* ── 렌더 ── */
     const order = { yes: 0, maybe: 1, no: 2 };
