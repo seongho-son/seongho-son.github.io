@@ -17,6 +17,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* sticky 헤더(60px) 아래로 앵커 이동 시 제목이 가려지지 않도록 여백 확보 */
+  scroll-padding-top: 72px;
 }
 
 body {
@@ -92,6 +94,11 @@ img { max-width: 100%; height: auto; }
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
+  /* 글자 높이만큼만 눌리던 것을 헤더 높이에 가깝게 확대해 모바일 탭 영역 확보 */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 .nav a.on { color: var(--accent); font-weight: 700; }
 .nav .lbl-short { display: none; }
