@@ -45,8 +45,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <label for="property">가구원 재산 합계 (원, 선택)</label>
     <input id="property" type="text" inputmode="numeric" data-money placeholder="예: 150,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
-      재산은 <strong>전년도 6월 1일 기준</strong> 가구원 전체의 주택·토지·건물·예금·자동차 등 합계이며,
-      <strong>부채는 차감되지 않습니다.</strong>
+      자녀장려금도 재산은 <strong>전년도 6월 1일 시점</strong>으로 굳어집니다.
+      부양자녀가 있어도 이날 기준 가구원 재산 합계가 기준을 넘으면 감액·탈락하고,
+      <strong>부채를 반영하지 않으므로</strong> 전세보증금·주택이 잡히면 실제 여유와 무관하게 줄어들 수 있습니다.
     </p>
 
     <button id="calcBtn">자녀장려금 계산하기</button>
@@ -116,6 +117,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     즉 소득이 최대 구간을 넘어도 <strong>7,000만원 미만이면 자녀 1명당 최소 50만원까지</strong> 점차
     줄어드는 구조라, 근로장려금은 탈락해도 자녀장려금은 받을 수 있는 경우가 많습니다.
   </p>
+  <p class="notice-box" style="border-left-color:#2563eb;">
+    <strong>근로장려금은 탈락, 자녀장려금은 수급되는 예</strong><br />
+    부양자녀가 있는 홑벌이가구인데 총급여액 등이 <strong>4,000만원</strong>이라면, 근로장려금은
+    홑벌이 상한(3,200만원 미만)을 넘어 대상이 아닙니다. 그러나 자녀장려금은 총소득 7,000만원 미만이면
+    받을 수 있어, <strong>같은 소득이라도 자녀장려금만 지급되는 경우</strong>가 생깁니다.
+    (재산·정밀 심사 결과에 따라 달라질 수 있으니 홈택스에서 확인하세요.)
+  </p>
 
   <div class="ad-slot" aria-hidden="true"></div>
 
@@ -126,8 +134,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </p>
 
   <blockquote>
-    정확한 자격 판정과 신청은 <strong>국세청 홈택스</strong> 또는 손택스(모바일)에서 하셔야 합니다.
-    이 계산기의 결과는 참고용 예상액입니다.
+    자녀장려금은 <strong>근로장려금과 같은 신청서로 한 번에</strong> 처리됩니다.
+    자녀 나이·소득 같은 부양자녀 요건은 국세청이 가족관계·소득 자료로 판정하므로, 최종 자격과 금액은
+    <strong>국세청 홈택스</strong> 또는 손택스(모바일)에서 확인하세요. 이 계산기 결과는 참고용 예상액입니다.
     <br />
     👉 <a href="https://www.hometax.go.kr" target="_blank" rel="noopener">홈택스에서 자녀장려금 신청·조회하기</a>
   </blockquote>

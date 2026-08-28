@@ -125,9 +125,99 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     .sum-label { font-size: 14px; font-weight: 600; color: var(--accent); }
     .sum-total { font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0; }
     .sum-note { font-size: 13px; color: var(--muted); }
+    .scenario-wrap { overflow-x: auto; margin: 12px 0 8px; }
+    .scenario-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    .scenario-table th, .scenario-table td {
+      border: 1px solid var(--border, #e5e7eb);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .scenario-table thead th { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+    .scenario-table td:first-child { white-space: nowrap; font-weight: 600; }
+    @media (max-width: 560px) {
+      .scenario-table td:first-child { white-space: normal; }
+    }
   </style>
 
   <div class="ad-slot" aria-hidden="true"></div>
+
+  <h2>이 통합진단이 무엇을 해주나</h2>
+  <p>
+    정부지원금은 근로장려금은 국세청, 주거급여·기초생활보장은 복지로, 청년월세는 국토교통부처럼
+    <strong>기관마다 따로</strong> 흩어져 있습니다. 그래서 "내 조건이면 무엇무엇을 받을 수 있는지"를
+    한눈에 보여 주는 곳이 없고, 사람들은 제도 이름을 이미 알아야만 찾아볼 수 있습니다.
+    이 통합진단은 가구·소득·주거 정보를 <strong>한 번만</strong> 입력하면 여러 제도를 동시에 대조해,
+    받을 가능성이 있는 후보와 이미 조건을 벗어난 제도를 한 화면에 갈라 보여 줍니다.
+    또 근로장려금과 자녀장려금처럼 <strong>함께 받을 수 있는 제도</strong>인지, 주거급여와 청년월세처럼
+    <strong>둘 중 하나만 골라야 하는 제도</strong>인지 중복 관계도 함께 안내합니다.
+  </p>
+
+  <h2>어떤 제도를 한 번에 보나</h2>
+  <p>이 진단이 한 번의 입력으로 함께 확인하는 제도는 다음과 같습니다.</p>
+  <ul>
+    <li><strong>근로장려금</strong> — 가구유형·연소득 기준 예상 지급 가능 여부</li>
+    <li><strong>자녀장려금</strong> — 부양자녀가 있을 때, 근로장려금과 중복 여부까지</li>
+    <li><strong>기초생활보장 급여</strong>(생계·의료·주거·교육) — 기준 중위소득 위치로 커트라인 접근 여부</li>
+    <li><strong>주거급여</strong> — 임차 거주 시 소득 구간 해당 여부(부양의무자 기준 없음)</li>
+    <li><strong>청년월세 특별지원</strong> — 나이·월세·보증금·소득 요건 자가진단</li>
+    <li><strong>부모급여·아동수당</strong> — 막내 자녀 나이 기준, 소득과 무관하게 지급되는 항목</li>
+    <li><strong>거주 지역 지자체 사업</strong> — 전국 공통 제도 밖에서 따로 챙겨야 할 창구 안내</li>
+  </ul>
+  <p class="disclaimer">
+    실업급여·기초연금 등 이 진단에 포함되지 않은 제도는 각각의 개별 계산기에서 따로 확인하세요.
+  </p>
+
+  <h2>입력 예시로 보는 진단 흐름</h2>
+  <p>
+    아래는 대표적인 입력값에서 어떤 제도 후보가 뜨는지 보여 주는 예시입니다. 실제 결과는 입력값과
+    재산·세부 요건에 따라 달라지며, 금액이 아니라 "확인해 볼 후보"를 잡아 주는 용도입니다.
+  </p>
+  <div class="scenario-wrap">
+    <table class="scenario-table">
+      <thead>
+        <tr><th>입력 예시</th><th>뜨는 제도 후보</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>3인 가구 · 월소득 250만원(연 3,000만원) · 월세 거주 · 자녀 1명</td>
+          <td>
+            월소득이 3인 가구 기준 중위소득의 <strong>약 47%</strong>라
+            <strong>주거급여·교육급여</strong> 커트라인에 접근, <strong>근로장려금</strong>(점감 구간)과
+            자녀가 있어 <strong>자녀장려금</strong>이 함께 후보로. 근로+자녀장려금은 중복 가능으로 안내.
+          </td>
+        </tr>
+        <tr>
+          <td>1인 청년 가구 · 만 27세 · 월소득 120만원 · 월세 40만원</td>
+          <td>
+            나이·소득·월세 요건이 입력값 기준 안에 들어 <strong>청년월세 특별지원</strong>이 후보로,
+            소득이 중위 48% 안쪽이면 <strong>주거급여</strong>도 함께 뜨되 둘은 <strong>중복 불가</strong>로 안내.
+            단독가구 <strong>근로장려금</strong>도 후보.
+          </td>
+        </tr>
+        <tr>
+          <td>4인 가구 · 막내 만 0세 · 소득 무관</td>
+          <td>
+            <strong>부모급여·아동수당</strong>은 소득·재산과 무관하게 지급되어 바로 후보로 뜨고,
+            부모급여와 아동수당은 서로 중복 지급으로 안내.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>이 진단이 놓치는 것</h2>
+  <p>
+    이 진단은 입력값만으로 후보를 잡아 주는 <strong>참고용 자가진단</strong>이라, 실제 심사에서 쓰는
+    다음 요소는 반영하지 못합니다. 그래서 여기서 "가능"으로 보여도 최종 결과는 달라질 수 있습니다.
+  </p>
+  <ul>
+    <li>월급이 아니라 재산을 소득으로 환산해 더한 <strong>소득인정액</strong>으로 하는 정밀 판정</li>
+    <li>지역 급지·가구원수별 <strong>기준임대료</strong>에 따라 달라지는 주거급여 지급액</li>
+    <li>청년월세의 <strong>원가구(부모) 소득·재산 요건</strong> 등 본인 가구 밖의 조건</li>
+    <li>가입기간·거주기간·연령 특례 같은 <strong>제도별 세부 요건</strong></li>
+    <li>지자체가 자체 예산으로 하는 지역 사업(요건이 국가 제도와 다를 수 있음)</li>
+  </ul>
 
   <h2>이 진단이 공식 모의계산과 다른 점</h2>
   <p>

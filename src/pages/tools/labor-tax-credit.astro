@@ -39,8 +39,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <label for="property">가구원 재산 합계 (원, 선택)</label>
     <input id="property" type="text" inputmode="numeric" data-money placeholder="예: 150,000,000" />
     <p class="disclaimer" style="margin-top:6px;">
-      재산은 <strong>전년도 6월 1일 기준</strong> 가구원 전체의 주택·토지·건물·예금·자동차 등 합계이며,
-      <strong>부채는 차감되지 않습니다.</strong>
+      근로장려금 재산 판정은 <strong>전년도 6월 1일 하루</strong>의 상태만 봅니다.
+      그날 기준 가구원 전체의 주택·전세보증금·토지·예금·자동차 등을 더하며, 대출 같은
+      <strong>부채는 빼주지 않습니다.</strong> 재산이 많으면 소득이 낮아도 감액·탈락될 수 있습니다.
     </p>
 
     <button id="calcBtn">근로장려금 계산하기</button>
@@ -132,8 +133,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </p>
 
   <blockquote>
-    정확한 자격 판정과 신청은 <strong>국세청 홈택스</strong> 또는 손택스(모바일)에서 하셔야 합니다.
-    이 계산기의 결과는 참고용 예상액입니다.
+    근로장려금은 <strong>신청해야 받습니다.</strong> 국세청이 신청 안내를 받더라도
+    <strong>5월 중 신청을 마쳐야</strong> 지급되며, 가구 유형과 소득·재산 요건에 따른 정확한 판정은
+    <strong>국세청 홈택스</strong> 또는 손택스(모바일)에서 이뤄집니다. 이 계산기 결과는 참고용 예상액입니다.
     <br />
     👉 <a href="https://www.hometax.go.kr" target="_blank" rel="noopener">홈택스에서 근로장려금 신청·조회하기</a>
   </blockquote>
