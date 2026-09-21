@@ -18,7 +18,7 @@ relatedTool: "/tools/parenting-benefit"
 
 | 제도 | 대상·기간 | 금액 |
 |---|---|---|
-| [부모급여](/guides/parental-benefit-2026) | 만 0~1세(24개월), 2023년 이후 출생아 | 0세 월 100만원 / 1세 월 50만원 → 총 1,800만원 |
+| [부모급여](/guides/parental-benefit-2026) | 만 0~1세(24개월), 2022년 이후 출생아 | 0세 월 100만원 / 1세 월 50만원 → 총 1,800만원 |
 | [첫만남이용권](/guides/first-meeting-voucher) | 출생 시 1회, 2022년 이후 출생아 | 첫째 200만원 / 둘째 이상 300만원 |
 | [아동수당](/guides/child-allowance-vs-parental) | 만 9세 미만(108개월, 2026년 기준) | 월 10만원 → 총 1,080만원 |
 
@@ -79,6 +79,9 @@ relatedTool: "/tools/parenting-benefit"
 각 제도 자세히 보기 → [부모급여](/guides/parental-benefit-2026) ·
 [첫만남이용권](/guides/first-meeting-voucher) ·
 [아동수당 vs 부모급여](/guides/child-allowance-vs-parental)
+
+결혼과 출산을 함께 준비 중이라면 주거·세제 혜택까지 묶은
+[신혼부부 정부지원 총정리](/guides/newlywed-benefits)도 이어서 확인해 보세요.
 
 *실제 지급 여부와 금액은 심사·개인 상황·제도 변경에 따라 달라질 수 있습니다. 본 글은 2026년
 기준 참고용이며, 최신 정보는 복지로 등 공식 안내에서 확인하세요.*

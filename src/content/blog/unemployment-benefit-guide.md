@@ -172,6 +172,10 @@ relatedTool: "/tools/unemployment-benefit"
 - [청년월세 특별지원 자격·신청 총정리](/guides/youth-monthly-rent) — 소득이 끊긴 기간의 주거비 지원
 - 내 예상 수령액이 궁금하다면 → [실업급여 계산기로 지금 계산하기](/tools/unemployment-benefit)
 
+> 고용보험 가입기간이 모자라 실업급여 요건에 못 미친다면,
+> [국민취업지원제도](/guides/national-employment-support)로 구직촉진수당(월 50만원 등)과
+> 취업지원 서비스를 받을 수 있는지 확인해 보세요.
+
 ---
 
 **출처**: 고용노동부 「고용보험법 시행령」 일부개정령안 국무회의 심의·의결 보도자료(2025.12.16),

@@ -87,6 +87,8 @@ relatedTool: "/tools/basic-pension"
 [기준 중위소득 계산기](/tools/median-income)로 먼저 위치를 확인해 볼 수 있고,
 소득이 더 낮아 생계·의료 지원까지 살펴야 한다면
 [기초생활수급자 자격과 급여 종류](/guides/basic-livelihood)도 함께 보세요.
+또한 기초연금을 받으면 [통신비 감면](/guides/telecom-fee-discount) 대상도 되므로,
+신청해서 매달 휴대폰 요금을 줄이는 것도 잊지 마세요.
 
 > 안내: 실제 지원 대상과 금액은 사업연도와 심사 결과에 따라 달라질 수 있습니다. 신청은
 > 반드시 [복지로](https://www.bokjiro.go.kr)·[정부24](https://www.gov.kr) 등 공식 창구를

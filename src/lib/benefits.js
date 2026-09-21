@@ -11,9 +11,9 @@
 export const SOURCES = {
   laborCredit: '국세청 근로장려금 산정표(조세특례제한법 시행령 별표11), 2024년 귀속 기준',
   childCredit: '국세청 자녀장려금 산정표(별표11의2), 2024년 귀속 기준',
-  medianIncome: '보건복지부 2026년 기준 중위소득 고시',
-  youthRent: '국토교통부 청년월세 한시 특별지원(2차) 사업 매뉴얼',
-  parenting: '보건복지부 부모급여·아동수당·첫만남이용권 안내(2026년 기준)',
+  medianIncome: '보건복지부 2026년 수급자 선정기준 https://www.mohw.go.kr/menu.es?mid=a10708010300 (생계급여 32%, 2026-09-11 확인)',
+  youthRent: '복지로 2026년 청년월세 지원 신청 안내 https://blog.bokjiro.go.kr/1828 (2026-09-11 확인)',
+  parenting: '보건복지부 부모급여·첫만남이용권 안내. 아동수당: https://www.mohw.go.kr/gallery.es?act=view&bid=0003&list_no=380007&mid=a10606030000 (2026년 9세 미만, 2026-09-11 확인)',
 };
 
 /* ─────────────────────────── 기준 중위소득 ─────────────────────────── */
@@ -27,7 +27,7 @@ export const medianFor = (size) =>
 
 /** 대표 커트라인(%) — 제도별 세부 요건은 별도 */
 export const MEDIAN_CUTS = {
-  생계급여: 30,
+  생계급여: 32,
   의료급여: 40,
   주거급여: 48,
   교육급여: 50,
@@ -125,26 +125,19 @@ export const roundPayout = (amount) =>
 export const YOUTH_RENT = {
   ageMin: 19,
   ageMax: 34,
-  depositCap: 50_000_000,
-  rentCap: 700_000,
-  convertedCap: 900_000, // 보증금 월세환산액 + 월세
-  convRate: 0.055,
   selfIncomeRatio: 0.6, // 청년 본인 가구: 중위 60% 이하
   parentIncomeRatio: 1.0, // 원가구: 중위 100% 이하
   monthlyMax: 200_000,
   months: 24,
 };
 
-export const convertedRent = (deposit) =>
-  Math.floor((deposit * YOUTH_RENT.convRate) / 12);
-
 /* ─────────────────────────── 출산·육아 ─────────────────────────── */
 
 export const PARENTING = {
   parentalBenefit0: 1_000_000, // 0세 월
   parentalBenefit1: 500_000, // 1세 월
-  childAllowance: 100_000, // 8세 미만 월
-  childAllowanceUntilAge: 8,
+  childAllowance: 100_000, // 2026년 전국 공통 기본액, 지역 가산 미포함
+  childAllowanceUntilAge: 9,
   firstMeetFirst: 2_000_000, // 첫만남이용권 첫째
   firstMeetOther: 3_000_000, // 둘째 이상
 };

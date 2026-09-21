@@ -66,6 +66,9 @@ relatedTool: "/tools/median-income"
 수급자라면 냉난방비를 돕는 [에너지바우처](/guides/energy-voucher)도 함께 확인해 보세요.
 급여별 판정 기준인 소득인정액은 [소득인정액 계산 방법](/guides/income-recognition-amount),
 주거급여는 [주거급여 자격과 지급액](/guides/housing-benefit)에서 더 자세히 다뤘습니다.
+갑작스런 실직·질병으로 당장 생계가 막혔다면 심사를 다 기다리지 않고 먼저 받는
+[긴급복지지원](/guides/emergency-welfare)을, 수급자·차상위라면 매달 휴대폰 요금을 깎아 주는
+[통신비 감면](/guides/telecom-fee-discount)도 놓치지 말고 챙기세요.
 내 소득이 기준 중위소득의 몇 %인지는
 [기준 중위소득 계산기](/tools/median-income)에서 30초 만에 확인할 수 있습니다.
 

@@ -6,9 +6,9 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 // '소개'는 푸터에 이미 있으므로 헤더에서 뺀다.
 // short 는 480px 이하에서만 쓰는 축약 라벨 — 4개가 한 줄에 다 들어가야 스크롤 없이 보인다.
 const nav = [
-  { href: '/check', label: '지원금 진단', short: '진단', on: (p: string) => p === '/check' },
+  { href: '/prepare', label: '신청 준비', short: '준비', on: (p: string) => p === '/prepare' },
   { href: '/tools', label: '계산기', short: '계산기', on: (p: string) => p.startsWith('/tools') },
-  { href: '/guides', label: '정보', short: '정보', on: (p: string) => p.startsWith('/guides') },
+  { href: '/guides', label: '조건과 사례', short: '사례', on: (p: string) => p.startsWith('/guides') },
 ];
 ---
 <header class="site-header">

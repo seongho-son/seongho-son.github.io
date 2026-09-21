@@ -1,93 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { TOOLS } from '../../lib/tools';
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<BaseLayout
-  title="지원금 계산기 모음 — 근로장려금·청년월세·부모급여"
-  description={`정부지원금 계산기 ${TOOLS.length}종을 한곳에 모았습니다. 근로장려금·자녀장려금·출산육아·청년월세·실업급여·기준 중위소득을 개인정보 입력 없이 브라우저에서 바로 계산하세요.`}
-  wide
->
-  <h1>지원금 계산기</h1>
-  <p class="lead">
-    제도별 예상 수령액과 자격을 개인정보 없이 계산합니다. 모든 계산은 브라우저 안에서만 이루어지고,
-    입력값은 어디에도 전송되지 않습니다.
-  </p>
-
-  <div class="cta-box">
-    어떤 제도를 봐야 할지 모르겠다면 →
-    <a href={`${base}/check`}><strong>한 번에 진단받기</strong></a>
-    (여러 제도를 동시에 판정 + 중복 수급 안내)
-  </div>
-
-  <div class="ad-slot" aria-hidden="true"></div>
-
-  <div class="tool-grid">
-    {TOOLS.map((t) => (
-      <a class="tool-card" href={`${base}${t.href}`}>
-        <div class="emoji">{t.emoji}</div>
-        <div>
-          <h3>{t.title}</h3>
-          <p>{t.desc}</p>
-        </div>
-      </a>
-    ))}
-  </div>
-
-  <h2>제도를 어떤 순서로 확인하면 되나</h2>
-  <p>
-    지원금 계산기가 여러 개라 어디부터 눌러야 할지 막막할 수 있습니다. 대부분의 복지 제도가
-    <strong>기준 중위소득의 몇 %</strong>로 대상을 정하기 때문에, <a href={`${base}/tools/median-income`}>기준
-    중위소득 계산기</a>로 내 소득이 중위소득의 어디쯤인지 먼저 확인하는 것이 가장 빠릅니다. 내 위치를 알면
-    생계·의료·주거·교육급여 같은 기초생활보장 급여나 주거급여의 커트라인 안에 드는지 대략 감이 잡히고,
-    그다음 해당하는 <strong>개별 제도 계산기</strong>로 넘어가 자세한 예상액과 요건을 보면 됩니다.
-    근로장려금·자녀장려금처럼 소득세와 얽힌 제도는 국세청 산정표 기준이라 중위소득과 별개로 봐야 하고,
-    부모급여·아동수당은 소득과 무관하게 자녀 나이만으로 지급되므로 소득 확인 없이 바로 계산할 수 있습니다.
-    여러 제도를 한꺼번에 대조하고 싶다면 개별 계산기 대신 <a href={`${base}/check`}>한 번에 진단받기</a>로
-    시작해 후보를 추린 뒤, 관심 있는 제도만 개별 계산기에서 깊이 확인하는 흐름을 권합니다.
-  </p>
-
-  <h2>각 계산기가 답해 주는 질문</h2>
-  <ul>
-    <li><strong>기준 중위소득 계산기</strong> — 내 소득이 중위소득의 몇 %이고, 어떤 복지 커트라인에 드나?</li>
-    <li><strong>근로장려금 계산기</strong> — 가구유형·연소득으로 예상 장려금이 얼마나 되나?</li>
-    <li><strong>자녀장려금 계산기</strong> — 부양자녀 수·소득이면 얼마를 받고, 근로장려금과 함께 받을 수 있나?</li>
-    <li><strong>출산·육아 지원금 총액 계산기</strong> — 부모급여·첫만남이용권·아동수당을 합치면 총 얼마인가?</li>
-    <li><strong>청년월세 지원 자격 체크</strong> — 나이·월세·보증금·소득으로 나는 대상이 되나?</li>
-    <li><strong>실업급여 예상 수령액 계산기</strong> — 나이·가입기간·평균임금으로 총 얼마를 받나?</li>
-    <li><strong>기초연금 계산기</strong> — 만 65세 이상, 소득인정액으로 대상 여부와 월 수령액이 얼마인가?</li>
-  </ul>
-
-  <h2>계산기를 쓰기 전에 알아두면 좋은 것</h2>
-  <ul>
-    <li>
-      <strong>계산 결과는 참고용 예상액입니다.</strong> 실제 지급액은 관계 기관이 보유한 소득·재산
-      자료로 심사해 결정되므로 차이가 날 수 있습니다.
-    </li>
-    <li>
-      <strong>대부분의 복지 제도는 기준 중위소득 %로 대상을 정합니다.</strong> 내 위치를 먼저
-      <a href={`${base}/tools/median-income`}>기준 중위소득 계산기</a>에서 확인하면 나머지 판단이 빨라집니다.
-    </li>
-    <li>
-      <strong>실제 심사는 월급이 아니라 소득인정액</strong>(소득평가액 + 재산의 소득환산액)으로 합니다 —
-      <a href={`${base}/guides/income-recognition-amount`}>소득인정액 계산 방법</a>
-    </li>
-    <li>
-      전국 공통 제도 외에 거주 지역 지자체 사업이 따로 있습니다 —
-      <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a>에서 지역을 선택해 확인하세요.
-    </li>
-  </ul>
-
-  <div class="ad-slot" aria-hidden="true"></div>
-
-  <h2>공식 신청 창구</h2>
-  <p>
-    얼마받지는 정부기관이 아니며 신청을 대행하지 않습니다. 자격 확인과 신청은 아래 공식 사이트에서 하세요.
-  </p>
-  <ul>
-    <li>근로·자녀장려금 → <a href="https://www.hometax.go.kr" target="_blank" rel="noopener">국세청 홈택스</a></li>
-    <li>복지서비스 전반 → <a href="https://www.bokjiro.go.kr" target="_blank" rel="noopener">복지로</a></li>
-    <li>실업급여 → <a href="https://www.work24.go.kr" target="_blank" rel="noopener">고용24</a></li>
-    <li>정부 혜택 통합 조회 → <a href="https://www.gov.kr" target="_blank" rel="noopener">정부24</a></li>
-  </ul>
+<BaseLayout title="장려금 계산 근거" description="근로·자녀장려금의 소득 구간과 재산 감액을 확인하는 참고용 계산 도구입니다.">
+<h1>장려금 계산 근거</h1><p class="lead">금액을 보기 전에, 어떤 숫자를 넣어야 하는지 확인하세요.</p>
+<p>신청 자격을 보는 <strong>부부 합산 총소득</strong>과 지급액 계산에 쓰는 <strong>총급여액 등</strong>은 다릅니다. 근로소득 외 소득이 있거나 사업자라면 <a href="/guides/labor-tax-credit-guide/">입력 기준</a>부터 읽어 주세요.</p>
+<div class="tool-grid">{TOOLS.map(t => <a class="tool-card" href={t.href}><div><h2>{t.title}</h2><p>{t.desc}</p></div></a>)}</div>
+<h2>어디까지 계산하나요?</h2><p>2025년 소득에 대한 구간별 산식과 재산 감액을 설명합니다. 공식 산정표의 세부 구간·최소 지급 특례·체납 충당 등은 반영하지 않으며, 근사액을 확정 지급액으로 사용하지 마세요.</p>
+<p>다른 제도의 기존 계산기는 운영 범위를 줄이면서 종료했습니다. <a href="/archive/">종료한 도구와 공식 확인 경로</a>를 확인하세요.</p>
 </BaseLayout>

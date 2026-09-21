@@ -1,102 +1,46 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { TOOLS as tools } from '../lib/tools';
-
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-// 히어로 신뢰 지표 — 숫자는 실제 데이터에서 뽑는다(수동 관리 시 어긋난다)
-const stats = [
-  { n: `${tools.length}종`, label: '지원금 계산기' },
-  { n: `${posts.length}개`, label: '제도 안내 글' },
-];
-
 ---
-<BaseLayout
-  title="정부지원금 모의계산·자가진단"
-  description="근로장려금·청년월세·부모급여 등 정부지원금, 내가 얼마 받는지 30초 만에 계산해 보세요. 개인정보 없이 브라우저에서 바로 자가진단."
-  wide
->
+<BaseLayout title="장려금 신청 준비와 계산 근거" description="근로·자녀장려금 신청 전 가구·소득·재산을 구분하고, 계산 근거와 준비할 자료를 확인하세요." wide>
   <section class="hero">
-    <p class="hero-eyebrow">정부지원금 자가진단</p>
-    <h1>내 정부지원금,<br />얼마 받지?</h1>
-    <p class="lead">
-      제도마다 사이트를 옮겨다닐 필요 없습니다.<br class="br-pc" />
-      가구·소득만 넣으면 <strong>받을 수 있는 지원금을 한 번에</strong> 찾아 드립니다.
-    </p>
-    <div class="hero-cta">
-      <a class="btn-tool" href={`${base}/check`}>내가 받을 수 있는 지원금 진단하기</a>
-      <a class="btn-ghost" href={`${base}/tools`}>계산기만 볼게요</a>
-    </div>
-    <p class="hero-note">개인정보를 받지 않습니다 · 계산은 브라우저 안에서만 이루어집니다</p>
-
-    <div class="stat-row">
-      {stats.map((s) => (
-        <div class="stat">
-          <strong>{s.n}</strong>
-          <span>{s.label}</span>
-        </div>
-      ))}
-    </div>
+    <p class="hero-eyebrow">근로·자녀장려금 신청 준비</p>
+    <h1>장려금 신청 전,<br />내 조건부터 확인하세요.</h1>
+    <p class="lead">같은 연봉이어도 가구와 재산에 따라 금액이 달라집니다.<br />어떤 숫자를 확인하고, 무엇을 준비해야 하는지 함께 짚어봅니다.</p>
+    <a class="btn-tool" href="/prepare/">신청 준비 시작하기</a>
+    <p class="hero-note">회원가입 없이 이용 · 입력 정보는 브라우저 안에서만 처리</p>
   </section>
-
-  <section class="intro">
-    <h2>얼마받지가 하는 일</h2>
-    <p>
-      정부지원금은 근로장려금은 국세청, 주거급여는 복지로, 청년월세는 국토교통부처럼 기관마다 흩어져 있어,
-      제도 이름을 이미 알고 있어야만 찾아볼 수 있습니다. 얼마받지는 <strong>흩어진 제도를 한자리에 모아</strong>
-      가구·소득만 넣으면 예상 수령액과 대상 여부를 바로 알려 주는 민간 정보 사이트입니다.
-      관공서 용어를 <strong>일반인이 알아듣는 말로 옮겨</strong> 설명하고, 어떤 제도를 먼저 확인하면 되는지
-      순서까지 안내합니다.
-    </p>
-    <p>
-      모든 계산은 <strong>브라우저 안에서만</strong> 이루어지고, 입력한 소득·재산 정보는 어디에도 전송하거나
-      저장하지 않습니다. 회원가입도 없습니다. 다만 얼마받지는 정부기관이 아니며 신청을 대행하지 않으므로,
-      실제 자격 확인과 신청은 홈택스·복지로·고용24 같은 공식 창구에서 해야 합니다.
-    </p>
-    <h3>이런 분께 유용합니다</h3>
+  <section class="steps">
+    <h2>세 가지를 순서대로 확인하세요</h2>
+    <ol>
+      <li><a href="/guides/labor-tax-credit-guide/">내 가구와 소득 구분하기</a><p>둘 다 일하면 맞벌이일까요? 신청 기준인 총소득과 계산에 넣는 총급여액은 어떻게 다를까요?</p></li>
+      <li><a href="/tools/">예상액이 달라지는 이유 보기</a><p>결과와 함께 계산 구간, 재산 감액, 아직 확인하지 않은 항목을 보여드립니다.</p></li>
+      <li><a href="/prepare/">자료를 챙기고 공식 창구에서 신청하기</a><p>소득 자료·재산 기준일·신청 내역을 확인하는 체크리스트를 인쇄해 사용할 수 있습니다.</p></li>
+    </ol>
+  </section>
+  <section class="example">
+    <p class="meta">조건 하나를 바꿔 보는 가상 사례</p>
+    <h2>연 소득이 늘었는데<br />장려금은 줄어들 수 있습니다.</h2>
+    <p>단독가구의 총급여액이 1,000만원에서 1,100만원으로 늘면 근로장려금 구간별 근사액은 약 152.3만원에서 139.6만원으로 줄어듭니다. 이 구간은 이미 최대 지급 구간을 지났기 때문입니다.</p>
+    <p class="disclaimer">2025년 소득 기준 · 다른 소득과 재산 감액이 없는 가정 · 공식 산정표의 최종 지급액과 차이가 있습니다.</p>
+    <a href="/guides/labor-tax-credit-examples/">계산 과정과 다른 사례 읽기 →</a>
+  </section>
+  <section>
+    <h2>신청할 때 자주 헷갈리는 조건</h2>
     <ul>
-      <li>사회초년생·청년 — 청년월세, 주거급여, 근로장려금 대상인지 한 번에 확인하고 싶은 분</li>
-      <li>자녀를 키우는 가구 — 부모급여·아동수당·자녀장려금 총액이 궁금한 분</li>
-      <li>소득이 줄었거나 실직한 분 — 실업급여와 기초생활보장 커트라인을 가늠하고 싶은 분</li>
-      <li>제도 이름은 몰라도 "내가 받을 게 있는지"부터 알고 싶은 분</li>
+      <li><a href="/guides/labor-tax-credit-property/">전세대출은 재산에서 빼도 되나요?</a></li>
+      <li><a href="/guides/child-tax-credit/">근로장려금이 안 되면 자녀장려금도 안 되나요?</a></li>
+      <li><a href="/guides/labor-tax-credit-late-apply/">정기 신청 기간을 놓쳤다면 무엇부터 하나요?</a></li>
     </ul>
   </section>
-
   <section>
-    <h2>지원금 계산기</h2>
-    <div class="tool-grid">
-      {tools.map((t) => (
-        <a class="tool-card" href={`${base}${t.href}`}>
-          <div class="emoji">{t.emoji}</div>
-          <div>
-            <h3>{t.title}</h3>
-            <p>{t.desc}</p>
-          </div>
-        </a>
-      ))}
-    </div>
+    <h2>확인한 것과 모르는 것을 구분합니다</h2>
+    <p>공식 원문과 가상의 계산 예시를 함께 제공합니다. 계산기는 국세청의 심사를 대신하지 않으며, 다루지 않는 조건은 결과 옆에 표시합니다.</p>
+    <p><a href="/editorial/">작성 방법과 정정 기록</a> · <a href="/about/">운영 안내</a></p>
   </section>
-
-  {posts.length > 0 && (
-    <section>
-      <div class="section-title">
-        <h2>지원금 정보</h2>
-        <a href={`${base}/guides`}>전체 보기 →</a>
-      </div>
-      <ul class="post-list">
-        {posts.map((post) => (
-          <li>
-            <a class="post-card" href={`${base}/guides/${post.slug}`}>
-              <span class="badge">{post.data.category}</span>
-              <h3>{post.data.title}</h3>
-              <p class="excerpt">{post.data.description}</p>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
 </BaseLayout>
+<style>
+  .steps { padding: 24px 0; } .steps li { padding: 12px 0; } .steps li a { font-weight: 700; }
+  .steps li p { margin: 4px 0 0; color: var(--muted); }
+  .example { padding: 28px; background: var(--surface); border-left: 3px solid var(--accent); border-radius: var(--radius); }
+  .example h2 { margin-top: 0; }
+</style>

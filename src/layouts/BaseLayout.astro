@@ -8,6 +8,8 @@ export interface Props {
   description: string;
   /** 이 페이지가 글(article)인지 여부 — OG type / Article 스키마 결정 */
   article?: boolean;
+  ads?: boolean;
+  noindex?: boolean;
   /** 넓은 레이아웃(홈/목록)인지 여부 */
   wide?: boolean;
   /** 글 발행일(ISO) — Article 스키마 datePublished */
@@ -16,21 +18,23 @@ export interface Props {
   modifiedDate?: string;
 }
 
-const { title, description, article = false, wide = false, publishedDate, modifiedDate } = Astro.props;
+const { title, description, article = false, ads = false, noindex = false, wide = false, publishedDate, modifiedDate } = Astro.props;
 const siteName = '얼마받지';
 const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://gibalpeople.com';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
-const ogImage = `${siteUrl}/og-image.png`;
+const ogImage = `${siteUrl}/og-guide.png`;
 
-// 애드센스 게시자 ID. head에 스크립트가 로드되어 사이트 연결·자동광고가 활성화됩니다.
+// 사이트 연결은 meta/ads.txt로 유지하고, 본문이 있는 상세 페이지에만 광고를 로드한다.
 const ADSENSE_CLIENT = 'ca-pub-5644793210860513';
+const isContentPage = ads;
+const isNotFound = /^\/404(?:\.html)?\/?$/.test(Astro.url.pathname);
 
 // 구글 서치콘솔 메타 인증(선택). HTML 파일 방식(public/google….html)으로 이미 인증했다면 비워둬도 됨.
 const GSC_VERIFICATION = '';
 
 // JSON-LD 구조화 데이터 (WebSite + Organization 전역, 글이면 Article 추가)
-const graph = [
+const graph: Record<string, unknown>[] = [
   { '@type': 'WebSite', name: siteName, url: siteUrl + '/', inLanguage: 'ko-KR' },
   { '@type': 'Organization', name: siteName, url: siteUrl + '/' },
 ];
@@ -43,7 +47,7 @@ if (article && publishedDate) {
     datePublished: publishedDate,
     dateModified: modifiedDate || publishedDate,
     mainEntityOfPage: canonical,
-    author: { '@type': 'Organization', name: siteName },
+    author: { '@type': 'Organization', name: siteName, url: `${siteUrl}/about/` },
     publisher: { '@type': 'Organization', name: siteName },
   });
 }
@@ -56,7 +60,9 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!isNotFound && <link rel="canonical" href={canonical} />}
+    {(isNotFound || noindex) && <meta name="robots" content="noindex, follow" />}
+    <meta name="google-adsense-account" content={ADSENSE_CLIENT} />
 
     {GSC_VERIFICATION && (
       <meta name="google-site-verification" content={GSC_VERIFICATION} />
@@ -77,13 +83,18 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c2410c'/><text x='50' y='54' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,AppleSDGothicNeo-Bold,Malgun Gothic,sans-serif' font-size='64' font-weight='800' fill='%23ffffff'>얼</text></svg>" />
+    <!-- 파비콘 — 구글 검색결과·브라우저 탭 로고. data URI 는 구글이 무시하므로 실제 파일로 제공한다. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <!-- 구조화 데이터 (JSON-LD) -->
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-    {ADSENSE_CLIENT && (
+    {isContentPage && (
       <script
+        is:inline
         async
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
         crossorigin="anonymous"
