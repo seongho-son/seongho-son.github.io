@@ -1,46 +1,47 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+const ingredients = [
+ ['신김치', '썰어서 3컵', '썰어서 6컵'], ['돼지고기 목살', '썰어서 1컵', '썰어서 2컵'],
+ ['물', '3컵', '6컵'], ['대파', '약 ⅔대', '약 1⅓대'], ['청양고추', '2개', '4개'],
+ ['다진 마늘', '1큰술', '2큰술'], ['굵은 고춧가루', '1큰술', '2큰술'],
+ ['고운 고춧가루', '½큰술', '1큰술'], ['국간장', '1큰술', '2큰술'], ['새우젓', '1큰술', '2큰술'],
+];
+const steps = [
+ {title:'재료부터 쓱쓱 썰어볼까요?',body:'돼지고기는 약 1.5cm 두께의 한입 크기로, 김치는 먹기 좋은 크기로 썰어주세요. 대파와 청양고추는 얇게 썰어 준비합니다.',note:'김치는 그릇에 담아 가위로 잘라도 돼요. 도마 설거지 하나 줄였죠?'},
+ {title:'고기 먼저 입장! 국물 맛을 내요',body:'냄비에 돼지고기, 물, 새우젓을 넣고 센 불로 끓여주세요. 끓어오르면 중약불로 낮춰 최소 10분 이상, 고기가 부드러워질 때까지 끓입니다.',note:'김치가 짜다면 새우젓을 일부 남겼다가 마지막에 간을 맞추세요.'},
+ {title:'잠깐, 줄어든 물부터 채워요',body:'끓이면서 줄어든 만큼 물을 보충해 처음의 국물 높이로 맞춰주세요. 물이 많이 줄어든 채 양념을 넣으면 짜질 수 있어요.',note:'물을 처음 넣었을 때 냄비 안쪽의 높이를 기억해두세요.'},
+ {title:'김치야, 이제 들어가자',body:'신김치, 다진 마늘, 굵은 고춧가루와 고운 고춧가루를 넣고 다시 끓여주세요. 국간장은 일부만 넣고 맛을 본 뒤 나머지를 조절합니다.',note:'고춧가루가 한 종류뿐이라면 두 분량을 합쳐 사용해도 돼요.'},
+ {title:'대파 넣고, 밥 먹을 준비!',body:'국물이 다시 팔팔 끓으면 대파와 청양고추를 넣어주세요. 고기를 충분히 익히고, 김치가 원하는 만큼 부드러워질 때까지 끓입니다. 국물이 부족하면 물을 조금씩 보충하세요.',note:'3–4인분도 시간을 두 배로 늘리기보다 재료가 익은 상태를 확인하세요.'},
+];
 ---
-<BaseLayout title="장려금 신청 준비와 계산 근거" description="근로·자녀장려금 신청 전 가구·소득·재산을 구분하고, 계산 근거와 준비할 자료를 확인하세요." wide>
-  <section class="hero">
-    <p class="hero-eyebrow">근로·자녀장려금 신청 준비</p>
-    <h1>장려금 신청 전,<br />내 조건부터 확인하세요.</h1>
-    <p class="lead">같은 연봉이어도 가구와 재산에 따라 금액이 달라집니다.<br />어떤 숫자를 확인하고, 무엇을 준비해야 하는지 함께 짚어봅니다.</p>
-    <a class="btn-tool" href="/prepare/">신청 준비 시작하기</a>
-    <p class="hero-note">회원가입 없이 이용 · 입력 정보는 브라우저 안에서만 처리</p>
-  </section>
-  <section class="steps">
-    <h2>세 가지를 순서대로 확인하세요</h2>
-    <ol>
-      <li><a href="/guides/labor-tax-credit-guide/">내 가구와 소득 구분하기</a><p>둘 다 일하면 맞벌이일까요? 신청 기준인 총소득과 계산에 넣는 총급여액은 어떻게 다를까요?</p></li>
-      <li><a href="/tools/">예상액이 달라지는 이유 보기</a><p>결과와 함께 계산 구간, 재산 감액, 아직 확인하지 않은 항목을 보여드립니다.</p></li>
-      <li><a href="/prepare/">자료를 챙기고 공식 창구에서 신청하기</a><p>소득 자료·재산 기준일·신청 내역을 확인하는 체크리스트를 인쇄해 사용할 수 있습니다.</p></li>
-    </ol>
-  </section>
-  <section class="example">
-    <p class="meta">조건 하나를 바꿔 보는 가상 사례</p>
-    <h2>연 소득이 늘었는데<br />장려금은 줄어들 수 있습니다.</h2>
-    <p>단독가구의 총급여액이 1,000만원에서 1,100만원으로 늘면 근로장려금 구간별 근사액은 약 152.3만원에서 139.6만원으로 줄어듭니다. 이 구간은 이미 최대 지급 구간을 지났기 때문입니다.</p>
-    <p class="disclaimer">2025년 소득 기준 · 다른 소득과 재산 감액이 없는 가정 · 공식 산정표의 최종 지급액과 차이가 있습니다.</p>
-    <a href="/guides/labor-tax-credit-examples/">계산 과정과 다른 사례 읽기 →</a>
-  </section>
-  <section>
-    <h2>신청할 때 자주 헷갈리는 조건</h2>
-    <ul>
-      <li><a href="/guides/labor-tax-credit-property/">전세대출은 재산에서 빼도 되나요?</a></li>
-      <li><a href="/guides/child-tax-credit/">근로장려금이 안 되면 자녀장려금도 안 되나요?</a></li>
-      <li><a href="/guides/labor-tax-credit-late-apply/">정기 신청 기간을 놓쳤다면 무엇부터 하나요?</a></li>
-    </ul>
-  </section>
-  <section>
-    <h2>확인한 것과 모르는 것을 구분합니다</h2>
-    <p>공식 원문과 가상의 계산 예시를 함께 제공합니다. 계산기는 국세청의 심사를 대신하지 않으며, 다루지 않는 조건은 결과 옆에 표시합니다.</p>
-    <p><a href="/editorial/">작성 방법과 정정 기록</a> · <a href="/about/">운영 안내</a></p>
-  </section>
+<BaseLayout title="백종원 김치찌개 따라하기 — 오늘 저녁, 이거면 됐다!">
+  <article>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">오늘의 레시피 <span>01</span></p>
+        <p class="hero-intro">오늘 저녁, 이거면 됐다!</p>
+        <h1>백종원 김치찌개<br />따라하기<span class="title-dot">.</span></h1>
+        <p class="hero-description">냉장고 속 신김치, 오늘이 출동할 날이에요.<br />고기부터 푹 끓이고 김치 넣으면? 밥 한 공기 준비!</p>
+        <div class="tags"><span>한 냄비 요리</span><span>1–2인분 · 3–4인분</span></div>
+        <a class="button" href="#ingredients">재료부터 살펴보기 <span aria-hidden="true">↓</span></a>
+      </div>
+      <figure class="hero-art"><img src="/images/kimchi-jjigae.webp" width="1536" height="1024" alt="붉은 국물에 김치와 돼지고기, 대파가 담긴 김치찌개 일러스트" fetchpriority="high" /><figcaption>완성 모습을 표현한 AI 일러스트</figcaption></figure>
+    </section>
+    <div class="recipe-bar"><p><span>조리 도구</span> 냄비 · 칼 · 도마</p><p><span>계량 기준</span> 종이컵 · 밥숟가락</p><a href="#method">만드는 순서 바로 보기 ↓</a></div>
+    <div class="recipe-body">
+      <section id="ingredients" class="ingredients">
+        <p class="eyebrow">INGREDIENTS</p><h2>우리 몇 명이 먹을까요?</h2><p class="section-lead">혼자 든든하게 먹어도, 여럿이 나눠 먹어도 좋아요.</p>
+        <div class="measure-note"><strong>컵은 180ml 종이컵, 큰술은 밥숟가락</strong><p>김치와 고기는 꾹 누르지 않고 담아요. 숟가락 크기와 담는 높이가 다를 수 있으니 짠 양념은 조금 남겨두세요.</p></div>
+        <table><caption class="sr-only">김치찌개 1–2인분과 3–4인분 재료 비교</caption><thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead><tbody>{ingredients.map(([name,small,large])=><tr><th scope="row">{name}</th><td>{small}</td><td>{large}</td></tr>)}</tbody></table>
+        <p class="table-note">끓이면서 보충할 물은 별도로 준비해주세요.</p>
+        <aside class="small-tip"><span aria-hidden="true">✳</span><div><strong>매운맛이 부담스럽다면</strong><p>청양고추를 빼고 고춧가루도 조금 줄여 시작해보세요.</p></div></aside>
+      </section>
+      <section id="method" class="method">
+        <p class="eyebrow">LET’S COOK</p><h2>이제 보글보글 끓여볼까요?</h2><p class="section-lead">볶는 건 건너뛰어요. 오늘은 고기부터 푹!</p>
+        <ol class="steps">{steps.map((step,i)=><li><span class="step-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span><div><h3>{step.title}</h3><p>{step.body}</p><p class="step-note">{step.note}</p></div></li>)}</ol>
+      </section>
+    </div>
+    <section class="finishing"><p class="eyebrow">ONE MORE TIP</p><h2>한 숟갈 먹어보고, 내 입맛으로!</h2><div class="tip-grid"><div><h3>국물이 너무 짜요</h3><p>물을 종이컵 ¼컵씩 넣으며 간을 확인하세요. 오래 끓여 다시 졸이지 않도록 해주세요.</p></div><div><h3>고춧가루가 한 종류예요</h3><p>1–2인분은 1½큰술, 3–4인분은 3큰술로 합쳐 쓰세요. 고춧가루에 따라 매운맛은 달라져요.</p></div><div><h3>더 부드러운 김치가 좋아요</h3><p>물을 조금씩 보충하며 더 끓여주세요. 시간보다 김치와 고기가 부드러워졌는지 확인해요.</p></div></div></section>
+    <section class="source"><div><p class="eyebrow">RECIPE NOTE</p><h2>이 레시피의 출처</h2></div><div><p>백종원 채널의 김치찌개 영상 설명란을 바탕으로 재료와 순서를 정리했습니다. 인분 구분, 두 배 환산과 조절 팁은 이 사이트에서 덧붙였습니다.</p><p class="muted">직접 조리 검증 전인 레시피입니다. 그림은 실제 조리 사진이 아닌 AI 일러스트이며, 원작자와 제휴 관계는 없습니다.</p><a class="source-link" href="https://www.youtube.com/watch?v=qWbHSOplcvY" target="_blank" rel="noopener noreferrer">백종원 원본 영상 보기 ↗</a></div></section>
+  </article>
 </BaseLayout>
-<style>
-  .steps { padding: 24px 0; } .steps li { padding: 12px 0; } .steps li a { font-weight: 700; }
-  .steps li p { margin: 4px 0 0; color: var(--muted); }
-  .example { padding: 28px; background: var(--surface); border-left: 3px solid var(--accent); border-radius: var(--radius); }
-  .example h2 { margin-top: 0; }
-</style>

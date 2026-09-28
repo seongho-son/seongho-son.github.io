@@ -1,113 +1,32 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-
-export interface Props {
-  title: string;
-  description: string;
-  /** 이 페이지가 글(article)인지 여부 — OG type / Article 스키마 결정 */
-  article?: boolean;
-  ads?: boolean;
-  noindex?: boolean;
-  /** 넓은 레이아웃(홈/목록)인지 여부 */
-  wide?: boolean;
-  /** 글 발행일(ISO) — Article 스키마 datePublished */
-  publishedDate?: string;
-  /** 글 수정일(ISO) — Article 스키마 dateModified */
-  modifiedDate?: string;
-}
-
-const { title, description, article = false, ads = false, noindex = false, wide = false, publishedDate, modifiedDate } = Astro.props;
-const siteName = '얼마받지';
-const siteUrl = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://gibalpeople.com';
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
-const ogImage = `${siteUrl}/og-guide.png`;
-
-// 사이트 연결은 meta/ads.txt로 유지하고, 본문이 있는 상세 페이지에만 광고를 로드한다.
-const ADSENSE_CLIENT = 'ca-pub-5644793210860513';
-const isContentPage = ads;
-const isNotFound = /^\/404(?:\.html)?\/?$/.test(Astro.url.pathname);
-
-// 구글 서치콘솔 메타 인증(선택). HTML 파일 방식(public/google….html)으로 이미 인증했다면 비워둬도 됨.
-const GSC_VERIFICATION = '';
-
-// JSON-LD 구조화 데이터 (WebSite + Organization 전역, 글이면 Article 추가)
-const graph: Record<string, unknown>[] = [
-  { '@type': 'WebSite', name: siteName, url: siteUrl + '/', inLanguage: 'ko-KR' },
-  { '@type': 'Organization', name: siteName, url: siteUrl + '/' },
-];
-if (article && publishedDate) {
-  graph.push({
-    '@type': 'Article',
-    headline: title,
-    description,
-    inLanguage: 'ko-KR',
-    datePublished: publishedDate,
-    dateModified: modifiedDate || publishedDate,
-    mainEntityOfPage: canonical,
-    author: { '@type': 'Organization', name: siteName, url: `${siteUrl}/about/` },
-    publisher: { '@type': 'Organization', name: siteName },
-  });
-}
-const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
+const { title = '돼지고기 김치찌개', description = '한 냄비로 차리는 오늘의 집밥. 1–2인분과 3–4인분 재료를 나란히 보고, 종이컵과 숟가락으로 만드는 김치찌개.', noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
+    <title>{title} · 오늘의 한 냄비</title>
     <meta name="description" content={description} />
-    {!isNotFound && <link rel="canonical" href={canonical} />}
-    {(isNotFound || noindex) && <meta name="robots" content="noindex, follow" />}
-    <meta name="google-adsense-account" content={ADSENSE_CLIENT} />
-
-    {GSC_VERIFICATION && (
-      <meta name="google-site-verification" content={GSC_VERIFICATION} />
-    )}
-
-    <!-- Open Graph -->
-    <meta property="og:type" content={article ? 'article' : 'website'} />
-    <meta property="og:title" content={fullTitle} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={`${title} · 오늘의 한 냄비`} />
     <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content={siteName} />
-    <meta property="og:locale" content="ko_KR" />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image" content={new URL('/images/kimchi-jjigae.webp', Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-
-    <!-- 파비콘 — 구글 검색결과·브라우저 탭 로고. data URI 는 구글이 무시하므로 실제 파일로 제공한다. -->
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-
-    <!-- 구조화 데이터 (JSON-LD) -->
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-
-    {isContentPage && (
-      <script
-        is:inline
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-        crossorigin="anonymous"
-      ></script>
-    )}
   </head>
   <body>
-    <Header />
-    <main>
-      <div class={wide ? 'container wide' : 'container'}>
-        <slot />
-      </div>
-    </main>
-    <Footer />
+    <a class="skip" href="#main">본문으로 건너뛰기</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="오늘의 한 냄비 홈"><span class="brand-mark" aria-hidden="true">♨</span> 오늘의 한 냄비</a>
+      <nav aria-label="주 메뉴"><a href="/#ingredients">오늘의 레시피</a><a href="/about/">우리의 식탁</a></nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer><a class="brand" href="/">오늘의 한 냄비</a><p>혼자 먹는 날에도, 함께 먹는 날에도.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a></nav></footer>
   </body>
 </html>
