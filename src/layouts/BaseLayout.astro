@@ -1,32 +1,38 @@
 ---
 import '../styles/global.css';
-const { title = '돼지고기 김치찌개', description = '한 냄비로 차리는 오늘의 집밥. 1–2인분과 3–4인분 재료를 나란히 보고, 종이컵과 숟가락으로 만드는 김치찌개.', noindex = false } = Astro.props;
+const { title = '레시피 모음', description = '유튜브에서 찾은 인기 집밥 레시피를 요리할 때 보기 편하게 담았어요.', image, imageAlt, type = 'website', noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    {!noindex && <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513" crossorigin="anonymous"></script>}
+    <meta name="google-adsense-account" content="ca-pub-5644793210860513" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} · 오늘의 한 냄비</title>
+    <title>{title} · 레시피 나와라 뚝딱</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="robots" content={noindex ? "noindex, follow" : "max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:title" content={`${title} · 오늘의 한 냄비`} />
+    <meta property="og:title" content={`${title} · 레시피 나와라 뚝딱`} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/images/kimchi-jjigae.webp', Astro.site)} />
-    <meta name="twitter:card" content="summary_large_image" />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    <link rel="alternate" type="application/rss+xml" title="레시피 나와라 뚝딱" href="/rss.xml" />
+    <slot name="head" />
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
   </head>
   <body>
     <a class="skip" href="#main">본문으로 건너뛰기</a>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="오늘의 한 냄비 홈"><span class="brand-mark" aria-hidden="true">♨</span> 오늘의 한 냄비</a>
-      <nav aria-label="주 메뉴"><a href="/#ingredients">오늘의 레시피</a><a href="/about/">우리의 식탁</a></nav>
+      <a class="brand" href="/" aria-label="레시피 나와라 뚝딱 홈">레시피 나와라 <span>뚝딱!</span></a>
+      <p class="blog-intro">유튜브에서 찾은 인기 레시피,<br class="mobile-break" /> 요리할 때 보기 편하게 담았어요.</p>
+      <nav aria-label="주 메뉴"><a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}>레시피 모음</a></nav>
     </header>
     <main id="main"><slot /></main>
-    <footer><a class="brand" href="/">오늘의 한 냄비</a><p>혼자 먹는 날에도, 함께 먹는 날에도.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a></nav></footer>
+    <footer><a class="brand" href="/">레시피 나와라 뚝딱</a><p>집에서 만드는 밥 이야기.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a><a href="/rss.xml">RSS</a></nav></footer>
   </body>
 </html>

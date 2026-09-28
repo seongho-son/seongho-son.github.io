@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { additionalRecipes } from '../../data/more-recipes.js';
+export function getStaticPaths() {
+  return additionalRecipes.map(entry => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { slug, dish, ingredients, steps, recipeMeta, tips } = entry;
+const pageUrl = new URL(recipeMeta.path, Astro.site).href;
+const sourceUrl = `https://www.youtube.com/watch?v=${entry.videoId}`;
+const rows = entry.groups.map(indices => {
+  const selected = indices.map(index => ingredients[index]);
+  if (selected.some(row => row[1] !== selected[0][1] || row[2] !== selected[0][2])) throw new Error(`Unequal ingredient group in ${slug}`);
+  return { names: selected.map(row => row[0]), small: `${selected.length > 1 ? '각 ' : ''}${selected[0][1]}`, large: `${selected.length > 1 ? '각 ' : ''}${selected[0][2]}` };
+});
+const recipe = {
+  '@context':'https://schema.org', '@type':'Recipe', '@id':`${pageUrl}#recipe`,
+  name:recipeMeta.title, description:recipeMeta.description,
+  image:new URL(recipeMeta.image, Astro.site).href, url:pageUrl,
+  inLanguage:'ko-KR', recipeCuisine:'한식', recipeCategory:dish, recipeYield:'1–2인분',
+  recipeIngredient:ingredients.map(([name, small]) => `${name} ${small}`),
+  recipeInstructions:steps.map((step, i) => ({
+    '@type':'HowToStep', name:step.name,
+    text:step.paragraphs.map(p => p.replace(/<[^>]*>/g, '')).join(' '),
+    url:`${pageUrl}#step-${i + 1}`, image:new URL(`/images/${slug}-step-${i + 1}.webp`, Astro.site).href,
+  })), citation:sourceUrl,
+};
+---
+<BaseLayout title={recipeMeta.title} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
+  <div class="recipe-layout">
+    <article class="post" id="recipe-top">
+      <header class="post-header">
+        <a class="category" href="/">{entry.category}</a>
+        <h1>{recipeMeta.title}</h1>
+        <p class="byline">참고 영상 · {entry.channel}</p>
+      </header>
+      <nav class="recipe-jump" aria-label="레시피 바로가기">
+        <span class="jump-label">바로가기</span>
+        <a href="#ingredients">재료 준비</a><a href="#method">만드는 순서</a>
+      </nav>
+      <div class="post-content">
+        {entry.intro.map(p => <p set:html={p} />)}
+        <figure class="post-video">
+          {entry.embed ? <iframe src={`https://www.youtube-nocookie.com/embed/${entry.videoId}`} title={`${entry.channel} ${dish} 원본 영상`} width="1280" height="720" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> : <a class="video-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer"><img src={`https://i.ytimg.com/vi/${entry.videoId}/maxresdefault.jpg`} width="1280" height="720" alt={`${entry.channel} ${dish} 원본 영상 썸네일`} loading="lazy" decoding="async" /><span>유튜브에서 영상 보기 ↗</span></a>}
+          <figcaption>{entry.embed ? '원본 영상입니다.' : '블로그 안에서 재생되지 않아 유튜브로 연결해요.'} <a href={sourceUrl} target="_blank" rel="noopener noreferrer">유튜브에서 보기 ↗</a></figcaption>
+        </figure>
+        <section id="ingredients">
+          <h2>{dish} 재료</h2>
+          <p>{entry.measureNote}</p>
+          <table class="compact-ingredients">
+            <caption class="sr-only">{dish} 1–2인분과 3–4인분 재료 비교</caption>
+            <thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead>
+            <tbody>{rows.map(row => <tr><th scope="row">{row.names.map((name, i) => <><span class="ingredient-name">{name}</span>{i < row.names.length - 1 && ' · '}</>)}</th><td>{row.small}</td><td>{row.large}</td></tr>)}</tbody>
+          </table>
+          <p>{entry.portionNote} 표의 ‘각’은 재료마다 같은 양이라는 뜻이에요.</p>
+        </section>
+        <section id="method">
+          <h2>{dish} 만드는 순서</h2>
+          {steps.map((step, i) => <section class="recipe-step" aria-labelledby={`step-${i + 1}`}>
+            <h3 id={`step-${i + 1}`}>{i + 1}. {step.name}</h3>
+            <figure class="step-image">
+              <img src={`/images/${slug}-step-${i + 1}.webp`} width="1536" height="1024" alt={step.alt} loading="lazy" decoding="async" />
+              <figcaption>{step.caption}</figcaption>
+            </figure>
+            {step.paragraphs.map(p => <p set:html={p} />)}
+            {step.reaction && <p class="blog-aside">{step.reaction}</p>}
+          </section>)}
+        </section>
+        <figure class="post-image">
+          <img src={recipeMeta.image} width="1536" height="1024" alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
+          <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
+        </figure>
+        {tips.map((tip, i) => <section id={`tip-${i + 1}`} style="scroll-margin-top: 78px"><h2>{tip.title}</h2>{tip.paragraphs.map(p => <p>{p}</p>)}</section>)}
+        <aside class="source-note" aria-label="레시피 출처">
+          <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">{entry.channel} · {dish} ↗</a></p>
+          <p>{entry.sourceNote}</p>
+        </aside>
+        <p class="post-tags">{entry.tags}</p>
+      </div>
+    </article>
+    <aside class="recipe-sidebar" aria-label="레시피 목차">
+      <nav class="desktop-toc" aria-label="데스크톱 레시피 바로가기">
+        <p class="toc-title">이 글의 레시피</p>
+        <a class="toc-section" href="#ingredients">재료 준비</a>
+        <p class="toc-note">1–2인분 · 3–4인분 함께 보기</p>
+        <a class="toc-section" href="#method">만드는 순서</a>
+        <ol>{steps.map((step, i) => <li><a href={`#step-${i + 1}`}><span>{i + 1}.</span>{step.name}</a></li>)}</ol>
+        {tips.map((tip, i) => <a href={`#tip-${i + 1}`}>{tip.title}</a>)}
+        <a class="toc-top" href="#recipe-top">글 처음으로 ↑</a>
+      </nav>
+    </aside>
+  </div>
+</BaseLayout>

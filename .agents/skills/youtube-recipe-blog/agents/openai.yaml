@@ -1,0 +1,4 @@
+interface:
+  display_name: "유튜브 레시피 뚝딱"
+  short_description: "유튜브 링크로 출처·인분표·단계별 그림을 갖춘 요리 블로그 게시물 생성"
+  default_prompt: "$youtube-recipe-blog 이 유튜브 링크로 레시피 나와라 뚝딱 게시물을 만들어줘."

@@ -21,3 +21,6 @@ npm-debug.log*
 
 # workflow는 OAuth workflow 스코프 없어 푸시 불가 — gh-pages 브랜치로 수동 배포
 .github/workflows/
+
+# Recipe illustration PNG masters stay local; publish the optimized WebP files.
+output/imagegen/recipe-batch/*.png

@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ingredients, steps, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
+const pageUrl = new URL(recipeMeta.path, Astro.site).href;
+const sourceUrl = 'https://www.youtube.com/watch?v=PlLBBlFEmLg';
+// Group ingredients with identical quantities; schema and RSS retain each ingredient.
+const ingredientRows = [[0], [9], [10], [11], [1, 2], [3, 4, 6], [5], [7, 8]].map(indices => {
+  const entries = indices.map(index => ingredients[index]);
+  return {
+    names: entries.map(([name]) => name.replace(' · 밑간용', '')),
+    seasoning: indices[0] === 1,
+    small: `${entries.length > 1 ? '각 ' : ''}${entries[0][1]}`,
+    large: `${entries.length > 1 ? '각 ' : ''}${entries[0][2]}`,
+  };
+});
+const recipe = {
+  '@context': 'https://schema.org', '@type': 'Recipe', '@id': `${pageUrl}#recipe`,
+  name: recipeMeta.title, description: recipeMeta.description,
+  image: new URL(recipeMeta.image, Astro.site).href, url: pageUrl,
+  inLanguage: 'ko-KR', recipeCuisine: '한식', recipeCategory: '볶음', recipeYield: '1–2인분',
+  recipeIngredient: ingredients.map(([name, small]) => `${name} ${small}`),
+  recipeInstructions: steps.map((step, i) => ({
+    '@type': 'HowToStep', name: step.name,
+    text: step.paragraphs.map(p => p.replace(/<[^>]*>/g, '')).join(' '),
+    url: `${pageUrl}#step-${i + 1}`,
+    image: new URL(`/images/kim-seoul-jeyuk-step-${i + 1}.webp`, Astro.site).href,
+  })),
+  citation: sourceUrl,
+};
+---
+<BaseLayout title={recipeMeta.title} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
+  <div class="recipe-layout">
+    <article class="post" id="recipe-top">
+      <header class="post-header">
+        <a class="category" href="/">집밥 레시피</a>
+        <h1>{recipeMeta.title}</h1>
+        <p class="byline">참고 영상 · 킴서울</p>
+      </header>
+      <nav class="recipe-jump" aria-label="레시피 바로가기">
+        <span class="jump-label">바로가기</span>
+        <a href="#ingredients">재료 준비</a><a href="#method">만드는 순서</a>
+      </nav>
+      <div class="post-content">
+        <p>조회수 1,000만을 넘긴 제육볶음. 여러 레시피를 돌다 이걸로 정착했어요.</p>
+        <p>방식은 이래요. <strong>설탕·간장으로 30분 밑간 → 고기 먼저 굽기 → 양념장 → 채소.</strong> 빨간 양념을 처음부터 전부 넣지 않는 게 기억할 부분이에요.</p>
+        <figure class="post-video post-video-link">
+          <a class="video-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer" aria-label="킴서울 제육볶음 원본 영상 유튜브에서 보기 (새 탭)">
+            <img src="https://i.ytimg.com/vi/PlLBBlFEmLg/maxresdefault.jpg" width="1280" height="720" alt="킴서울 제육볶음 원본 영상 썸네일" loading="lazy" decoding="async" />
+            <span>유튜브에서 영상 보기 ↗</span>
+          </a>
+          <figcaption>이 영상은 현재 블로그 안에서 재생되지 않아 유튜브로 연결해요. <a href={`${sourceUrl}&lc=Ugy_SJRFCkSNL9UBFgF4AaABAg`} target="_blank" rel="noopener noreferrer">레시피가 적힌 고정 댓글 보기 ↗</a><br />2026년 9월 28일 확인 당시 표시 조회수 약 1,243만 회입니다.</figcaption>
+        </figure>
+        <section id="ingredients">
+          <h2>제육볶음 재료</h2>
+          <p><strong>큰술은 밥숟가락 기준</strong>으로 적었어요. 원본 댓글의 ‘스푼’을 옮긴 것으로, 숟가락 크기와 담는 양에 따라 차이가 날 수 있어요.</p>
+          <table class="compact-ingredients">
+            <caption class="sr-only">제육볶음 1–2인분과 3–4인분 재료 비교</caption>
+            <thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead>
+            <tbody>{ingredientRows.map(row => <tr>
+              <th scope="row">{row.names.map((name, index) => <><span class="ingredient-name">{name}</span>{index < row.names.length - 1 && ' · '}</>)}{row.seasoning && <small> (밑간)</small>}</th>
+              <td>{row.small}</td><td>{row.large}</td>
+            </tr>)}</tbody>
+          </table>
+          <p>고기는 제육용으로 얇게 썰어 준비해주세요. 원본 한 근을 3–4인분, 절반을 1–2인분으로 나눈 기준이에요.</p>
+          <p>식용유는 팬에 얇게 두를 만큼, 통깨는 마무리에 조금 준비해주세요. 표의 ‘각’은 재료마다 같은 양을 넣는다는 뜻이에요.</p>
+        </section>
+        <section id="method">
+          <h2>제육볶음 만드는 순서</h2>
+          {steps.map((step, i) => (
+            <section class="recipe-step" aria-labelledby={`step-${i + 1}`}>
+              <h3 id={`step-${i + 1}`}>{i + 1}. {step.name}</h3>
+              <figure class="step-image">
+                <img src={`/images/kim-seoul-jeyuk-step-${i + 1}.webp`} width="1536" height="1024" alt={step.alt} loading="lazy" decoding="async" />
+                <figcaption>{step.caption}</figcaption>
+              </figure>
+              {step.paragraphs.map(paragraph => <p set:html={paragraph} />)}
+              {i === 2 && <p class="blog-aside"><span class="reaction-emoji" role="img" aria-label="머쓱한 웃음">😅</span> 양념장까지 한 번에 넣고 싶지만, 여기서는 고기부터! 옆에 잠깐 두세요.</p>}
+            </section>
+          ))}
+        </section>
+        <figure class="post-image">
+          <img src={recipeMeta.image} width="1536" height="1024" alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
+          <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
+        </figure>
+        <section id="sweetness" style="scroll-margin-top: 78px">
+          <h2>단맛이 걱정된다면 물엿부터 조절해요</h2>
+          <p>덜 달게 먹고 싶을 때 참고할 만한 팁도 있어요. 한 시청자는 밑간 설탕은 그대로 두고, 양념장의 물엿을 절반으로 줄여 먹는다고 했어요.</p>
+          <p>덜 달게 먹는 편이라면 이 방법을 참고해보세요. <strong>1–2인분은 물엿 ½큰술, 3–4인분은 1큰술</strong>로 줄이는 방식이에요. 위 재료표는 원본 그대로이며, 이건 시청자가 소개한 변형이에요.</p>
+          <p>국도 곁들이고 싶다면 <a href="/recipes/kimchi-jjigae/">백종원 김치찌개</a>도 함께 볼 수 있어요.</p>
+        </section>
+        <aside class="source-note" aria-label="레시피 출처">
+          <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">킴서울 · 많은 분들이 좋아해주신 제육볶음 레시피 ↗</a></p>
+          <p>작성자 고정 댓글의 배합과 순서를 기준으로 정리했어요. 조회수와 시청자 반응은 2026년 9월 28일 확인했으며, 소개한 후기는 일부 시청자의 경험입니다. 인분 환산, 손질 크기와 불 조절은 덧붙인 설명이고 직접 조리 검증 전입니다.</p>
+          <p>단계별 그림과 완성 그림은 조리 방법을 설명하는 AI 일러스트입니다. 원작자와 제휴 관계는 없습니다.</p>
+        </aside>
+        <p class="post-tags">#제육볶음 #킴서울레시피 #앞다리살 #집밥</p>
+      </div>
+    </article>
+    <aside class="recipe-sidebar" aria-label="레시피 목차">
+      <nav class="desktop-toc" aria-label="데스크톱 레시피 바로가기">
+        <p class="toc-title">이 글의 레시피</p>
+        <a class="toc-section" href="#ingredients">재료 준비</a>
+        <p class="toc-note">1–2인분 · 3–4인분 함께 보기</p>
+        <a class="toc-section" href="#method">만드는 순서</a>
+        <ol>{steps.map((step, i) => <li><a href={`#step-${i + 1}`}><span>{i + 1}.</span>{step.name}</a></li>)}</ol>
+        <a href="#sweetness">단맛 조절하기</a>
+        <a class="toc-top" href="#recipe-top">글 처음으로 ↑</a>
+      </nav>
+    </aside>
+  </div>
+</BaseLayout>

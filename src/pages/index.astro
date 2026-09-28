@@ -1,47 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const ingredients = [
- ['신김치', '썰어서 3컵', '썰어서 6컵'], ['돼지고기 목살', '썰어서 1컵', '썰어서 2컵'],
- ['물', '3컵', '6컵'], ['대파', '약 ⅔대', '약 1⅓대'], ['청양고추', '2개', '4개'],
- ['다진 마늘', '1큰술', '2큰술'], ['굵은 고춧가루', '1큰술', '2큰술'],
- ['고운 고춧가루', '½큰술', '1큰술'], ['국간장', '1큰술', '2큰술'], ['새우젓', '1큰술', '2큰술'],
-];
-const steps = [
- {title:'재료부터 쓱쓱 썰어볼까요?',body:'돼지고기는 약 1.5cm 두께의 한입 크기로, 김치는 먹기 좋은 크기로 썰어주세요. 대파와 청양고추는 얇게 썰어 준비합니다.',note:'김치는 그릇에 담아 가위로 잘라도 돼요. 도마 설거지 하나 줄였죠?'},
- {title:'고기 먼저 입장! 국물 맛을 내요',body:'냄비에 돼지고기, 물, 새우젓을 넣고 센 불로 끓여주세요. 끓어오르면 중약불로 낮춰 최소 10분 이상, 고기가 부드러워질 때까지 끓입니다.',note:'김치가 짜다면 새우젓을 일부 남겼다가 마지막에 간을 맞추세요.'},
- {title:'잠깐, 줄어든 물부터 채워요',body:'끓이면서 줄어든 만큼 물을 보충해 처음의 국물 높이로 맞춰주세요. 물이 많이 줄어든 채 양념을 넣으면 짜질 수 있어요.',note:'물을 처음 넣었을 때 냄비 안쪽의 높이를 기억해두세요.'},
- {title:'김치야, 이제 들어가자',body:'신김치, 다진 마늘, 굵은 고춧가루와 고운 고춧가루를 넣고 다시 끓여주세요. 국간장은 일부만 넣고 맛을 본 뒤 나머지를 조절합니다.',note:'고춧가루가 한 종류뿐이라면 두 분량을 합쳐 사용해도 돼요.'},
- {title:'대파 넣고, 밥 먹을 준비!',body:'국물이 다시 팔팔 끓으면 대파와 청양고추를 넣어주세요. 고기를 충분히 익히고, 김치가 원하는 만큼 부드러워질 때까지 끓입니다. 국물이 부족하면 물을 조금씩 보충하세요.',note:'3–4인분도 시간을 두 배로 늘리기보다 재료가 익은 상태를 확인하세요.'},
-];
+import { recipes } from '../data/recipes.js';
+const { recipeMeta } = recipes[0];
 ---
-<BaseLayout title="백종원 김치찌개 따라하기 — 오늘 저녁, 이거면 됐다!">
-  <article>
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">오늘의 레시피 <span>01</span></p>
-        <p class="hero-intro">오늘 저녁, 이거면 됐다!</p>
-        <h1>백종원 김치찌개<br />따라하기<span class="title-dot">.</span></h1>
-        <p class="hero-description">냉장고 속 신김치, 오늘이 출동할 날이에요.<br />고기부터 푹 끓이고 김치 넣으면? 밥 한 공기 준비!</p>
-        <div class="tags"><span>한 냄비 요리</span><span>1–2인분 · 3–4인분</span></div>
-        <a class="button" href="#ingredients">재료부터 살펴보기 <span aria-hidden="true">↓</span></a>
-      </div>
-      <figure class="hero-art"><img src="/images/kimchi-jjigae.webp" width="1536" height="1024" alt="붉은 국물에 김치와 돼지고기, 대파가 담긴 김치찌개 일러스트" fetchpriority="high" /><figcaption>완성 모습을 표현한 AI 일러스트</figcaption></figure>
-    </section>
-    <div class="recipe-bar"><p><span>조리 도구</span> 냄비 · 칼 · 도마</p><p><span>계량 기준</span> 종이컵 · 밥숟가락</p><a href="#method">만드는 순서 바로 보기 ↓</a></div>
-    <div class="recipe-body">
-      <section id="ingredients" class="ingredients">
-        <p class="eyebrow">INGREDIENTS</p><h2>우리 몇 명이 먹을까요?</h2><p class="section-lead">혼자 든든하게 먹어도, 여럿이 나눠 먹어도 좋아요.</p>
-        <div class="measure-note"><strong>컵은 180ml 종이컵, 큰술은 밥숟가락</strong><p>김치와 고기는 꾹 누르지 않고 담아요. 숟가락 크기와 담는 높이가 다를 수 있으니 짠 양념은 조금 남겨두세요.</p></div>
-        <table><caption class="sr-only">김치찌개 1–2인분과 3–4인분 재료 비교</caption><thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead><tbody>{ingredients.map(([name,small,large])=><tr><th scope="row">{name}</th><td>{small}</td><td>{large}</td></tr>)}</tbody></table>
-        <p class="table-note">끓이면서 보충할 물은 별도로 준비해주세요.</p>
-        <aside class="small-tip"><span aria-hidden="true">✳</span><div><strong>매운맛이 부담스럽다면</strong><p>청양고추를 빼고 고춧가루도 조금 줄여 시작해보세요.</p></div></aside>
-      </section>
-      <section id="method" class="method">
-        <p class="eyebrow">LET’S COOK</p><h2>이제 보글보글 끓여볼까요?</h2><p class="section-lead">볶는 건 건너뛰어요. 오늘은 고기부터 푹!</p>
-        <ol class="steps">{steps.map((step,i)=><li><span class="step-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span><div><h3>{step.title}</h3><p>{step.body}</p><p class="step-note">{step.note}</p></div></li>)}</ol>
-      </section>
-    </div>
-    <section class="finishing"><p class="eyebrow">ONE MORE TIP</p><h2>한 숟갈 먹어보고, 내 입맛으로!</h2><div class="tip-grid"><div><h3>국물이 너무 짜요</h3><p>물을 종이컵 ¼컵씩 넣으며 간을 확인하세요. 오래 끓여 다시 졸이지 않도록 해주세요.</p></div><div><h3>고춧가루가 한 종류예요</h3><p>1–2인분은 1½큰술, 3–4인분은 3큰술로 합쳐 쓰세요. 고춧가루에 따라 매운맛은 달라져요.</p></div><div><h3>더 부드러운 김치가 좋아요</h3><p>물을 조금씩 보충하며 더 끓여주세요. 시간보다 김치와 고기가 부드러워졌는지 확인해요.</p></div></div></section>
-    <section class="source"><div><p class="eyebrow">RECIPE NOTE</p><h2>이 레시피의 출처</h2></div><div><p>백종원 채널의 김치찌개 영상 설명란을 바탕으로 재료와 순서를 정리했습니다. 인분 구분, 두 배 환산과 조절 팁은 이 사이트에서 덧붙였습니다.</p><p class="muted">직접 조리 검증 전인 레시피입니다. 그림은 실제 조리 사진이 아닌 AI 일러스트이며, 원작자와 제휴 관계는 없습니다.</p><a class="source-link" href="https://www.youtube.com/watch?v=qWbHSOplcvY" target="_blank" rel="noopener noreferrer">백종원 원본 영상 보기 ↗</a></div></section>
-  </article>
+<BaseLayout title="집밥 레시피 모음" description="유튜브에서 찾은 인기 집밥 레시피를 요리할 때 보기 편하게 담았어요. 인분별 재료와 종이컵 계량, 단계별 조리법을 만나보세요." image={recipeMeta.image} imageAlt={recipeMeta.imageAlt}>
+  <section class="recipe-index" aria-labelledby="recipes-title">
+    <h1 id="recipes-title" class="sr-only">레시피 모음</h1>
+    {recipes.map((entry, i) => (
+      <article class="recipe-preview">
+        <a href={entry.recipeMeta.path} tabindex="-1" aria-hidden="true"><img src={`https://i.ytimg.com/vi/${entry.videoId}/maxresdefault.jpg`} alt="" width="1280" height="720" fetchpriority={i === 0 ? 'high' : 'auto'} loading={i === 0 ? 'eager' : 'lazy'} /></a>
+        <div>
+          <p class="category">{entry.category}</p>
+          <h2><a href={entry.recipeMeta.path}>{entry.recipeMeta.title}</a></h2>
+          <p>{entry.preview}</p>
+          <p class="preview-note">영상 · {entry.channel}</p>
+          <a class="preview-link" href={`${entry.recipeMeta.path}#ingredients`}>재료부터 보기 →</a>
+        </div>
+      </article>
+    ))}
+  </section>
 </BaseLayout>
