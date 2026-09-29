@@ -1,0 +1,1 @@
+import"./hoisted.Df8ymLdC.js";const e=new URLSearchParams(location.search).get("category"),a={stew:"찌개","stir-fry":"볶음",side:"반찬"};if(e&&a[e]){document.querySelectorAll(".recipe-preview").forEach(r=>{r.hidden=r.dataset.category!==e});const t=document.querySelector("#category-label");t&&(t.textContent=a[e]+" 레시피",t.hidden=!1)}

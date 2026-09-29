@@ -1,0 +1,1 @@
+const e=document.querySelector(".header-menu");document.addEventListener("keydown",n=>{n.key==="Escape"&&e?.open&&(e.open=!1,e.querySelector("summary")?.focus())});document.addEventListener("click",n=>{e?.open&&n.target instanceof Node&&!e.contains(n.target)&&(e.open=!1)});
