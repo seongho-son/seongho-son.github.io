@@ -1,7 +1,10 @@
+import { easyFiveRecipes } from './easy-five-recipes.js';
+
 const sourceNote = '원본 영상 설명란의 배합과 순서를 참고했습니다. 인분 구분과 단위 환산, 조절 팁은 덧붙인 설명이며 직접 조리 검증 전입니다. 그림은 조리 과정을 설명하는 AI 일러스트이고 원작자와 제휴 관계는 없습니다.';
 const cupNote = '컵은 180ml 종이컵이에요. 큰술·작은술은 원본의 숟가락 단위이며, 집에서 쓰는 밥숟가락 크기에 따라 담기는 양이 달라질 수 있어요.';
 
 export const additionalRecipes = [
+  ...easyFiveRecipes.map(({ recipeMeta, ...entry }) => ({ ...entry, title: recipeMeta.title })),
   {
     slug: 'paik-tteokbokki', dish: '떡볶이', category: '분식 · 떡볶이',
     videoId: 't4Es8mwdYlE', channel: '백종원 PAIK JONG WON',
@@ -124,6 +127,6 @@ export const additionalRecipes = [
     image: `/images/${entry.slug}-finished.webp`,
     imageAlt: `${entry.dish} 완성 모습을 표현한 AI 일러스트`,
   },
-  sourceNote,
+  sourceNote: entry.sourceNote ?? sourceNote,
   embed: entry.embed ?? true,
 }));

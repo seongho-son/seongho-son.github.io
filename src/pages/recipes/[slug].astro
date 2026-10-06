@@ -75,6 +75,7 @@ const recipe = {
         <aside class="source-note" aria-label="레시피 출처">
           <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">{entry.channel} · {dish} ↗</a></p>
           <p>{entry.sourceNote}</p>
+          {entry.sourceUrl && <p><a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">제작자의 공식 재료·조리법 보기 ↗</a></p>}
         </aside>
         <p class="post-tags">{entry.tags}</p>
       </div>

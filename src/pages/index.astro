@@ -8,7 +8,7 @@ const { recipeMeta } = recipes[0];
     <h1 id="recipes-title" class="sr-only">레시피 모음</h1>
     {recipes.map((entry, i) => (
       <article class="recipe-preview">
-        <a href={entry.recipeMeta.path} tabindex="-1" aria-hidden="true"><img src={`https://i.ytimg.com/vi/${entry.videoId}/maxresdefault.jpg`} alt="" width="1280" height="720" fetchpriority={i === 0 ? 'high' : 'auto'} loading={i === 0 ? 'eager' : 'lazy'} /></a>
+        <a href={entry.recipeMeta.path} tabindex="-1" aria-hidden="true"><img src={`https://i.ytimg.com/vi/${entry.videoId}/${entry.thumbnailFile ?? 'maxresdefault.jpg'}`} alt="" width={entry.thumbnailWidth ?? 1280} height={entry.thumbnailHeight ?? 720} style={entry.thumbnailFile === 'hqdefault.jpg' ? 'aspect-ratio:16/9;object-fit:cover' : undefined} fetchpriority={i === 0 ? 'high' : 'auto'} loading={i === 0 ? 'eager' : 'lazy'} /></a>
         <div>
           <p class="category">{entry.category}</p>
           <h2><a href={entry.recipeMeta.path}>{entry.recipeMeta.title}</a></h2>
