@@ -10,6 +10,8 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REMOTE="https://github.com/seongho-son/seongho-son.github.io.git"
 WORK="$(mktemp -d)"
 MSG="${1:-deploy}"
+MODE="${2:-full}"
+[[ "$MODE" == "full" || "$MODE" == "--home-sharing-only" ]] || { echo "Unknown deploy mode"; exit 1; }
 
 cleanup() { rm -rf "$WORK"; }
 trap cleanup EXIT
@@ -23,10 +25,15 @@ test -f "$REPO_DIR/dist/index.html" || { echo "✗ dist/index.html 없음 — �
 echo "▶ clone gh-pages → $WORK"
 git clone --quiet --branch gh-pages --depth 1 "$REMOTE" "$WORK/ghp"
 
-cd "$WORK/ghp"   # 여기서부터의 모든 작업은 임시 디렉터리 안에서만 일어난다
-git rm -rqf . >/dev/null 2>&1 || true
-cp -R "$REPO_DIR/dist/." .
-touch .nojekyll
+if [[ "$MODE" == "--home-sharing-only" ]]; then
+  node "$REPO_DIR/scripts/sync-home-sharing.mjs" "$WORK/ghp"
+  cd "$WORK/ghp"
+else
+  cd "$WORK/ghp"   # 여기서부터의 모든 작업은 임시 디렉터리 안에서만 일어난다
+  git rm -rqf . >/dev/null 2>&1 || true
+  cp -R "$REPO_DIR/dist/." .
+  touch .nojekyll
+fi
 
 test -f index.html || { echo "✗ 복사 실패"; exit 1; }
 
