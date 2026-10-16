@@ -1,4 +1,6 @@
 ---
+import RecipeIngredients from '../../components/RecipeIngredients.astro';
+import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { additionalRecipes } from '../../data/more-recipes.js';
 export function getStaticPaths() {
@@ -8,11 +10,6 @@ const { entry } = Astro.props;
 const { slug, dish, ingredients, steps, recipeMeta, tips } = entry;
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const sourceUrl = `https://www.youtube.com/watch?v=${entry.videoId}`;
-const rows = entry.groups.map(indices => {
-  const selected = indices.map(index => ingredients[index]);
-  if (selected.some(row => row[1] !== selected[0][1] || row[2] !== selected[0][2])) throw new Error(`Unequal ingredient group in ${slug}`);
-  return { names: selected.map(row => row[0]), small: `${selected.length > 1 ? '각 ' : ''}${selected[0][1]}`, large: `${selected.length > 1 ? '각 ' : ''}${selected[0][2]}` };
-});
 const recipe = {
   '@context':'https://schema.org', '@type':'Recipe', '@id':`${pageUrl}#recipe`,
   name:recipeMeta.title, description:recipeMeta.description,
@@ -48,19 +45,15 @@ const recipe = {
         <section id="ingredients">
           <h2>{dish} 재료</h2>
           <p>{entry.measureNote}</p>
-          <table class="compact-ingredients">
-            <caption class="sr-only">{dish} 1–2인분과 3–4인분 재료 비교</caption>
-            <thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead>
-            <tbody>{rows.map(row => <tr><th scope="row">{row.names.map((name, i) => <><span class="ingredient-name">{name}</span>{i < row.names.length - 1 && ' · '}</>)}</th><td>{row.small}</td><td>{row.large}</td></tr>)}</tbody>
-          </table>
-          <p>{entry.portionNote} 표의 ‘각’은 재료마다 같은 양이라는 뜻이에요.</p>
+          <RecipeIngredients ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[slug]} />
+          <p>{entry.portionNote}</p>
         </section>
         <section id="method">
           <h2>{dish} 만드는 순서</h2>
           {steps.map((step, i) => <section class="recipe-step" aria-labelledby={`step-${i + 1}`}>
             <h3 id={`step-${i + 1}`}>{i + 1}. {step.name}</h3>
             <figure class="step-image">
-              <img src={`/images/${slug}-step-${i + 1}.webp`} width="1536" height="1024" alt={step.alt} loading="lazy" decoding="async" />
+              <img src={`/images/${slug}-step-${i + 1}.webp`} width={entry.imageSizes?.[`${slug}-step-${i + 1}`]?.[0] ?? 1536} height={entry.imageSizes?.[`${slug}-step-${i + 1}`]?.[1] ?? 1024} alt={step.alt} loading="lazy" decoding="async" />
               <figcaption>{step.caption}</figcaption>
             </figure>
             {step.paragraphs.map(p => <p set:html={p} />)}
@@ -68,7 +61,7 @@ const recipe = {
           </section>)}
         </section>
         <figure class="post-image">
-          <img src={recipeMeta.image} width="1536" height="1024" alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
+          <img src={recipeMeta.image} width={entry.imageSizes?.[`${slug}-finished`]?.[0] ?? 1536} height={entry.imageSizes?.[`${slug}-finished`]?.[1] ?? 1024} alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
           <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
         </figure>
         {tips.map((tip, i) => <section id={`tip-${i + 1}`} style="scroll-margin-top: 78px"><h2>{tip.title}</h2>{tip.paragraphs.map(p => <p>{p}</p>)}</section>)}

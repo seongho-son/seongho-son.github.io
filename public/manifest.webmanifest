@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "레시피 나와라 뚝딱",
+  "short_name": "레시피 뚝딱",
+  "description": "유튜브에서 찾은 인기 집밥 레시피를 요리할 때 보기 편하게 담았어요.",
+  "lang": "ko",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

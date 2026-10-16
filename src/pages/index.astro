@@ -12,8 +12,9 @@ import { recipes } from '../data/recipes.js';
   </Fragment>
   <section class="recipe-index" aria-labelledby="recipes-title">
     <h1 id="recipes-title" class="sr-only">레시피 모음</h1>
+    <p id="category-label" class="category" hidden></p>
     {recipes.map((entry, i) => (
-      <article class="recipe-preview">
+      <article class="recipe-preview" data-category={entry.filterCategory ?? (/찌개|탕/.test(entry.recipeMeta.title) ? "stew" : /제육|볶음/.test(entry.recipeMeta.title) ? "stir-fry" : /두부조림|계란찜/.test(entry.recipeMeta.title) ? "side" : "other")}>
         <a href={entry.recipeMeta.path} tabindex="-1" aria-hidden="true"><img src={`https://i.ytimg.com/vi/${entry.videoId}/${entry.thumbnailFile ?? 'maxresdefault.jpg'}`} alt="" width={entry.thumbnailWidth ?? 1280} height={entry.thumbnailHeight ?? 720} style={entry.thumbnailFile === 'hqdefault.jpg' ? 'aspect-ratio:16/9;object-fit:cover' : undefined} fetchpriority={i === 0 ? 'high' : 'auto'} loading={i === 0 ? 'eager' : 'lazy'} /></a>
         <div>
           <p class="category">{entry.category}</p>
@@ -26,3 +27,15 @@ import { recipes } from '../data/recipes.js';
     ))}
   </section>
 </BaseLayout>
+
+<script>
+  const category = new URLSearchParams(location.search).get('category');
+  const labels: Record<string, string> = { stew: '찌개', 'stir-fry': '볶음', side: '반찬' };
+  if (category && labels[category]) {
+    document.querySelectorAll<HTMLElement>('.recipe-preview').forEach(item => {
+      item.hidden = item.dataset.category !== category;
+    });
+    const label = document.querySelector<HTMLElement>('#category-label');
+    if (label) { label.textContent = labels[category] + ' 레시피'; label.hidden = false; }
+  }
+</script>

@@ -24,3 +24,13 @@ Astro 정적 집밥 레시피 사이트. 첫 메뉴는 돼지고기 김치찌개
 ## 검색 표시와 영상
 
 원본 영상은 개인정보 보호 강화 모드 공식 iframe으로 삽입한다. 레시피 모음에는 원본 영상의 YouTube 썸네일 URL을 사용하고 출처를 표시한다. 본문·Recipe·OG에는 자체 일러스트를 사용한다. Recipe JSON-LD는 본문과 같은 재료·조리 단계 데이터를 참조한다. 기본 분량은 1–2인분이며 3–4인분 표도 본문에 제공한다. 완성 예시 일러스트를 본문·구조화 데이터·OG 대표 이미지로 연결하고 `max-image-preview:large`를 설정했다. 임의의 평점·조리 시간·발행일은 넣지 않는다. 검색 썸네일·리치 결과·순위는 보장되지 않으며 공개 배포 후 Google Rich Results Test 및 Search Console URL 검사로 확인한다.
+
+## 앱 설치 (PWA)
+
+`public/manifest.webmanifest`, `public/icons/`, `public/sw.js`로 설치형 웹앱을 지원한다. iPhone Safari는 공유 → **홈 화면에 추가**, Android Chrome은 메뉴 → **앱 설치**, macOS Chrome/Edge는 주소창 설치 아이콘, Safari는 파일 → **Dock에 추가**로 설치한다. head 태그와 서비스 워커 등록은 `src/layouts/BaseLayout.astro`에 있다.
+
+서비스 워커는 앱 셸(홈·파비콘·매니페스트·아이콘)만 미리 캐시하고, 해시가 붙은 `/_astro/*`와 `/images/*`는 방문할 때 캐시한다. 문서는 네트워크 우선이며 방문한 페이지를 경로별로 저장해 오프라인에서는 그 페이지를, 없으면 홈을 보여준다. 정적 파일은 캐시 후 백그라운드 갱신이다. 외부 요청(애드센스·YouTube·썸네일)과 GET 외 요청은 가로채지 않으므로 오프라인에서는 영상·광고·YouTube 썸네일, 아직 보지 않은 이미지는 나오지 않는다. 사이트는 localStorage 등 브라우저 저장 상태를 쓰지 않아 iOS 홈 화면 앱과 Safari 간 데이터 차이는 없다.
+
+셸 파일 목록이 바뀌면 `sw.js`의 `VERSION`을 올린다. GitHub Pages는 응답 헤더를 지정할 수 없어 `sw.js`에 `Cache-Control: no-cache`를 붙이지 못하고 `max-age=600`으로 제공된다. 브라우저는 서비스 워커 업데이트 확인 시 보통 HTTP 캐시를 건너뛰지만, 환경에 따라 새 버전 반영이 최대 10분 정도 늦을 수 있다. 아이콘은 `node scripts/generate-icons.mjs`로 다시 생성한다.
+
+검증: `npm run build` 후 `dist`를 로컬 서버로 띄우고 `node scripts/verify-pwa.mjs` 실행(기본 `http://localhost:8801`, 다른 주소는 `PWA_TEST_URL`, 오프라인 스크린샷은 `PWA_SCREENSHOT=경로`). 두 스크립트는 todo 프로젝트의 Playwright(`../todo/node_modules`)와 Chrome을 사용한다.

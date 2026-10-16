@@ -1,4 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import InfoPage from '../components/InfoPage.astro';
 ---
-<BaseLayout title="문의" description="레시피 오류와 제안을 보내주세요."><div class="prose"><p class="eyebrow">CONTACT</p><h1>함께 더 맛있게 만들어요.</h1><p>레시피의 잘못된 분량, 이해하기 어려운 설명, 다음에 보고 싶은 메뉴를 알려주세요.</p><p><a href="mailto:wjdgns200297@gmail.com">wjdgns200297@gmail.com</a></p><p>오류를 알려주실 때는 페이지 주소와 해당 재료 또는 조리 단계를 함께 적어주세요. 확인한 뒤 수정하겠습니다.</p></div></BaseLayout>
+<BaseLayout title="문의" description="레시피 오류와 제안을 보내주세요.">
+  <InfoPage title="문의·제안" label="레시피 나와라 뚝딱!">
+    <section>
+      <p class="info-lead">분량이 이상하거나,<br />설명이 헷갈렸다면 알려주세요.</p>
+      <p>레시피에서 고칠 부분이나 다음에 보고 싶은 메뉴를 보내주세요.</p>
+    </section>
+    <section aria-labelledby="contact-email">
+      <h2 id="contact-email">이메일로 이야기해주세요</h2>
+      <a class="contact-address" href="mailto:wjdgns200297@gmail.com">wjdgns200297@gmail.com</a>
+      <p class="info-note">주소를 누르면 메일 앱이 열려요.</p>
+    </section>
+    <section>
+      <h2>오류를 알려주실 때는</h2>
+      <p>아래 내용을 함께 적어주시면 확인하기 쉬워요.</p>
+      <dl class="contact-details">
+        <dt>게시물 주소</dt><dd>어떤 레시피인지 알 수 있는 페이지 링크</dd>
+        <dt>확인할 부분</dt><dd>재료의 분량이나 헷갈리는 조리 단계</dd>
+      </dl>
+    </section>
+  </InfoPage>
+</BaseLayout>

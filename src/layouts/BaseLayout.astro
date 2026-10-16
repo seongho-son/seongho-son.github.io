@@ -9,12 +9,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     {!noindex && <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513" crossorigin="anonymous"></script>}
     <meta name="google-adsense-account" content="ca-pub-5644793210860513" />
+    <meta name="naver-site-verification" content="01e4347b3b613a01ab482b32923750d2999f6259" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} · 레시피 나와라 뚝딱</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? "noindex, follow" : "max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="레시피 뚝딱" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta property="og:title" content={`${title} · 레시피 나와라 뚝딱`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
@@ -28,10 +36,33 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="skip" href="#main">본문으로 건너뛰기</a>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="레시피 나와라 뚝딱 홈">레시피 나와라 <span>뚝딱!</span></a>
-      <p class="blog-intro">유튜브에서 찾은 인기 레시피,<br class="mobile-break" /> 요리할 때 보기 편하게 담았어요.</p>
-      <nav aria-label="주 메뉴"><a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}>레시피 모음</a></nav>
+      <div class="header-branding">
+        <a class="brand" href="/" aria-label="레시피 나와라 뚝딱 홈">레시피 나와라 <span class="brand-dish">뚝딱!<i class="brand-steam" aria-hidden="true"></i></span></a>
+        <p class="blog-intro">다시 보고 싶은 유튜브 레시피, 여기에.</p>
+      </div>
+      <details class="header-menu">
+        <summary><span class="menu-icon" aria-hidden="true"></span>메뉴</summary>
+        <nav aria-label="주 메뉴">
+          <a href="/">레시피 모음</a>
+          <a href="/?category=stew">찌개</a>
+          <a href="/?category=stir-fry">볶음</a>
+          <a href="/?category=side">반찬</a>
+        </nav>
+      </details>
     </header>
+    <script>
+      const menu = document.querySelector<HTMLDetailsElement>('.header-menu');
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && menu?.open) {
+          menu.open = false;
+          menu.querySelector('summary')?.focus();
+        }
+      });
+      document.addEventListener('click', event => {
+        if (menu?.open && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+      });
+      if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+    </script>
     <main id="main"><slot /></main>
     <footer><a class="brand" href="/">레시피 나와라 뚝딱</a><p>집에서 만드는 밥 이야기.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a><a href="/rss.xml">RSS</a></nav></footer>
   </body>

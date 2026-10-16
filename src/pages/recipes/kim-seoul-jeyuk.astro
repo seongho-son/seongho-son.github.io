@@ -1,18 +1,10 @@
 ---
+import RecipeIngredients from '../../components/RecipeIngredients.astro';
+import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { ingredients, steps, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const sourceUrl = 'https://www.youtube.com/watch?v=PlLBBlFEmLg';
-// Group ingredients with identical quantities; schema and RSS retain each ingredient.
-const ingredientRows = [[0], [9], [10], [11], [1, 2], [3, 4, 6], [5], [7, 8]].map(indices => {
-  const entries = indices.map(index => ingredients[index]);
-  return {
-    names: entries.map(([name]) => name.replace(' · 밑간용', '')),
-    seasoning: indices[0] === 1,
-    small: `${entries.length > 1 ? '각 ' : ''}${entries[0][1]}`,
-    large: `${entries.length > 1 ? '각 ' : ''}${entries[0][2]}`,
-  };
-});
 const recipe = {
   '@context': 'https://schema.org', '@type': 'Recipe', '@id': `${pageUrl}#recipe`,
   name: recipeMeta.title, description: recipeMeta.description,
@@ -43,7 +35,6 @@ const recipe = {
       </nav>
       <div class="post-content">
         <p>조회수 1,000만을 넘긴 제육볶음. 여러 레시피를 돌다 이걸로 정착했어요.</p>
-        <p>방식은 이래요. <strong>설탕·간장으로 30분 밑간 → 고기 먼저 굽기 → 양념장 → 채소.</strong> 빨간 양념을 처음부터 전부 넣지 않는 게 기억할 부분이에요.</p>
         <figure class="post-video post-video-link">
           <a class="video-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer" aria-label="킴서울 제육볶음 원본 영상 유튜브에서 보기 (새 탭)">
             <img src="https://i.ytimg.com/vi/PlLBBlFEmLg/maxresdefault.jpg" width="1280" height="720" alt="킴서울 제육볶음 원본 영상 썸네일" loading="lazy" decoding="async" />
@@ -54,16 +45,9 @@ const recipe = {
         <section id="ingredients">
           <h2>제육볶음 재료</h2>
           <p><strong>큰술은 밥숟가락 기준</strong>으로 적었어요. 원본 댓글의 ‘스푼’을 옮긴 것으로, 숟가락 크기와 담는 양에 따라 차이가 날 수 있어요.</p>
-          <table class="compact-ingredients">
-            <caption class="sr-only">제육볶음 1–2인분과 3–4인분 재료 비교</caption>
-            <thead><tr><th scope="col">재료</th><th scope="col">1–2인분</th><th scope="col">3–4인분</th></tr></thead>
-            <tbody>{ingredientRows.map(row => <tr>
-              <th scope="row">{row.names.map((name, index) => <><span class="ingredient-name">{name}</span>{index < row.names.length - 1 && ' · '}</>)}{row.seasoning && <small> (밑간)</small>}</th>
-              <td>{row.small}</td><td>{row.large}</td>
-            </tr>)}</tbody>
-          </table>
+          <RecipeIngredients ingredients={ingredients} groups={ingredientGroups['kim-seoul-jeyuk']} />
           <p>고기는 제육용으로 얇게 썰어 준비해주세요. 원본 한 근을 3–4인분, 절반을 1–2인분으로 나눈 기준이에요.</p>
-          <p>식용유는 팬에 얇게 두를 만큼, 통깨는 마무리에 조금 준비해주세요. 표의 ‘각’은 재료마다 같은 양을 넣는다는 뜻이에요.</p>
+          <p>식용유는 팬에 얇게 두를 만큼, 통깨는 마무리에 조금 준비해주세요.</p>
         </section>
         <section id="method">
           <h2>제육볶음 만드는 순서</h2>

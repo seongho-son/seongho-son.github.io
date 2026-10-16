@@ -11,7 +11,7 @@ export const recipes = [
   },
   {
     ...kimchi, videoId: 'qWbHSOplcvY', channel: '백종원 PAIK JONG WON', category: '집밥 · 찌개',
-    preview: '돼지고기부터 푹 끓이는 김치찌개. 재료는 1–2인분과 3–4인분으로 나란히 적어뒀어요.',
+    preview: kimchi.recipeMeta.description,
     measureNote: '컵은 180ml 종이컵, 큰술은 밥숟가락 기준입니다. 김치와 고기는 잘라서 느슨하게 담습니다.',
     sourceNote: '백종원 채널의 영상 설명란을 정리한 글로, 직접 조리 검증 전입니다.',
   },
