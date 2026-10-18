@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# 평일 하루 1개 레시피 자동 발행: Codex로 게시물 생성 → 검증 → 커밋·push → gh-pages 배포
-# launchd(~/Library/LaunchAgents/com.gibalpeople.daily-recipe.plist)가 월~금 실행한다.
-# 수동 실행: bash scripts/daily-recipe.sh   (주말 확인 생략: FORCE=1)
+# 매일 1개 레시피 자동 발행: Codex로 게시물 생성 → 검증 → 커밋·push → gh-pages 배포
+# launchd(~/Library/LaunchAgents/com.gibalpeople.daily-recipe.plist)가 매일 13시에 실행한다.
+# 수동 실행: bash scripts/daily-recipe.sh   (오늘 이미 발행했어도 강제: FORCE=1)
 set -uo pipefail
 
 export PATH="/opt/homebrew/bin:/Users/shon/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -19,7 +19,6 @@ fail() { echo "✗ $1"; notify "실패" "$1 (로그: $LOG)"; exit 1; }
 restore() { git checkout -- . && git clean -fdq; }   # 시작 시 작업 트리가 깨끗했을 때만 호출
 
 echo "▶ start $STAMP"
-if [[ "${FORCE:-0}" != 1 && "$(date +%u)" -ge 6 ]]; then echo "주말 — 건너뜀"; exit 0; fi
 if [[ "${FORCE:-0}" != 1 ]] && ls "$LOG_DIR"/published-"$(date +%Y%m%d)" >/dev/null 2>&1; then echo "오늘 이미 발행 — 건너뜀"; exit 0; fi
 mkdir "$LOCK" 2>/dev/null || fail "이미 실행 중 ($LOCK)"
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
