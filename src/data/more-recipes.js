@@ -1,3 +1,4 @@
+import { dailyRecipes } from './daily-recipes.js';
 import { autumnTableRecipes } from './autumn-table-recipes.js';
 import { kimchiBokkeumbap } from './paik-kimchi-bokkeumbap.js';
 import { octoberFiveRecipes } from './october-five-recipes.js';
@@ -7,6 +8,7 @@ const sourceNote = '원본 영상 설명란의 배합과 순서를 참고했습�
 const cupNote = '컵은 180ml 종이컵이에요. 큰술·작은술은 원본의 숟가락 단위이며, 집에서 쓰는 밥숟가락 크기에 따라 담기는 양이 달라질 수 있어요.';
 
 export const additionalRecipes = [
+  ...dailyRecipes,
   ...autumnTableRecipes,
   ...octoberFiveRecipes,
   ...easyFiveRecipes.map(({ recipeMeta, ...entry }) => ({ ...entry, title: recipeMeta.title })),
