@@ -27,7 +27,12 @@ cd "$REPO_DIR"
 [[ -z "$(git status --porcelain)" ]] || fail "작업 트리에 커밋 안 된 변경이 있어 중단"
 git pull --ff-only --quiet || fail "git pull 실패"
 
-before="$(grep -rhoE "slug: '[^']+'" src/data | sort -u)"
+# slug: 'x' / "slug": "x" 어느 형식이든 추출 (Codex가 JSON으로 쓰기도 함)
+list_slugs() {
+  { grep -rhoE "[\"']?slug[\"']? *: *[\"'][a-z0-9-]+[\"']" src/data | grep -oE "[a-z0-9-]+[\"']\$" | tr -d "\"'"
+    ls src/pages/recipes/*.astro | xargs -n1 basename | sed 's/\.astro$//' | grep -v '^\['; } | sort -u
+}
+before="$(list_slugs)"
 prompt="$(cat scripts/daily-recipe-prompt.md)
 
 ## 이미 있는 slug
@@ -46,11 +51,13 @@ fi
 slug="$(awk '{print $3}' <<<"$result")"
 src_url="$(awk '{print $4}' <<<"$result")"
 
-grep -qE "slug: '$slug'" <<<"$before" && { restore; fail "이미 있는 slug: $slug"; }
-grep -rqE "slug: '$slug'" src/data || { restore; fail "데이터에 slug 없음: $slug"; }
+[[ "$slug" =~ ^[a-z0-9-]+$ ]] || { restore; fail "잘못된 slug: $slug"; }
+grep -qx "$slug" <<<"$before" && { restore; fail "이미 있는 slug: $slug"; }
+list_slugs | grep -qx "$slug" || { restore; fail "데이터에 slug 없음: $slug"; }
 
 echo "▶ verify"
 npm run build >/dev/null && npm run verify:built \
+  && test -f "dist/recipes/$slug/index.html" \
   && python3 .agents/skills/youtube-recipe-blog/scripts/audit_recipe.py --project . --slug "$slug" \
   || { restore; fail "검증 실패: $slug"; }
 
