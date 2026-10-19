@@ -16,7 +16,8 @@ exec >>"$LOG" 2>&1
 
 notify() { osascript -e "display notification \"$2\" with title \"레시피 뚝딱: $1\"" >/dev/null 2>&1 || true; }
 fail() { echo "✗ $1"; notify "실패" "$1 (로그: $LOG)"; exit 1; }
-restore() { git checkout -- . && git clean -fdq; }   # 시작 시 작업 트리가 깨끗했을 때만 호출
+# 시작 시 작업 트리가 깨끗했을 때만 호출. 지우지 않고 stash에 보관해 `git stash list`로 되살릴 수 있게 한다.
+restore() { git stash push -u -q -m "daily-recipe failed $STAMP" || true; }
 
 echo "▶ start $STAMP"
 if [[ "${FORCE:-0}" != 1 ]] && ls "$LOG_DIR"/published-"$(date +%Y%m%d)" >/dev/null 2>&1; then echo "오늘 이미 발행 — 건너뜀"; exit 0; fi
@@ -27,12 +28,10 @@ cd "$REPO_DIR"
 [[ -z "$(git status --porcelain)" ]] || fail "작업 트리에 커밋 안 된 변경이 있어 중단"
 git pull --ff-only --quiet || fail "git pull 실패"
 
-# slug: 'x' / "slug": "x" 어느 형식이든 추출 (Codex가 JSON으로 쓰기도 함)
-list_slugs() {
-  { grep -rhoE "[\"']?slug[\"']? *: *[\"'][a-z0-9-]+[\"']" src/data | grep -oE "[a-z0-9-]+[\"']\$" | tr -d "\"'"
-    ls src/pages/recipes/*.astro | xargs -n1 basename | sed 's/\.astro$//' | grep -v '^\['; } | sort -u
-}
-before="$(list_slugs)"
+# 발행된 레시피 = 빌드된 상세 페이지 폴더. 데이터 파일 작성 형식(JSON, 축약형 등)에 의존하지 않는다.
+built_slugs() { ls dist/recipes | sort; }
+npm run build >/dev/null || fail "시작 전 빌드 실패"
+before="$(built_slugs)"
 prompt="$(cat scripts/daily-recipe-prompt.md)
 
 ## 이미 있는 slug
@@ -53,13 +52,13 @@ src_url="$(awk '{print $4}' <<<"$result")"
 
 [[ "$slug" =~ ^[a-z0-9-]+$ ]] || { restore; fail "잘못된 slug: $slug"; }
 grep -qx "$slug" <<<"$before" && { restore; fail "이미 있는 slug: $slug"; }
-list_slugs | grep -qx "$slug" || { restore; fail "데이터에 slug 없음: $slug"; }
 
 echo "▶ verify"
 npm run build >/dev/null && npm run verify:built \
-  && test -f "dist/recipes/$slug/index.html" \
   && python3 .agents/skills/youtube-recipe-blog/scripts/audit_recipe.py --project . --slug "$slug" \
   || { restore; fail "검증 실패: $slug"; }
+added="$(comm -13 <(echo "$before") <(built_slugs))"
+[[ "$added" == "$slug" ]] || { restore; fail "새 상세 페이지가 정확히 1개($slug)가 아님: ${added:-없음}"; }
 
 echo "▶ commit & push"
 git add -A
