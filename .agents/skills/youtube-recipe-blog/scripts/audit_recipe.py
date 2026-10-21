@@ -65,6 +65,10 @@ def audit(project, slug):
     home = Page(dist / 'index.html')
     require(page.canonical == url, 'Detail canonical does not match its route')
     require(any(urlparse(link).path == path for link in home.links), 'Recipe missing from home')
+    html = (dist / 'recipes' / slug / 'index.html').read_text()
+    require('1–2인분' in html and '3–4인분' in html, 'Missing 1–2인분 / 3–4인분 portions')
+    # 초기에 손으로 만든 김치찌개·제육 글은 팁 섹션 id가 tip-N이 아니다.
+    require(any(i.startswith('tip-') for i in page.ids) or page.ids & {'salty', 'sweetness'}, 'Missing practical tip section (tips) beyond the original video')
     recipes = [e for e in entities(page.schemas) if e.get('@type') == 'Recipe']
     require(len(recipes) == 1, 'Expected one Recipe schema')
     recipe = recipes[0]
@@ -103,7 +107,7 @@ def audit(project, slug):
     attrs, head = ads[0]
     require(head and 'async' in attrs and attrs.get('crossorigin') == 'anonymous', 'AdSense must be async in head')
     require(attrs['src'] == 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513', 'Unexpected publisher')
-    print(f'PASS {path}: listing, canonical, {len(steps)} steps, images, RSS, sitemap, AdSense')
+    print(f'PASS {path}: listing, canonical, portions, tips, {len(steps)} steps, images, RSS, sitemap, AdSense')
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
