@@ -1,0 +1,14 @@
+---
+interface Photo { src: string; alt: string; width: number; height: number; }
+interface Props { cooked: { date: string; notes: string[]; photos?: Photo[] }; }
+const { cooked } = Astro.props;
+---
+<section id="cooked" style="scroll-margin-top: 78px">
+  <h2>직접 만들어 봤어요</h2>
+  <p><time datetime={cooked.date}>{cooked.date.replace(/-/g, '.')}</time>에 이 레시피대로 직접 만들어 봤어요.</p>
+  {cooked.notes.map(p => <p>{p}</p>)}
+  {cooked.photos?.map(photo => <figure class="post-image">
+    <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" />
+    <figcaption>직접 만들어 찍은 사진입니다.</figcaption>
+  </figure>)}
+</section>

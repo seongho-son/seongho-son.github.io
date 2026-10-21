@@ -3,8 +3,9 @@ import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
-import { ingredients, steps, recipeMeta } from '../../data/kimchi-jjigae.js';
+import { ingredients, steps, tips, cooked, recipeMeta } from '../../data/kimchi-jjigae.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const recipe = {
   '@context': 'https://schema.org',
@@ -76,6 +77,7 @@ const recipe = {
         ))}
       </section>
 
+      {cooked && <CookedSection cooked={cooked} />}
       <figure class="post-image">
         <img src="/images/kimchi-jjigae.webp" width="1536" height="1024" alt="돼지고기와 신김치, 대파를 넣은 김치찌개 완성 예시 일러스트" loading="lazy" decoding="async" />
         <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
@@ -86,6 +88,13 @@ const recipe = {
         <p>물을 <strong>종이컵 ¼컵 정도씩</strong> 넣어가며 맞춰보세요. 한꺼번에 많이 부으면 이번엔 싱거워질 수 있으니까요. 간을 맞춘 뒤 오래 졸이면 다시 짜질 수 있어요.</p>
         <p>이건 원본에 정해진 추가 물의 양이 아니라, 집에서 간을 맞추기 위한 방법이에요. 김치가 얼마나 짠지, 냄비에서 물이 얼마나 줄었는지에 맞춰 조금씩 조절해주세요.</p>
       </section>
+
+      {tips.map((tip, i) => (
+        <section id={`tip-${i + 1}`} style="scroll-margin-top: 78px">
+          <h2>{tip.title}</h2>
+          {tip.paragraphs.map(paragraph => <p>{paragraph}</p>)}
+        </section>
+      ))}
 
       <aside class="source-note" aria-label="레시피 출처">
         <p><strong>참고한 영상</strong><br /><a href="https://www.youtube.com/watch?v=qWbHSOplcvY" target="_blank" rel="noopener noreferrer">백종원 채널의 돼지고기 김치찌개 ↗</a></p>
@@ -102,7 +111,9 @@ const recipe = {
       <p class="toc-note">1–2인분 · 3–4인분 함께 보기</p>
       <a class="toc-section" href="#method">만드는 순서</a>
       <ol>{steps.map((step, i) => <li><a href={`#step-${i + 1}`}><span>{i + 1}.</span>{step.name}</a></li>)}</ol>
+      {cooked && <a href="#cooked">직접 만들어 봤어요</a>}
       <a href="#salty">김치찌개 짤 때</a>
+      {tips.map((tip, i) => <a href={`#tip-${i + 1}`}>{tip.title}</a>)}
       <a class="toc-top" href="#recipe-top">글 처음으로 ↑</a>
     </nav>
   </aside>

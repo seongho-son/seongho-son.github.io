@@ -188,3 +188,28 @@ footer nav a { text-decoration: none; display: flex; align-items: center; min-he
 .compact-ingredients small { font-size: .85em; color: #777; }
 
 .recipe-preview[hidden] { display: none; }
+
+/* 레시피 비교·계량 노트 */
+.note-page .post-header { padding-bottom: 24px; }
+.post-content .note-disclaimer { color: #766354; background: #f7f7f5; border-left: 2px solid var(--accent); padding: 14px 16px; font-size: .94em; }
+.note-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0 10px; border: 1px solid #e1e1dd; }
+.note-table-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.note-table-wrap .note-table { margin: 0; min-width: 760px; border: 0; }
+.note-table-wrap .note-table-narrow { min-width: 520px; }
+.note-table th, .note-table td { vertical-align: top; font-size: 13px; padding: 10px 12px; }
+.note-table tr > :first-child { border-left: 0; }
+.note-table tr > :last-child { border-right: 0; }
+.note-table thead tr:first-child > * { border-top: 0; }
+.note-table tbody tr:last-child > * { border-bottom: 0; }
+.note-table tbody th { white-space: nowrap; font-weight: 600; }
+.post-content .note-caption { color: #777; font-size: 13px; margin-bottom: 21px; }
+.post-content .note-list { padding-left: 1.2em; margin: 0 0 21px; }
+.post-content .note-list li { margin-bottom: 10px; }
+.notes-block { border-top: 1px solid var(--line); padding: 28px 0 0; margin-top: 8px; }
+.notes-block h2 { font-size: 18px; line-height: 1.6; margin: 0 0 6px; }
+.notes-block > p { color: #777; font-size: 14px; line-height: 1.8; margin: 0 0 8px; }
+.notes-block ul { list-style: none; padding: 0; margin: 0; }
+.notes-block li a { display: flex; flex-direction: column; justify-content: center; min-height: 44px; padding: 8px 0; text-decoration: none; font-size: 15px; line-height: 1.6; }
+.notes-block li a:hover strong { color: var(--accent); }
+.notes-block li span { color: #777; font-size: 13px; }
+.notes-block strong { font-weight: 600; }

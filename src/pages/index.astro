@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { recipes } from '../data/recipes.js';
+import { notes } from '../data/notes.js';
 ---
 <BaseLayout title="집밥 레시피 모음" description="유튜브에서 찾은 인기 집밥 레시피를 요리할 때 보기 편하게 담았어요. 인분별 재료와 종이컵 계량, 단계별 조리법을 만나보세요." image="/images/og-home-v1.png" imageAlt="레시피 나와라 뚝딱! 다시 보고 싶은 유튜브 레시피, 여기에.">
   <Fragment slot="head">
@@ -25,6 +26,11 @@ import { recipes } from '../data/recipes.js';
         </div>
       </article>
     ))}
+    <section class="notes-block" aria-labelledby="notes-title">
+      <h2 id="notes-title">레시피 비교·계량 노트</h2>
+      <p>여러 레시피의 재료표를 나란히 놓고 비교하거나, 계량 기준을 풀어 쓴 편집 정리예요.</p>
+      <ul>{notes.map(item => <li><a href={item.path}><strong>{item.title}</strong><span>{item.short}</span></a></li>)}</ul>
+    </section>
   </section>
 </BaseLayout>
 

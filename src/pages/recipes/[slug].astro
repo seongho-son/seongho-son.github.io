@@ -3,6 +3,7 @@ import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
 import { additionalRecipes } from '../../data/more-recipes.js';
 export function getStaticPaths() {
@@ -62,6 +63,7 @@ const recipe = {
             {step.reaction && <p class="blog-aside">{step.reaction}</p>}
           </section>)}
         </section>
+        {entry.cooked && <CookedSection cooked={entry.cooked} />}
         <figure class="post-image">
           <img src={recipeMeta.image} width={entry.imageSizes?.[`${slug}-finished`]?.[0] ?? 1536} height={entry.imageSizes?.[`${slug}-finished`]?.[1] ?? 1024} alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
           <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
@@ -83,6 +85,7 @@ const recipe = {
         <p class="toc-note">1–2인분 · 3–4인분 함께 보기</p>
         <a class="toc-section" href="#method">만드는 순서</a>
         <ol>{steps.map((step, i) => <li><a href={`#step-${i + 1}`}><span>{i + 1}.</span>{step.name}</a></li>)}</ol>
+        {entry.cooked && <a href="#cooked">직접 만들어 봤어요</a>}
         {tips.map((tip, i) => <a href={`#tip-${i + 1}`}>{tip.title}</a>)}
         <a class="toc-top" href="#recipe-top">글 처음으로 ↑</a>
       </nav>

@@ -3,8 +3,9 @@ import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
-import { ingredients, steps, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
+import { ingredients, steps, tips, cooked, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const sourceUrl = 'https://www.youtube.com/watch?v=PlLBBlFEmLg';
 const recipe = {
@@ -65,6 +66,7 @@ const recipe = {
             </section>
           ))}
         </section>
+        {cooked && <CookedSection cooked={cooked} />}
         <figure class="post-image">
           <img src={recipeMeta.image} width="1536" height="1024" alt={recipeMeta.imageAlt} loading="lazy" decoding="async" />
           <figcaption>완성 모습을 표현한 AI 일러스트입니다. 실제 조리 사진은 아닙니다.</figcaption>
@@ -75,6 +77,12 @@ const recipe = {
           <p>덜 달게 먹는 편이라면 이 방법을 참고해보세요. <strong>1–2인분은 물엿 ½큰술, 3–4인분은 1큰술</strong>로 줄이는 방식이에요. 위 재료표는 원본 그대로이며, 이건 시청자가 소개한 변형이에요.</p>
           <p>국도 곁들이고 싶다면 <a href="/recipes/kimchi-jjigae/">백종원 김치찌개</a>도 함께 볼 수 있어요.</p>
         </section>
+        {tips.map((tip, i) => (
+          <section id={`tip-${i + 1}`} style="scroll-margin-top: 78px">
+            <h2>{tip.title}</h2>
+            {tip.paragraphs.map(paragraph => <p>{paragraph}</p>)}
+          </section>
+        ))}
         <aside class="source-note" aria-label="레시피 출처">
           <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">킴서울 · 많은 분들이 좋아해주신 제육볶음 레시피 ↗</a></p>
           <p>작성자 고정 댓글의 배합과 순서를 기준으로 정리했어요. 조회수와 시청자 반응은 2026년 9월 28일 확인했으며, 소개한 후기는 일부 시청자의 경험입니다. 인분 환산, 손질 크기와 불 조절은 덧붙인 설명이고 직접 조리 검증 전입니다.</p>
@@ -91,7 +99,9 @@ const recipe = {
         <p class="toc-note">1–2인분 · 3–4인분 함께 보기</p>
         <a class="toc-section" href="#method">만드는 순서</a>
         <ol>{steps.map((step, i) => <li><a href={`#step-${i + 1}`}><span>{i + 1}.</span>{step.name}</a></li>)}</ol>
+        {cooked && <a href="#cooked">직접 만들어 봤어요</a>}
         <a href="#sweetness">단맛 조절하기</a>
+        {tips.map((tip, i) => <a href={`#tip-${i + 1}`}>{tip.title}</a>)}
         <a class="toc-top" href="#recipe-top">글 처음으로 ↑</a>
       </nav>
     </aside>

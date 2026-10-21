@@ -64,6 +64,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
     </script>
     <main id="main"><slot /></main>
-    <footer><a class="brand" href="/">레시피 나와라 뚝딱</a><p>집에서 만드는 밥 이야기.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a><a href="/rss.xml">RSS</a></nav></footer>
+    <footer><a class="brand" href="/">레시피 나와라 뚝딱</a><p>집에서 만드는 밥 이야기.</p><nav aria-label="사이트 안내"><a href="/about/">소개</a><a href="/notes/paper-cup-measuring/">계량 안내</a><a href="/contact/">문의</a><a href="/privacy/">개인정보 안내</a><a href="/rss.xml">RSS</a></nav></footer>
   </body>
 </html>

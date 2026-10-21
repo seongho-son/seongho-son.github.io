@@ -15,6 +15,9 @@ class Page(HTMLParser):
         self.canonical = None
         self.in_head = False
         self.schema_text = None
+        self.tip_text = {}          # tip-N id -> visible text inside that section
+        self.cooked_h2 = False      # id="cooked" section contains an h2
+        self.sections = []          # stack of open <section> ids (None for unnamed)
         self.feed(path.read_text())
 
     def handle_starttag(self, tag, attrs):
@@ -23,6 +26,10 @@ class Page(HTMLParser):
             self.in_head = True
         if 'id' in a:
             self.ids.add(a['id'])
+        if tag == 'section':
+            self.sections.append(a.get('id'))
+        if tag == 'h2' and 'cooked' in self.sections:
+            self.cooked_h2 = True
         if tag == 'a':
             self.links.append(a.get('href', ''))
         if tag == 'img':
@@ -37,10 +44,15 @@ class Page(HTMLParser):
     def handle_data(self, data):
         if self.schema_text is not None:
             self.schema_text += data
+        for sid in self.sections:
+            if sid and sid.startswith('tip-'):
+                self.tip_text[sid] = self.tip_text.get(sid, '') + data
 
     def handle_endtag(self, tag):
         if tag == 'head':
             self.in_head = False
+        if tag == 'section' and self.sections:
+            self.sections.pop()
         if tag == 'script' and self.schema_text is not None:
             self.schemas.append(json.loads(self.schema_text))
             self.schema_text = None
@@ -67,8 +79,13 @@ def audit(project, slug):
     require(any(urlparse(link).path == path for link in home.links), 'Recipe missing from home')
     html = (dist / 'recipes' / slug / 'index.html').read_text()
     require('1–2인분' in html and '3–4인분' in html, 'Missing 1–2인분 / 3–4인분 portions')
-    # 초기에 손으로 만든 김치찌개·제육 글은 팁 섹션 id가 tip-N이 아니다.
-    require(any(i.startswith('tip-') for i in page.ids) or page.ids & {'salty', 'sweetness'}, 'Missing practical tip section (tips) beyond the original video')
+    # 원본에 없는 편집자 팁: tip-N 섹션 2개 이상, 팁 섹션 글자 합계 300자 이상(제목 포함, 연속 공백은 1자).
+    tip_ids = [i for i in page.ids if i.startswith('tip-')]
+    require(len(tip_ids) >= 2, f'Need >= 2 practical tip sections (id="tip-N"), found {len(tip_ids)}')
+    tip_chars = sum(len(' '.join(text.split())) for text in page.tip_text.values())
+    require(tip_chars >= 300, f'Tip sections too thin: {tip_chars} chars (need >= 300)')
+    # 직접 조리 기록(cooked)은 사이트 주인만 채운다. 있으면 제목(h2)까지 렌더돼야 한다.
+    require('cooked' not in page.ids or page.cooked_h2, 'id="cooked" section is missing its h2')
     recipes = [e for e in entities(page.schemas) if e.get('@type') == 'Recipe']
     require(len(recipes) == 1, 'Expected one Recipe schema')
     recipe = recipes[0]
@@ -107,7 +124,7 @@ def audit(project, slug):
     attrs, head = ads[0]
     require(head and 'async' in attrs and attrs.get('crossorigin') == 'anonymous', 'AdSense must be async in head')
     require(attrs['src'] == 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513', 'Unexpected publisher')
-    print(f'PASS {path}: listing, canonical, portions, tips, {len(steps)} steps, images, RSS, sitemap, AdSense')
+    print(f'PASS {path}: listing, canonical, portions, {len(tip_ids)} tips ({tip_chars} chars), {len(steps)} steps, images, RSS, sitemap, AdSense')
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
