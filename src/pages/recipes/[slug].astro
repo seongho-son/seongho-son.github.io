@@ -2,6 +2,8 @@
 import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import { searchTitle } from '../../data/search-title.js';
 import { additionalRecipes } from '../../data/more-recipes.js';
 export function getStaticPaths() {
   return additionalRecipes.map(entry => ({ params: { slug: entry.slug }, props: { entry } }));
@@ -23,7 +25,7 @@ const recipe = {
   })), citation:sourceUrl,
 };
 ---
-<BaseLayout title={recipeMeta.title} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
+<BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
   <div class="recipe-layout">
     <article class="post" id="recipe-top">
@@ -71,6 +73,7 @@ const recipe = {
           {entry.sourceUrl && <p><a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">제작자의 공식 재료·조리법 보기 ↗</a></p>}
         </aside>
         <p class="post-tags">{entry.tags}</p>
+        <RelatedRecipes path={recipeMeta.path} />
       </div>
     </article>
     <aside class="recipe-sidebar" aria-label="레시피 목차">

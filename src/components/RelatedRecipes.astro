@@ -1,0 +1,12 @@
+---
+import { recipes } from '../data/recipes.js';
+interface Props { path: string; }
+const { path } = Astro.props;
+// 목록 순서에서 현재 글 다음 4개(끝이면 처음으로 돌아감). 상세 페이지끼리 서로 링크되게 해 크롤을 돕는다.
+const at = recipes.findIndex(entry => entry.recipeMeta.path === path);
+const others = Array.from({ length: Math.min(4, recipes.length - 1) }, (_, i) => recipes[(at + 1 + i) % recipes.length]);
+---
+<nav class="related-recipes" aria-labelledby="related-title">
+  <h2 id="related-title">다른 레시피</h2>
+  <ul>{others.map(entry => <li><a href={entry.recipeMeta.path}>{entry.recipeMeta.title}</a></li>)}</ul>
+</nav>

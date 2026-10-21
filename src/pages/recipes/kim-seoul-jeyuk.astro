@@ -2,6 +2,8 @@
 import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import { searchTitle } from '../../data/search-title.js';
 import { ingredients, steps, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const sourceUrl = 'https://www.youtube.com/watch?v=PlLBBlFEmLg';
@@ -20,7 +22,7 @@ const recipe = {
   citation: sourceUrl,
 };
 ---
-<BaseLayout title={recipeMeta.title} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
+<BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
   <div class="recipe-layout">
     <article class="post" id="recipe-top">
@@ -79,6 +81,7 @@ const recipe = {
           <p>단계별 그림과 완성 그림은 조리 방법을 설명하는 AI 일러스트입니다. 원작자와 제휴 관계는 없습니다.</p>
         </aside>
         <p class="post-tags">#제육볶음 #킴서울레시피 #앞다리살 #집밥</p>
+        <RelatedRecipes path={recipeMeta.path} />
       </div>
     </article>
     <aside class="recipe-sidebar" aria-label="레시피 목차">

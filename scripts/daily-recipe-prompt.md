@@ -10,6 +10,7 @@
 ## 작업 범위
 - 스킬의 1~4단계를 진행한다. `docs/recipes/<slug>-source.md`, `<slug>-images.md`를 만든다. 데이터는 `src/data/daily-recipes.js`에 넣는다. 파일이 없으면 `autumn-table-recipes.js` 패턴으로 만들고 `more-recipes.js`의 `additionalRecipes` 맨 앞에 연결한다. 홈 목록, RSS, 상세, 사이트맵에 연결한다.
 - 이미지(단계별 + 완성)는 imagegen으로 스킬 기준대로 만든다. 이미지를 하나라도 만들지 못하면 게시물을 추가하지 말고, 바꾼 내용을 모두 되돌린다. 마지막 줄에 `DAILY_RECIPE_RESULT: FAIL <이유>`를 출력한다.
+- 제목(`title`)은 `<채널 인물> <요리명>, <한 줄 포인트>` 형식으로 쓴다(예: `백종원 떡볶이, 쌀떡이냐 밀떡이냐 고민이면 둘 다!`). 쉼표 앞부분은 사람들이 검색하는 요리명 그대로 쓴다. 검색용 `<title>`은 쉼표 앞에 '레시피'를 자동으로 붙여 만든다.
 - 이번 게시물 외의 기존 콘텐츠, 디자인, 레이아웃은 바꾸지 않는다.
 - git commit, push, `scripts/deploy.sh`는 실행하지 않는다. 래퍼 스크립트가 검증 후 처리한다.
 

@@ -2,6 +2,8 @@
 import RecipeIngredients from '../../components/RecipeIngredients.astro';
 import { ingredientGroups } from '../../data/ingredient-groups.js';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedRecipes from '../../components/RelatedRecipes.astro';
+import { searchTitle } from '../../data/search-title.js';
 import { ingredients, steps, recipeMeta } from '../../data/kimchi-jjigae.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const recipe = {
@@ -27,7 +29,7 @@ const recipe = {
   citation: 'https://www.youtube.com/watch?v=qWbHSOplcvY',
 };
 ---
-<BaseLayout title={recipeMeta.title} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
+<BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
   <div class="recipe-layout">
   <article class="post" id="recipe-top">
@@ -90,6 +92,7 @@ const recipe = {
         <p>영상 설명란의 배합과 순서를 정리한 글입니다. 단계별 그림은 조리 방법을 설명하기 위해 만든 AI 일러스트이며, 그림 속 크기와 수위는 이해를 돕는 예시입니다. 인분 구분, 두 배 환산과 조절 팁은 덧붙였으며, 직접 조리 검증 전입니다. 원작자와 제휴 관계는 없습니다.</p>
       </aside>
       <p class="post-tags">#김치찌개 #백종원레시피 #돼지고기김치찌개 #집밥</p>
+      <RelatedRecipes path={recipeMeta.path} />
     </div>
   </article>
   <aside class="recipe-sidebar" aria-label="레시피 목차">
