@@ -98,7 +98,7 @@ for r in queue:
   cards.append(f'<section class="card {color} {cls}"><div class="brand">레시피 나와라 뚝딱!<span>@recipe__ttukttak</span></div>{body}<div class="foot"><span>{esc(foot)}</span><span>{n+1:02} / {len(items):02}</span></div></section>')
  doc='<!doctype html><html lang="ko"><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+CSS+'</style><body><main>'+''.join(cards)+'</main></body></html>'
  if not published:p.joinpath('preview.html').write_text(doc)
- caption=f'{dish}, 오늘은 이걸로 🍳\n\n{plain(r["recipeMeta"]["description"])}\n\n재료는 1–2인분 / 3–4인분으로, 조리 순서는 카드에 담았어요.\n저장해두고 요리할 때 꺼내보세요.\n\n자세한 레시피: https://gibalpeople.com{r["recipeMeta"]["path"]}\n원본 영상·썸네일: {r["channel"]}\nhttps://www.youtube.com/watch?v={r["videoId"]}\n\n블로그의 인분 환산과 편집 안내를 함께 정리했습니다. 직접 조리 검증 전이며 원작자와 제휴 관계는 없습니다.\n\n#{dish.replace(" ","")} #집밥레시피 #오늘뭐먹지 #레시피나와라뚝딱'
+ caption=f'{dish}, 오늘은 이걸로 🍳\n\n{plain(r["recipeMeta"]["description"])}\n\n재료는 1–2인분 / 3–4인분으로, 조리 순서는 카드에 담았어요.\n저장해두고 요리할 때 꺼내보세요.\n\n자세한 레시피: https://gibalpeople.com{r["recipeMeta"]["path"]}\n원본 영상·썸네일: {r["channel"]}\nhttps://www.youtube.com/watch?v={r["videoId"]}\n\n#{dish.replace(" ","")} #집밥레시피 #오늘뭐먹지 #레시피나와라뚝딱'
  # Do not repeat first-person cooking claims from legacy blog copy.
  if slug=='kim-seoul-jeyuk':caption=caption.replace(plain(r['recipeMeta']['description']),'앞다리살에 밑간하고, 채소와 양념을 더해 볶는 제육볶음이에요.')
  if not published:
