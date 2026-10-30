@@ -1,7 +1,8 @@
 from pathlib import Path
 import json,re,html,urllib.request,concurrent.futures,zipfile,subprocess,os
 from playwright.sync_api import sync_playwright
-# Card layout and copy rules are unchanged from the hand-run library; only the data source and queue handling differ.
+from growth import PLAN
+# Existing blue/yellow layout; value-led cover, source-backed tip and follow CTA.
 ROOT=Path(os.environ.get('INSTAGRAM_DIR',Path.home()/'Automation/instagram-library'))
 DATA=json.loads((ROOT/'recipes-source.json').read_text())
 def plain(s):return html.unescape(re.sub('<[^>]+>','',s or ''))
@@ -61,7 +62,8 @@ for r in queue:
  # Yellow and blue alternate; a queued post keeps the concept it was first given.
  color=existing_manifest.get(slug,{}).get('concept') or ('yellow' if last=='blue' else 'blue');last=color;dish=r.get('dish') or ('제육볶음' if 'jeyuk' in slug else '김치찌개')
  title=r['recipeMeta']['title'];hook=title.split(', ',1)[-1] if ', ' in title else title
- if slug=='kim-seoul-jeyuk':hook='밑간부터 차근차근,\n매콤달콤 한 접시.'
+ hook=r.get('instagram',{}).get('hook') or PLAN['hooks'].get(slug) or hook
+ if r.get('instagram',{}).get('hook'):assert len(hook)<=40,(slug,'Instagram hook exceeds 40 characters')
  items=[]
  items.append(('cover',f'<div class="tag">{esc(dish)}</div><h1><span>{esc(hook).replace(chr(10),"<br>")}</span></h1><img src="thumbnail.jpg" alt="{esc(dish)} 원본 영상 썸네일"><p class="credit">영상·썸네일: {esc(r["channel"])}<br>비공식 레시피 정리</p>'))
  ingredients=r['ingredients'];rx=ingredient_re(ingredients)
@@ -91,6 +93,12 @@ for r in queue:
    if k==len(r['steps'])-1 and part==len(groups)-1:classes='step final'
    content=f'<div class="label"><b>{k+1:02}</b>조리 순서'+(' · 이어서' if part else '')+f'</div><h2>{esc(step["name"])}</h2><div class="content">'+''.join('<p>'+mark(t,rx)+'</p>' for t in group)+'</div>'
    items.append((classes,content))
+ # Reuse an existing editorial tip verbatim; never invent a viewer comment.
+ tip=next((t for t in r.get('tips',[]) if t.get('paragraphs')),None)
+ if tip:
+  for part in split_text(tip['paragraphs'][0],260):
+   items.append(('step', '<div class="label">요리 팁 · 블로그 편집 정리</div><h2>'+esc(tip['title'])+'</h2><div class="content"><p>'+mark(part,rx)+'</p></div>'))
+ items.append(('step final','<div class="label">다음 메뉴도 함께해요</div><h2>오늘 메뉴는 저장,<br>다음 메뉴는 팔로우.</h2><div class="content"><p>'+esc(PLAN['follow_cta'])+'</p><p>'+esc(PLAN['question'])+'</p><p>자세한 설명은 프로필 링크에서 👇</p></div>'))
  assert len(items)<=20,(slug,len(items))
  cards=[]
  for n,(cls,body) in enumerate(items):
@@ -98,7 +106,7 @@ for r in queue:
   cards.append(f'<section class="card {color} {cls}"><div class="brand">레시피 나와라 뚝딱!<span>@recipe__ttukttak</span></div>{body}<div class="foot"><span>{esc(foot)}</span><span>{n+1:02} / {len(items):02}</span></div></section>')
  doc='<!doctype html><html lang="ko"><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+CSS+'</style><body><main>'+''.join(cards)+'</main></body></html>'
  if not published:p.joinpath('preview.html').write_text(doc)
- caption=f'{dish}, 오늘은 이걸로 🍳\n\n{plain(r["recipeMeta"]["description"])}\n\n재료는 1–2인분 / 3–4인분으로, 조리 순서는 카드에 담았어요.\n저장해두고 요리할 때 꺼내보세요.\n\n자세한 레시피: https://gibalpeople.com{r["recipeMeta"]["path"]}\n원본 영상·썸네일: {r["channel"]}\nhttps://www.youtube.com/watch?v={r["videoId"]}\n\n#{dish.replace(" ","")} #집밥레시피 #오늘뭐먹지 #레시피나와라뚝딱'
+ caption=f'{plain(hook).replace(chr(10), chr(32))} 🍳\n\n{plain(r["recipeMeta"]["description"])}\n\n재료는 1–2인분 / 3–4인분으로, 조리 순서는 카드에 담았어요.\n저장해두고 요리할 때 꺼내보세요.\n{PLAN["follow_cta"]}\n{PLAN["question"]}\n\n자세한 설명은 프로필 링크에서 👇\n자세한 레시피: https://gibalpeople.com{r["recipeMeta"]["path"]}\n원본 영상·썸네일: {r["channel"]}\nhttps://www.youtube.com/watch?v={r["videoId"]}\n\n#{dish.replace(" ","")} #집밥레시피 #오늘뭐먹지 #레시피나와라뚝딱'
  # Do not repeat first-person cooking claims from legacy blog copy.
  if slug=='kim-seoul-jeyuk':caption=caption.replace(plain(r['recipeMeta']['description']),'앞다리살에 밑간하고, 채소와 양념을 더해 볶는 제육볶음이에요.')
  if not published:
