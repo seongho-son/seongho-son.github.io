@@ -122,6 +122,7 @@ const markIngredients = (html: string) => plain(html).split(/(<[^>]+>)/)
     .rb-ingredients { position: static; }
   }
   @media (max-width: 640px) {
+    .rb-tips { grid-template-columns: minmax(0, 1fr); }
     .rb-notes-label { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 4px; font-size: 13px; color: #777; cursor: pointer; }
     .rb-notes-label::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
     .rb-notes-toggle:checked + .rb-notes-label::after { transform: translateY(2px) rotate(-135deg); }
