@@ -1,5 +1,7 @@
 ---
 interface Step { name: string; caption?: string; paragraphs: string[]; reaction?: string; reactionHtml?: string; }
+// Tip paragraphs are plain text unless `html` is set (for editor-written links/emphasis).
+interface Tip { id?: string; title: string; paragraphs: string[]; html?: boolean; }
 interface Props {
   dish: string;
   ingredients: string[][];
@@ -8,8 +10,9 @@ interface Props {
   measureNote?: string;
   portionNotes?: string[];
   methodTitle?: string;
+  tips?: Tip[];
 }
-const { dish, ingredients, groups, steps, measureNote, portionNotes = [], methodTitle = `${dish} 만드는 순서` } = Astro.props;
+const { dish, ingredients, groups, steps, measureNote, portionNotes = [], methodTitle = `${dish} 만드는 순서`, tips = [] } = Astro.props;
 const indices = groups.flatMap(([, ids]) => ids);
 if (indices.length !== ingredients.length || new Set(indices).size !== ingredients.length || indices.some(i => !ingredients[i])) {
   throw new Error('Ingredient groups must include each ingredient exactly once');
@@ -45,6 +48,7 @@ const amount = (value: string) => {
     {measureNote && <p class="rb-note">{measureNote}</p>}
     {portionNotes.map(p => <p class="rb-note">{p}</p>)}
   </section>
+  <div class="rb-main">
   <section class="rb-method" id="method" aria-labelledby="method-title">
     <h2 id="method-title">{methodTitle}</h2>
     <ol class="rb-steps">
@@ -60,6 +64,17 @@ const amount = (value: string) => {
       </li>)}
     </ol>
   </section>
+  {tips.length > 0 && <section class="rb-tips-wrap" aria-labelledby="tips-title">
+    <h2 id="tips-title">알아두면 좋은 팁</h2>
+    <div class="rb-tips">
+      {tips.map((tip, i) => <section class="rb-tip" id={tip.id ?? `tip-${i + 1}`}>
+        <h3>{tip.title}</h3>
+        {tip.paragraphs.map(p => tip.html ? <p set:html={p} /> : <p>{p}</p>)}
+      </section>)}
+    </div>
+  </section>}
+  <slot />
+  </div>
 </div>
 <style>
   .recipe-book { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 30px 0 8px; }
@@ -86,6 +101,14 @@ const amount = (value: string) => {
   .recipe-book .rb-steps h3 { margin: 2px 0 8px; font-size: 19px; line-height: 1.45; word-break: keep-all; }
   .recipe-book .rb-lead { font-weight: 600; color: #4a4a4a; margin-bottom: 12px; }
   .recipe-book .rb-steps p:last-child { margin-bottom: 0; }
+  .rb-main { min-width: 0; }
+  .recipe-book .rb-tips-wrap { margin-top: 12px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .recipe-book .rb-tips-wrap > h2 { margin: 0 0 16px; }
+  .rb-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; }
+  .rb-tip { border: 1px solid var(--line); border-radius: 8px; padding: 16px; scroll-margin-top: 24px; }
+  .recipe-book .rb-tip h3 { margin: 0 0 8px; font-size: 15.5px; line-height: 1.5; word-break: keep-all; }
+  .recipe-book .rb-tip p { margin: 0 0 8px; font-size: 14px; line-height: 1.85; color: #4a4a4a; }
+  .recipe-book .rb-tip p:last-child { margin-bottom: 0; }
   @media (min-width: 900px) {
     .recipe-book { grid-template-columns: 300px minmax(0, 1fr); gap: 44px; }
     .rb-ingredients { position: sticky; top: 24px; align-self: start; max-height: calc(100dvh - 48px); overflow-y: auto; }

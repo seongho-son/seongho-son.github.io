@@ -1,4 +1,3 @@
-const imageSizes = {"paik-beef-radish-soup-step-1": [1536, 1024], "paik-beef-radish-soup-step-2": [1536, 1024], "paik-beef-radish-soup-step-3": [1536, 1024], "paik-eomuk-potato-finished": [1536, 1024], "paik-spinach-namul-finished": [1536, 1024], "paik-eomuk-potato-step-1": [1374, 1145], "paik-eomuk-potato-step-2": [1312, 1199], "paik-eomuk-potato-step-3": [1312, 1199], "paik-spinach-namul-step-1": [1312, 1199], "paik-spinach-namul-step-2": [1312, 1199], "paik-spinach-namul-step-3": [1312, 1199], "paik-janchi-guksu-finished": [1312, 1199], "paik-pork-curry-finished": [1312, 1199], "paik-janchi-guksu-step-1": [1536, 1024], "paik-janchi-guksu-step-2": [1536, 1024], "paik-janchi-guksu-step-3": [1536, 1024], "paik-pork-curry-step-1": [1536, 1024], "paik-pork-curry-step-2": [1536, 1024], "paik-pork-curry-step-3": [1536, 1024], "paik-pork-curry-step-4": [1536, 1024], "paik-beef-radish-soup-finished": [1536, 1024]};
 const entries = [
   {
     "slug": "paik-beef-radish-soup",
@@ -74,7 +73,6 @@ const entries = [
     "steps": [
       {
         "name": "무와 양파를 썰어요",
-        "alt": "도마에 편 썬 무와 채 썬 양파를 준비한 모습",
         "caption": "무는 사방 약 3cm로 편 썰어요.",
         "paragraphs": [
           "무는 사방 약 3cm 크기로 얇게 썰고 양파는 채 썰어요. 대파는 송송 썰어 따로 둬요.",
@@ -83,7 +81,6 @@ const entries = [
       },
       {
         "name": "고기를 볶다가 무를 넣어요",
-        "alt": "스테인리스 냄비에서 겉이 익은 소고기와 흰 무를 볶는 모습",
         "caption": "양파와 대파는 아직 넣지 않아요.",
         "paragraphs": [
           "냄비에 참기름과 식용유를 두르고 소고기를 볶아요. <strong>고기 겉면이 익으면 무</strong>를 넣어 함께 볶아주세요.",
@@ -92,7 +89,6 @@ const entries = [
       },
       {
         "name": "고기가 부드러워지면 양파를 넣어요",
-        "alt": "소고기와 무가 끓는 맑은 국에 채 썬 양파를 넣는 모습",
         "caption": "중불로 약 20분 끓인 뒤 고기의 부드러움을 확인해요.",
         "paragraphs": [
           "고기가 익으면 물·다진 마늘·국간장·멸치액젓을 넣고 <strong>중불에서 약 20분</strong> 끓여요.",
@@ -235,7 +231,6 @@ const entries = [
     "steps": [
       {
         "name": "감자를 얇게, 어묵을 먹기 좋게 썰어요",
-        "alt": "도마에 얇은 부채꼴 감자와 사각어묵 조각을 준비한 모습",
         "caption": "감자는 4등분한 뒤 약 3mm 두께로 썰어요.",
         "paragraphs": [
           "감자를 십자로 4등분하고 약 0.3cm 두께로 편 썰어요. 사각어묵은 길게 반 자른 뒤 약 2cm 폭으로, 봉어묵은 약 1cm 두께로 어슷 썰어요.",
@@ -244,7 +239,6 @@ const entries = [
       },
       {
         "name": "재료를 함께 볶고 물과 간장을 넣어요",
-        "alt": "깊은 팬에서 어묵과 얇은 감자, 양파와 대파를 간장 양념에 볶는 모습",
         "caption": "고춧가루와 참기름은 뒤에 넣어요.",
         "paragraphs": [
           "깊은 팬에 어묵·감자·양파·대파·청양고추·식용유·다진 마늘을 넣고 <strong>강불</strong>에 올려요.",
@@ -253,7 +247,6 @@ const entries = [
       },
       {
         "name": "양념이 배면 고춧가루를 섞어요",
-        "alt": "붉은 양념이 밴 어묵감자볶음을 주걱으로 뒤섞는 모습",
         "caption": "국물이 졸고 윤기가 나면 참기름으로 마무리해요.",
         "paragraphs": [
           "어묵에 양념이 배면 고운 고춧가루를 넣어 섞어요. 감자도 익었는지 확인해주세요.",
@@ -363,7 +356,6 @@ const entries = [
     "steps": [
       {
         "name": "시금치를 씻고 깨를 갈아요",
-        "alt": "깨를 절구에 갈고 씻은 생시금치를 옆에 둔 모습",
         "caption": "깨는 절반을 갈아 무칠 때 쓰고 나머지는 마무리에 써요.",
         "paragraphs": [
           "시금치 뿌리를 잘라내고 흙이 남지 않게 깨끗이 씻어요.",
@@ -372,7 +364,6 @@ const entries = [
       },
       {
         "name": "뿌리 쪽부터 넣어 짧게 데쳐요",
-        "alt": "끓는 소금물에 시금치 줄기 쪽부터 넣는 모습",
         "caption": "원본은 약 30초를 안내해요.",
         "paragraphs": [
           "냄비에 데칠 물과 꽃소금을 넣고 끓여요. 끓으면 시금치의 <strong>뿌리 쪽부터 넣어 약 30초</strong> 데쳐주세요.",
@@ -381,7 +372,6 @@ const entries = [
       },
       {
         "name": "양념과 함께 골고루 무쳐요",
-        "alt": "볼에서 데친 시금치에 마늘과 간장, 간 깨를 넣어 무치는 모습",
         "caption": "참기름을 함께 넣고, 담아낸 뒤 남은 깨를 뿌려요.",
         "paragraphs": [
           "큰 볼에 시금치·다진 마늘·국간장·참기름·갈아둔 깨를 넣고 골고루 무쳐요.",
@@ -534,7 +524,6 @@ const entries = [
     "steps": [
       {
         "name": "채소를 썰고 양념간장을 섞어요",
-        "alt": "채 썬 호박과 당근 옆에서 파와 고추가 든 간장 양념을 섞는 모습",
         "caption": "국물 채소와 양념장 채소를 따로 준비해요.",
         "paragraphs": [
           "양파·애호박은 약 0.5cm, 당근·표고는 약 0.3cm 두께로 채 썰어요. 대파와 길게 반 가른 청양고추는 약 0.3cm 두께로 썰어요.",
@@ -543,7 +532,6 @@ const entries = [
       },
       {
         "name": "채소 국물을 끓이고 달걀을 풀어요",
-        "alt": "호박과 당근, 양파, 표고가 끓는 국물에 달걀물을 두르는 모습",
         "caption": "면은 이 냄비에서 삶지 않아요.",
         "paragraphs": [
           "국물용 물을 강불에 끓이고 준비한 양파·애호박·당근·표고를 넣어요. 바글바글 끓으면 국간장과 꽃소금으로 간해요.",
@@ -552,7 +540,6 @@ const entries = [
       },
       {
         "name": "소면을 삶아 헹군 뒤 국물을 부어요",
-        "alt": "익힌 소면을 체에 담아 찬물에 헹구는 모습",
         "caption": "원본은 소면을 약 3분 30초 삶아요.",
         "paragraphs": [
           "별도 냄비에 면 삶을 물을 끓여 소면을 넣고 뭉치지 않게 저으며 약 3분 30초 삶아요. 원본은 1인분마다 물 1L를 쓰고, 거품이 올라오면 원본 기준 물 ¼컵씩 두 번 더해요(이 보충 컵의 ml 용량은 원본에 명시되지 않았어요). 제품 안내와 익힘도 함께 확인해주세요.",
@@ -681,7 +668,6 @@ const entries = [
     "steps": [
       {
         "name": "고기와 채소를 잘라요",
-        "alt": "도마에 깍둑썬 돼지고기와 양파, 작게 썬 당근을 준비한 모습",
         "caption": "고기는 약 2cm, 당근은 약 1cm로 썰어요.",
         "paragraphs": [
           "양파는 폭 약 1cm, 길이 약 2cm로 사각 썰고 당근은 사방 약 1cm로 작게 썰어요.",
@@ -690,7 +676,6 @@ const entries = [
       },
       {
         "name": "비계부터 볶고 양파를 갈색으로 익혀요",
-        "alt": "깊은 팬에서 노릇한 돼지고기와 갈색 양파를 볶는 모습",
         "caption": "물과 카레가루는 아직 넣지 않아요.",
         "paragraphs": [
           "깊은 팬을 강불에 올려 식용유를 두르고 잘게 자른 비계를 먼저 볶아요. 비계가 노릇해지면 살코기를 넣고 튀기듯 볶아요.",
@@ -699,7 +684,6 @@ const entries = [
       },
       {
         "name": "간장과 케첩을 볶은 뒤 물을 넣어요",
-        "alt": "고기와 양파, 당근을 볶은 팬에 물을 붓는 모습",
         "caption": "카레가루를 넣기 전 고기 국물을 끓여요.",
         "paragraphs": [
           "팬 가장자리로 진간장을 두르고 케첩을 넣어 볶아요. 양념이 눌어붙으려 할 때 물을 넣어요.",
@@ -708,7 +692,6 @@ const entries = [
       },
       {
         "name": "카레가루를 풀고 불을 끈 뒤 버터를 섞어요",
-        "alt": "걸쭉한 돼지고기 카레에 버터를 넣어 녹이는 모습",
         "caption": "밥 위에 얹기 전에 고기가 충분히 익었는지도 확인해요.",
         "paragraphs": [
           "카레가루를 덩어리 없이 풀어 넣고 농도가 나도록 끓여요. 고기가 속까지 익었는지 확인해요.",
@@ -767,7 +750,7 @@ const entries = [
   }
 ];
 export const autumnTableRecipes = entries.map(entry => ({
-  ...entry, imageSizes, intro: [entry.preview], embed: false,
+  ...entry, intro: [entry.preview], embed: false,
   filterCategory: entry.slug === 'paik-spinach-namul' ? 'side' : entry.slug === 'paik-eomuk-potato' ? 'stir-fry' : 'other',
   measureNote: '물의 컵은 180ml 종이컵이에요. 큰술은 원본의 숟가락 단위를 유지했고 밥숟가락으로 계량할 때는 크기 차이가 있을 수 있어요. 원본에 무게가 함께 있는 재료는 괄호도 참고해주세요.',
   sourceNote: '백종원 채널 원본 영상 설명란의 재료와 순서를 정리했어요. 인분·단위 환산과 별도 표시한 조절 팁은 편집자가 덧붙였으며 직접 조리 검증 전이에요. 원작자와 제휴 관계는 없습니다.',

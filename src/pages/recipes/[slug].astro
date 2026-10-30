@@ -45,14 +45,14 @@ const recipe = {
       </nav>
       <div class="post-content">
         {entry.intro.map(p => <p set:html={p} />)}
-        <RecipeBook dish={dish} ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[entry.slug]} steps={steps} measureNote={entry.measureNote} portionNotes={[entry.portionNote]} />
-        {entry.cooked && <CookedSection cooked={entry.cooked} />}
-        {tips.map((tip, i) => <section id={`tip-${i + 1}`} style="scroll-margin-top: 78px"><h2>{tip.title}</h2>{tip.paragraphs.map(p => <p>{p}</p>)}</section>)}
-        <aside class="source-note" aria-label="레시피 출처">
-          <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">{entry.channel} · {dish} ↗</a></p>
-          <p>{entry.sourceNote}</p>
-          {entry.sourceUrl && <p><a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">제작자의 공식 재료·조리법 보기 ↗</a></p>}
-        </aside>
+        <RecipeBook dish={dish} ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[entry.slug]} steps={steps} measureNote={entry.measureNote} portionNotes={[entry.portionNote]} tips={tips}>
+          {entry.cooked && <CookedSection cooked={entry.cooked} />}
+          <aside class="source-note" aria-label="레시피 출처">
+            <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">{entry.channel} · {dish} ↗</a></p>
+            <p>{entry.sourceNote}</p>
+            {entry.sourceUrl && <p><a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">제작자의 공식 재료·조리법 보기 ↗</a></p>}
+          </aside>
+        </RecipeBook>
         <p class="post-tags">{entry.tags}</p>
         <RelatedRecipes path={recipeMeta.path} />
       </div>
