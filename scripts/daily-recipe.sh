@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# 이틀에 1개 레시피 자동 발행: Codex로 게시물 생성 → 검증 → 커밋·push → gh-pages 배포
-# launchd(~/Library/LaunchAgents/com.gibalpeople.daily-recipe.plist)는 매일 13시에 실행하고,
-# 이 스크립트가 오늘 또는 어제 발행 마커(published-YYYYMMDD)가 있으면 건너뛰어 이틀 간격을 만든다.
-# 어제 실패했으면 마커가 없으므로 오늘 다시 시도한다.
-# 수동 실행: bash scripts/daily-recipe.sh   (오늘·어제 발행했어도 강제: FORCE=1)
+# 매주 월·수·금 13시 레시피 자동 발행: 생성 → 검증 → 커밋·push → 배포
+# launchd의 월·수·금 13시 일정과 아래 요일 조건을 함께 사용한다.
+# 같은 날 중복 발행은 마커로 막는다. 실패하면 다음 예정일에 다시 시도한다.
+# 수동 강제 실행: FORCE=1 bash scripts/daily-recipe.sh
 set -uo pipefail
+export TZ=Asia/Seoul
 
 export PATH="/opt/homebrew/bin:/Users/shon/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -23,8 +23,12 @@ restore() { git stash push -u -q -m "daily-recipe failed $STAMP" || true; }
 
 echo "▶ start $STAMP"
 if [[ "${FORCE:-0}" != 1 ]] && ls "$LOG_DIR"/published-"$(date +%Y%m%d)" >/dev/null 2>&1; then echo "오늘 이미 발행 — 건너뜀"; exit 0; fi
-yesterday="$(date -v-1d +%Y%m%d)"
-if [[ "${FORCE:-0}" != 1 ]] && [[ -e "$LOG_DIR/published-$yesterday" ]]; then echo "어제($yesterday) 발행함 — 이틀 간격이라 건너뜀"; exit 0; fi
+if [[ "${FORCE:-0}" != 1 ]]; then
+  case "$(date +%u)" in
+    1|3|5) ;;
+    *) echo "월·수·금 발행 일정 — 오늘은 건너뜀"; exit 0 ;;
+  esac
+fi
 mkdir "$LOCK" 2>/dev/null || fail "이미 실행 중 ($LOCK)"
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
 
