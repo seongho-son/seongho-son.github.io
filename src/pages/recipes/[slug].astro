@@ -45,7 +45,7 @@ const recipe = {
       </nav>
       <div class="post-content">
         {entry.intro.map(p => <p set:html={p} />)}
-        <RecipeBook dish={dish} ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[entry.slug]} steps={steps} measureNote={entry.measureNote} portionNotes={[entry.portionNote]} tips={tips}>
+        <RecipeBook ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[entry.slug]} steps={steps} measureNote={entry.measureNote} portionNotes={[entry.portionNote]} tips={tips}>
           {entry.cooked && <CookedSection cooked={entry.cooked} />}
           <aside class="source-note" aria-label="레시피 출처">
             <p><strong>참고한 영상</strong><br /><a href={sourceUrl} target="_blank" rel="noopener noreferrer">{entry.channel} · {dish} ↗</a></p>

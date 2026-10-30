@@ -1,126 +1,128 @@
 ---
+// Text-first recipe body (design mockup B): ingredient panel beside numbered steps, tips as cards.
 interface Step { name: string; caption?: string; paragraphs: string[]; reaction?: string; reactionHtml?: string; }
 // Tip paragraphs are plain text unless `html` is set (for editor-written links/emphasis).
 interface Tip { id?: string; title: string; paragraphs: string[]; html?: boolean; }
 interface Props {
-  dish: string;
   ingredients: string[][];
   groups: [string, number[]][];
   steps: Step[];
   measureNote?: string;
   portionNotes?: string[];
-  methodTitle?: string;
   tips?: Tip[];
 }
-const { dish, ingredients, groups, steps, measureNote, portionNotes = [], methodTitle = `${dish} 만드는 순서`, tips = [] } = Astro.props;
+const { ingredients, groups, steps, measureNote, portionNotes = [], tips = [] } = Astro.props;
 const indices = groups.flatMap(([, ids]) => ids);
 if (indices.length !== ingredients.length || new Set(indices).size !== ingredients.length || indices.some(i => !ingredients[i])) {
   throw new Error('Ingredient groups must include each ingredient exactly once');
 }
-// Main amount first, the weight/ml conversion in parentheses as a quieter note.
-const amount = (value: string) => {
-  const [main, ...rest] = value.split('(');
-  return { main: main.trim(), note: rest.length ? `(${rest.join('(')}` : '' };
-};
+
+// In step text only ingredient names are emphasized (accent bold); any other <strong> from the data is dropped.
+const modifiers = new Set(['고운', '굵은', '다진', '썬', '송송', '것', '또는', '익은', '마무리', '선택', '고명용', '양념장용', '밑간용', '믹서용']);
+const names = new Set<string>();
+for (const [raw] of ingredients) {
+  const main = raw.split('·')[0].replace(/\(.*?\)/g, '').trim();
+  if (main) names.add(main);
+  for (const word of main.split(/\s+/)) if (word.length >= 2 && !modifiers.has(word)) names.add(word);
+}
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// A one-letter name (물, 밥) must stand alone before a particle, so 국물·물엿 are not matched.
+const pattern = [...names].sort((a, b) => b.length - a.length)
+  .map(n => `${escape(n)}${n.length === 1 ? '(?=[을를이가은는과와도에만로의,·\\s.)]|$)' : ''}`).join('|');
+const nameRe = names.size ? new RegExp(`(?<![가-힣A-Za-z])(${pattern})`, 'g') : null;
+const plain = (html: string) => html.replace(/<\/?strong>/g, '');
+const markIngredients = (html: string) => plain(html).split(/(<[^>]+>)/)
+  .map(part => part.startsWith('<') || !nameRe ? part : part.replace(nameRe, '<strong class="rb-ing">$1</strong>')).join('');
 ---
 <div class="recipe-book">
-  <section class="rb-ingredients" id="ingredients" aria-labelledby="ingredients-title">
+  <aside class="rb-ingredients" id="ingredients" aria-labelledby="ingredients-title">
     <input class="sr-only rb-p1" type="radio" name="portion" id="portion-1" checked />
     <input class="sr-only rb-p2" type="radio" name="portion" id="portion-2" />
-    <div class="rb-head">
-      <h2 id="ingredients-title">{dish} 재료</h2>
-      <div class="rb-portion" aria-label="인분 선택">
-        <label for="portion-1">1–2인분</label><label for="portion-2">3–4인분</label>
-      </div>
-    </div>
+    <h2 class="rb-head" id="ingredients-title">재료
+      <span class="rb-seg" role="group" aria-label="인분 선택"><label for="portion-1">1–2인분</label><label for="portion-2">3–4인분</label></span>
+    </h2>
     {groups.map(([name, ids]) => <>
-      <h3 class="rb-group">{name}</h3>
+      <p class="rb-group">{name}</p>
       <table>
-        <tbody>{ids.map(i => {
-          const small = amount(ingredients[i][1]), large = amount(ingredients[i][2]);
-          return <tr>
-            <th scope="row">{ingredients[i][0].replace(' · 밑간용', '')}</th>
-            <td><span class="rb-a1">{small.main}{small.note && <small> {small.note}</small>}</span><span class="rb-a2">{large.main}{large.note && <small> {large.note}</small>}</span></td>
-          </tr>;
-        })}</tbody>
+        <tbody>{ids.map(i => <tr>
+          <td>{ingredients[i][0].replace(' · 밑간용', '')}</td>
+          <td class="rb-q"><span class="rb-a1">{ingredients[i][1]}</span><span class="rb-a2">{ingredients[i][2]}</span></td>
+        </tr>)}</tbody>
       </table>
     </>)}
     {measureNote && <p class="rb-note">{measureNote}</p>}
     {portionNotes.map(p => <p class="rb-note">{p}</p>)}
-  </section>
+  </aside>
   <div class="rb-main">
-  <section class="rb-method" id="method" aria-labelledby="method-title">
-    <h2 id="method-title">{methodTitle}</h2>
+    <h2 class="rb-sec" id="method">만드는 법</h2>
     <ol class="rb-steps">
       {steps.map((step, i) => <li class="recipe-step">
-        <span class="rb-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <span class="rb-big" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
         <div>
           <h3 id={`step-${i + 1}`}><span class="sr-only">{i + 1}. </span>{step.name}</h3>
-          {step.caption && <p class="rb-lead">{step.caption}</p>}
-          {step.paragraphs.map(p => <p set:html={p} />)}
+          {step.caption && <p class="rb-lead" set:html={markIngredients(step.caption.replace(/&/g, '&amp;').replace(/</g, '&lt;'))} />}
+          {step.paragraphs.map(p => <p set:html={markIngredients(p)} />)}
           {step.reaction && <p class="blog-aside">{step.reaction}</p>}
           {step.reactionHtml && <p class="blog-aside" set:html={step.reactionHtml} />}
         </div>
       </li>)}
     </ol>
-  </section>
-  {tips.length > 0 && <section class="rb-tips-wrap" aria-labelledby="tips-title">
-    <h2 id="tips-title">알아두면 좋은 팁</h2>
-    <div class="rb-tips">
-      {tips.map((tip, i) => <section class="rb-tip" id={tip.id ?? `tip-${i + 1}`}>
-        <h3>{tip.title}</h3>
-        {tip.paragraphs.map(p => tip.html ? <p set:html={p} /> : <p>{p}</p>)}
-      </section>)}
-    </div>
-  </section>}
-  <slot />
+    {tips.length > 0 && <>
+      <h2 class="rb-sec rb-sec-tips">팁</h2>
+      <div class="rb-tips">
+        {tips.map((tip, i) => <section class="rb-tip" id={tip.id ?? `tip-${i + 1}`}>
+          <h3>{tip.title}</h3>
+          {tip.paragraphs.map(p => tip.html ? <p set:html={plain(p)} /> : <p>{p}</p>)}
+        </section>)}
+      </div>
+    </>}
+    <slot />
   </div>
 </div>
 <style>
-  .recipe-book { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 30px 0 8px; }
-  .rb-ingredients { background: #f7f7f5; border-radius: 8px; padding: 18px 18px 14px; min-width: 0; }
-  .rb-head { display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: space-between; align-items: center; }
-  .recipe-book .rb-head h2 { margin: 0; font-size: 18px; }
-  .rb-portion { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: #fff; }
-  .rb-portion label { display: flex; align-items: center; min-height: 36px; padding: 0 12px; border-radius: 999px; font-size: 13px; cursor: pointer; color: #666; }
-  .rb-p1:checked ~ .rb-head label[for="portion-1"], .rb-p2:checked ~ .rb-head label[for="portion-2"] { background: var(--accent); color: #fff; font-weight: 700; }
+  /* Values follow design mockup B (recipe-noimage-mockup.html) one to one. */
+  .recipe-book { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 44px; margin-top: 26px; }
+  .rb-ingredients { position: sticky; top: 24px; align-self: start; background: #f7f7f5; border-radius: 8px; padding: 18px 18px 14px; }
+  .recipe-book .rb-head { margin: 0 0 10px; font-size: 15px; line-height: 1.5; letter-spacing: 0; display: flex; justify-content: space-between; align-items: center; }
+  .rb-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: #f7f7f5; }
+  .rb-seg label { border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 400; cursor: pointer; min-height: 32px; display: inline-flex; align-items: center; }
+  .rb-p1:checked ~ .rb-head label[for="portion-1"], .rb-p2:checked ~ .rb-head label[for="portion-2"] { background: #fff; color: var(--accent); font-weight: 700; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
   .rb-p1:focus-visible ~ .rb-head label[for="portion-1"], .rb-p2:focus-visible ~ .rb-head label[for="portion-2"] { outline: 2px solid var(--accent); outline-offset: 2px; }
   .rb-p1:checked ~ table .rb-a2, .rb-p2:checked ~ table .rb-a1 { display: none; }
-  .recipe-book .rb-group { font-size: 12px; color: var(--accent); font-weight: 600; margin: 18px 0 2px; letter-spacing: 0; }
-  .rb-ingredients table { margin: 0; font-size: 14.5px; }
-  .rb-ingredients th, .rb-ingredients td { border: 0; border-bottom: 1px solid var(--line); padding: 8px 0; vertical-align: top; font-weight: 400; background: none; }
-  .rb-ingredients th { word-break: keep-all; padding-right: 10px; }
-  .rb-ingredients td { text-align: right; color: #4a4a4a; font-variant-numeric: tabular-nums; word-break: keep-all; overflow-wrap: anywhere; }
-  .rb-ingredients td small { font-size: 12px; color: #777; }
-  .recipe-book .rb-note { font-size: 13px; line-height: 1.8; color: #777; margin: 12px 0 0; }
-  .recipe-book .rb-method > h2 { margin: 0 0 18px; }
+  .recipe-book .rb-group { font-size: 11.5px; color: #888; letter-spacing: .3px; margin: 14px 0 2px; line-height: 1.6; }
+  .rb-ingredients table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 0; }
+  .rb-ingredients td { padding: 7px 0; border: 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .rb-ingredients td.rb-q { text-align: right; color: #555; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 10px; }
+  .recipe-book .rb-note { font-size: 13px; color: #777; line-height: 1.8; margin: 12px 0 0; }
+  .recipe-book .rb-sec { font-size: 13px; letter-spacing: 1px; color: #888; margin: 0 0 14px; font-weight: 600; line-height: 1.5; }
+  .recipe-book .rb-sec-tips { margin-top: 10px; }
   .rb-steps { list-style: none; margin: 0; padding: 0; }
-  .rb-steps > li { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 6px; padding: 0 0 26px; }
-  .rb-steps > li + li { border-top: 1px solid var(--line); padding-top: 24px; }
-  .rb-num { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -2px; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .recipe-book .rb-steps h3 { margin: 2px 0 8px; font-size: 19px; line-height: 1.45; word-break: keep-all; }
-  .recipe-book .rb-lead { font-weight: 600; color: #4a4a4a; margin-bottom: 12px; }
-  .recipe-book .rb-steps p:last-child { margin-bottom: 0; }
-  .rb-main { min-width: 0; }
-  .recipe-book .rb-tips-wrap { margin-top: 12px; padding-top: 24px; border-top: 1px solid var(--line); }
-  .recipe-book .rb-tips-wrap > h2 { margin: 0 0 16px; }
-  .rb-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; }
-  .rb-tip { border: 1px solid var(--line); border-radius: 8px; padding: 16px; scroll-margin-top: 24px; }
-  .recipe-book .rb-tip h3 { margin: 0 0 8px; font-size: 15.5px; line-height: 1.5; word-break: keep-all; }
-  .recipe-book .rb-tip p { margin: 0 0 8px; font-size: 14px; line-height: 1.85; color: #4a4a4a; }
-  .recipe-book .rb-tip p:last-child { margin-bottom: 0; }
-  @media (min-width: 900px) {
-    .recipe-book { grid-template-columns: 300px minmax(0, 1fr); gap: 44px; }
-    .rb-ingredients { position: sticky; top: 24px; align-self: start; max-height: calc(100dvh - 48px); overflow-y: auto; }
+  .rb-steps > li { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 6px; padding: 4px 0 26px; }
+  .rb-big { font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+  .recipe-book .rb-steps h3 { margin: 2px 0 6px; font-size: 18px; line-height: 1.45; letter-spacing: 0; word-break: keep-all; }
+  .recipe-book .rb-lead { margin: 0 0 8px; font-size: 15px; font-weight: 400; color: #4a4a4a; line-height: 1.7; }
+  .recipe-book .rb-steps p { margin: 0 0 8px; font-size: 15px; line-height: 1.9; color: #4a4a4a; }
+  .recipe-book :global(.rb-ing) { font-weight: 700; color: var(--accent); }
+  .rb-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; margin-top: 8px; }
+  .rb-tip { border: 1px solid var(--line); border-radius: 8px; padding: 14px; scroll-margin-top: 24px; }
+  .recipe-book .rb-tip h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.5; letter-spacing: 0; }
+  .recipe-book .rb-tip p { margin: 0; font-size: 14px; line-height: 1.85; color: #555; }
+  .recipe-book .rb-tip p + p { margin-top: 8px; }
+  .recipe-book :global(.source-note) { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12.5px; line-height: 1.85; color: #777; }
+  @media (max-width: 860px) {
+    .recipe-book { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .rb-ingredients { position: static; }
   }
-  @media (max-width: 640px) {
-    .rb-ingredients { padding: 16px 14px 12px; margin: 0 -6px; }
+  @media (max-width: 520px) {
+    .rb-ingredients { padding: 16px 14px 12px; margin: 0 -4px; }
+    .recipe-book .rb-head { flex-wrap: wrap; gap: 8px; }
+    .rb-ingredients td.rb-q { white-space: normal; word-break: keep-all; max-width: 52%; }
     .rb-steps > li { grid-template-columns: 38px minmax(0, 1fr); }
-    .rb-num { font-size: 28px; letter-spacing: -1px; }
+    .rb-big { font-size: 28px; letter-spacing: -1px; }
     .recipe-book .rb-steps h3 { font-size: 17px; }
   }
   @media print {
-    .rb-portion, .rb-p1, .rb-p2 { display: none; }
+    .rb-seg { display: none; }
     .rb-ingredients { position: static; background: none; }
     .rb-ingredients .rb-a1, .rb-ingredients .rb-a2 { display: inline !important; }
     .rb-ingredients .rb-a2 { margin-left: 10px; color: #777; }

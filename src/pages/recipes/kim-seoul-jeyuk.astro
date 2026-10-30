@@ -44,7 +44,7 @@ const recipe = {
       </nav>
       <div class="post-content">
         <p>조회수 1,000만을 넘긴 제육볶음. 여러 레시피를 돌다 이걸로 정착했어요.</p>
-        <RecipeBook dish="제육볶음" ingredients={ingredients} groups={ingredientGroups['kim-seoul-jeyuk']}
+        <RecipeBook ingredients={ingredients} groups={ingredientGroups['kim-seoul-jeyuk']}
           steps={steps.map((step, i) => i === 2 ? { ...step, reactionHtml: '<span class="reaction-emoji" role="img" aria-label="머쓱한 웃음">😅</span> 양념장까지 한 번에 넣고 싶지만, 여기서는 고기부터! 옆에 잠깐 두세요.' } : step)}
           measureNote="큰술은 밥숟가락 기준으로 적었어요. 원본 댓글의 ‘스푼’을 옮긴 것으로, 숟가락 크기와 담는 양에 따라 차이가 날 수 있어요."
           portionNotes={['고기는 제육용으로 얇게 썰어 준비해주세요. 원본 한 근을 3–4인분, 절반을 1–2인분으로 나눈 기준이에요.', '식용유는 팬에 얇게 두를 만큼, 통깨는 마무리에 조금 준비해주세요.']} 
