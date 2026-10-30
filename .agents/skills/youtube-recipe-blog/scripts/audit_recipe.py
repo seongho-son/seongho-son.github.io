@@ -94,23 +94,15 @@ def audit(project, slug):
     steps = recipe.get('recipeInstructions', [])
     require(steps, 'Missing recipe steps')
 
-    def local_image(value):
-        require(isinstance(value, str), 'Image must be a URL string')
-        parsed = urlparse(value)
-        require(parsed.scheme == 'https' and parsed.netloc == 'gibalpeople.com', 'Use own absolute image URL in Recipe')
-        target = (dist / parsed.path.lstrip('/')).resolve()
-        require(target.is_relative_to(dist.resolve()), 'Image escapes dist')
-        require(target.is_file() and target.stat().st_size > 0, f'Missing image: {value}')
-        require(parsed.path in page.images or value in page.images, 'Schema image is not visible in recipe')
-
+    # No own images: the Recipe image is the source video's YouTube thumbnail.
     hero = recipe.get('image')
-    for value in hero if isinstance(hero, list) else [hero]:
-        local_image(value)
+    require(isinstance(hero, str) and hero.startswith('https://i.ytimg.com/vi/'), 'Recipe image must be the YouTube thumbnail')
+    require(not any('/images/' in src for src in page.images), 'Recipe page must not show own images')
     for step in steps:
         require(step.get('@type') == 'HowToStep' and step.get('text'), 'Incomplete step')
         parsed = urlparse(step.get('url', ''))
         require(step.get('url', '').startswith(url + '#') and parsed.fragment in page.ids, 'Invalid step anchor')
-        local_image(step.get('image'))
+        require(not step.get('image'), 'Steps must not have own images')
 
     rss = ET.parse(dist / 'rss.xml')
     matches = [item for item in rss.findall('./channel/item') if item.findtext('link') == url]
@@ -124,7 +116,7 @@ def audit(project, slug):
     attrs, head = ads[0]
     require(head and 'async' in attrs and attrs.get('crossorigin') == 'anonymous', 'AdSense must be async in head')
     require(attrs['src'] == 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513', 'Unexpected publisher')
-    print(f'PASS {path}: listing, canonical, portions, {len(tip_ids)} tips ({tip_chars} chars), {len(steps)} steps, images, RSS, sitemap, AdSense')
+    print(f'PASS {path}: listing, canonical, portions, {len(tip_ids)} tips ({tip_chars} chars), {len(steps)} steps, no own images, RSS, sitemap, AdSense')
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

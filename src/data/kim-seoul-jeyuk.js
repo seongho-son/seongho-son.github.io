@@ -73,6 +73,6 @@ export const recipeMeta = {
   title: '1,000만 뷰 제육볶음, 내가 이걸로 정착한 이유',
   searchTitle: '킴서울 제육볶음 레시피, 1,000만 뷰 내가 이걸로 정착한 이유',
   description: '매콤달콤한 앞다리살 제육볶음. 1–2인분·3–4인분 재료, 30분 밑간부터 볶는 순서와 덜 달게 먹는 양념 조절 팁을 확인하세요.',
-  image: '/images/kim-seoul-jeyuk-finished.webp',
-  imageAlt: '앞다리살과 양파, 대파를 볶아 통깨로 마무리한 제육볶음 AI 일러스트',
+  image: 'https://i.ytimg.com/vi/PlLBBlFEmLg/maxresdefault.jpg',
+  imageAlt: '킴서울 제육볶음 원본 영상 썸네일',
 };

@@ -26,7 +26,7 @@ export const steps = [
   {
     "name": "줄어든 만큼 물을 보충해요",
     "alt": "냄비 안쪽에 남은 원래 국물 자국을 보며 종이컵으로 물을 보충하는 모습",
-    "caption": "처음 물을 부었던 높이까지 채워요. 그림의 국물 자국은 수위를 보여주는 예시예요.",
+    "caption": "처음 물을 부었던 높이까지 채워요.",
     "paragraphs": [
       "고기가 부드러워졌으면 국물 높이를 봐주세요. 줄어든 만큼 물을 넣어 <strong>처음 부었던 높이</strong>로 맞춰요.",
       "종이컵 3컵이나 6컵을 새로 붓는 게 아니에요. 끓이는 동안 날아간 물만 채우면 돼요. 양념을 넣기 전에 맞춰두면 간 보기가 훨씬 편해요."
@@ -61,6 +61,6 @@ export const recipeMeta = {
   path: '/recipes/kimchi-jjigae/',
   title: '백종원 김치찌개 따라하기, 김치부터 볶는 줄 알았죠?',
   description: '김치찌개 하면 김치부터 달달 볶는 장면이 떠오르죠. 그런데 백종원 영상은 시작부터 예상 밖이에요.',
-  image: '/images/kimchi-jjigae.webp',
-  imageAlt: '돼지고기와 신김치로 만든 김치찌개 완성 예시 AI 일러스트',
+  image: 'https://i.ytimg.com/vi/qWbHSOplcvY/maxresdefault.jpg',
+  imageAlt: '백종원 PAIK JONG WON 돼지고기 김치찌개 원본 영상 썸네일',
 };

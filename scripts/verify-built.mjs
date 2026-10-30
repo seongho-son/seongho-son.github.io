@@ -21,7 +21,7 @@ for(const file of files){
 for(const path of ['tools','guides','check','prepare','archive'])assert.ok(!existsSync(`dist/${path}`),`Retired route still exists: ${path}`);
 const home=readFileSync('dist/index.html','utf8');
 const detail=readFileSync('dist/recipes/kimchi-jjigae/index.html','utf8');
-for(const text of ['1–2인분','3–4인분','180ml','밥숟가락','qWbHSOplcvY','AI 일러스트','백종원 김치찌개'])assert.ok(detail.includes(text),`Missing recipe detail: ${text}`);
+for(const text of ['1–2인분','3–4인분','180ml','밥숟가락','qWbHSOplcvY','백종원 김치찌개'])assert.ok(detail.includes(text),`Missing recipe detail: ${text}`);
 const sitemap=readFileSync('dist/sitemap-0.xml','utf8');
 assert.ok(!/\/tools\/|\/guides\/|\/404/.test(sitemap),'Retired URLs in sitemap');
 console.log(`Passed: ${files.length} HTML pages; ${checked} local links/assets; recipe, legacy routes and sitemap checked.`);
@@ -38,13 +38,15 @@ assert.equal(recipe.recipeIngredient.length,10);
 for(const step of recipe.recipeInstructions) {
   assert.ok(step.url.startsWith(recipeUrl+'#step-'));
   assert.ok(detail.includes(`id="${new URL(step.url).hash.slice(1)}"`));
-  assert.ok(existsSync(join('dist',new URL(step.image).pathname)));
+  assert.ok(!step.image, 'Recipe steps have no own images');
 }
+assert.ok(recipe.image.startsWith('https://i.ytimg.com/vi/qWbHSOplcvY/'), 'Recipe image is the YouTube thumbnail');
+for(const file of files)assert.ok(!/AI 일러스트|\/images\/[^"]*\.webp/.test(readFileSync(file,'utf8')),`Recipe image or illustration notice left in ${file}`);
 const rss=readFileSync('dist/rss.xml','utf8');
 assert.ok(rss.includes(`<link>${recipeUrl}</link>`));
 assert.ok(rss.includes('<content:encoded>'));
 assert.ok(!home.includes('"@type":"Recipe"'), 'Home is a listing, not a recipe');
-console.log('Passed: recipe canonical, schema steps/images, listing and RSS.');
+console.log('Passed: recipe canonical, schema steps (no own images), YouTube thumbnail, listing and RSS.');
 
 const adUrl='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5644793210860513';
 for(const file of files.filter(file=>!file.includes('google3e65fdcffb6e8ea4'))) {

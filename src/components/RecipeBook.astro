@@ -1,0 +1,106 @@
+---
+interface Step { name: string; caption?: string; paragraphs: string[]; reaction?: string; reactionHtml?: string; }
+interface Props {
+  dish: string;
+  ingredients: string[][];
+  groups: [string, number[]][];
+  steps: Step[];
+  measureNote?: string;
+  portionNotes?: string[];
+  methodTitle?: string;
+}
+const { dish, ingredients, groups, steps, measureNote, portionNotes = [], methodTitle = `${dish} 만드는 순서` } = Astro.props;
+const indices = groups.flatMap(([, ids]) => ids);
+if (indices.length !== ingredients.length || new Set(indices).size !== ingredients.length || indices.some(i => !ingredients[i])) {
+  throw new Error('Ingredient groups must include each ingredient exactly once');
+}
+// Main amount first, the weight/ml conversion in parentheses as a quieter note.
+const amount = (value: string) => {
+  const [main, ...rest] = value.split('(');
+  return { main: main.trim(), note: rest.length ? `(${rest.join('(')}` : '' };
+};
+---
+<div class="recipe-book">
+  <section class="rb-ingredients" id="ingredients" aria-labelledby="ingredients-title">
+    <input class="sr-only rb-p1" type="radio" name="portion" id="portion-1" checked />
+    <input class="sr-only rb-p2" type="radio" name="portion" id="portion-2" />
+    <div class="rb-head">
+      <h2 id="ingredients-title">{dish} 재료</h2>
+      <div class="rb-portion" aria-label="인분 선택">
+        <label for="portion-1">1–2인분</label><label for="portion-2">3–4인분</label>
+      </div>
+    </div>
+    {groups.map(([name, ids]) => <>
+      <h3 class="rb-group">{name}</h3>
+      <table>
+        <tbody>{ids.map(i => {
+          const small = amount(ingredients[i][1]), large = amount(ingredients[i][2]);
+          return <tr>
+            <th scope="row">{ingredients[i][0].replace(' · 밑간용', '')}</th>
+            <td><span class="rb-a1">{small.main}{small.note && <small> {small.note}</small>}</span><span class="rb-a2">{large.main}{large.note && <small> {large.note}</small>}</span></td>
+          </tr>;
+        })}</tbody>
+      </table>
+    </>)}
+    {measureNote && <p class="rb-note">{measureNote}</p>}
+    {portionNotes.map(p => <p class="rb-note">{p}</p>)}
+  </section>
+  <section class="rb-method" id="method" aria-labelledby="method-title">
+    <h2 id="method-title">{methodTitle}</h2>
+    <ol class="rb-steps">
+      {steps.map((step, i) => <li class="recipe-step">
+        <span class="rb-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div>
+          <h3 id={`step-${i + 1}`}><span class="sr-only">{i + 1}. </span>{step.name}</h3>
+          {step.caption && <p class="rb-lead">{step.caption}</p>}
+          {step.paragraphs.map(p => <p set:html={p} />)}
+          {step.reaction && <p class="blog-aside">{step.reaction}</p>}
+          {step.reactionHtml && <p class="blog-aside" set:html={step.reactionHtml} />}
+        </div>
+      </li>)}
+    </ol>
+  </section>
+</div>
+<style>
+  .recipe-book { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 30px 0 8px; }
+  .rb-ingredients { background: #f7f7f5; border-radius: 8px; padding: 18px 18px 14px; min-width: 0; }
+  .rb-head { display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: space-between; align-items: center; }
+  .recipe-book .rb-head h2 { margin: 0; font-size: 18px; }
+  .rb-portion { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: #fff; }
+  .rb-portion label { display: flex; align-items: center; min-height: 36px; padding: 0 12px; border-radius: 999px; font-size: 13px; cursor: pointer; color: #666; }
+  .rb-p1:checked ~ .rb-head label[for="portion-1"], .rb-p2:checked ~ .rb-head label[for="portion-2"] { background: var(--accent); color: #fff; font-weight: 700; }
+  .rb-p1:focus-visible ~ .rb-head label[for="portion-1"], .rb-p2:focus-visible ~ .rb-head label[for="portion-2"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rb-p1:checked ~ table .rb-a2, .rb-p2:checked ~ table .rb-a1 { display: none; }
+  .recipe-book .rb-group { font-size: 12px; color: var(--accent); font-weight: 600; margin: 18px 0 2px; letter-spacing: 0; }
+  .rb-ingredients table { margin: 0; font-size: 14.5px; }
+  .rb-ingredients th, .rb-ingredients td { border: 0; border-bottom: 1px solid var(--line); padding: 8px 0; vertical-align: top; font-weight: 400; background: none; }
+  .rb-ingredients th { word-break: keep-all; padding-right: 10px; }
+  .rb-ingredients td { text-align: right; color: #4a4a4a; font-variant-numeric: tabular-nums; word-break: keep-all; overflow-wrap: anywhere; }
+  .rb-ingredients td small { font-size: 12px; color: #777; }
+  .recipe-book .rb-note { font-size: 13px; line-height: 1.8; color: #777; margin: 12px 0 0; }
+  .recipe-book .rb-method > h2 { margin: 0 0 18px; }
+  .rb-steps { list-style: none; margin: 0; padding: 0; }
+  .rb-steps > li { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 6px; padding: 0 0 26px; }
+  .rb-steps > li + li { border-top: 1px solid var(--line); padding-top: 24px; }
+  .rb-num { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -2px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .recipe-book .rb-steps h3 { margin: 2px 0 8px; font-size: 19px; line-height: 1.45; word-break: keep-all; }
+  .recipe-book .rb-lead { font-weight: 600; color: #4a4a4a; margin-bottom: 12px; }
+  .recipe-book .rb-steps p:last-child { margin-bottom: 0; }
+  @media (min-width: 900px) {
+    .recipe-book { grid-template-columns: 300px minmax(0, 1fr); gap: 44px; }
+    .rb-ingredients { position: sticky; top: 24px; align-self: start; max-height: calc(100dvh - 48px); overflow-y: auto; }
+  }
+  @media (max-width: 640px) {
+    .rb-ingredients { padding: 16px 14px 12px; margin: 0 -6px; }
+    .rb-steps > li { grid-template-columns: 38px minmax(0, 1fr); }
+    .rb-num { font-size: 28px; letter-spacing: -1px; }
+    .recipe-book .rb-steps h3 { font-size: 17px; }
+  }
+  @media print {
+    .rb-portion, .rb-p1, .rb-p2 { display: none; }
+    .rb-ingredients { position: static; background: none; }
+    .rb-ingredients .rb-a1, .rb-ingredients .rb-a2 { display: inline !important; }
+    .rb-ingredients .rb-a2 { margin-left: 10px; color: #777; }
+    .rb-steps > li { break-inside: avoid; }
+  }
+</style>

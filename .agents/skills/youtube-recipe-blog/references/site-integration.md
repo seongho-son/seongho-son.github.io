@@ -16,7 +16,7 @@
 | `scripts/verify-built.mjs` | 링크, JSON-LD, RSS, 애드센스 회귀 검사 |
 | `astro.config.mjs`, `public/robots.txt` | 사이트 주소와 사이트맵 |
 
-새 글은 기존 페이지 구조를 참조하되 해당 메뉴에 맞게 새로 작성한다. 특히 source video ID, alt, 캡션, 원본 채널, 도입과 팁, Recipe description, 이미지 경로에 김치찌개 문자열이 남지 않도록 확인한다.
+새 글은 기존 페이지 구조를 참조하되 해당 메뉴에 맞게 새로 작성한다. 특히 source video ID, alt, 캡션, 원본 채널, 도입과 팁, Recipe description, 링크에 김치찌개 문자열이 남지 않도록 확인한다.
 
 ## 데이터 형식 (현행 예시)
 
@@ -25,14 +25,12 @@ export const ingredients = [
   // [재료명, 1–2인분 표시량, 3–4인분 표시량]
 ];
 export const steps = [
-  // {name, alt, caption, paragraphs: [편집한 설명문]}
+  // {name, caption(핵심 한 줄), paragraphs: [편집한 설명문]}
 ];
 export const recipeMeta = {
   path: '/recipes/<slug>/',
   title: '메뉴명 레시피 — 친근한 후킹',
   description: '이 글이 실제로 제공하는 정보',
-  image: '/images/<slug>-finished.webp',
-  imageAlt: '완성 예시 AI 일러스트 설명',
 };
 ```
 
@@ -42,10 +40,10 @@ export const recipeMeta = {
 
 - 목록에 새 글만 덮어쓰지 말고 기존 글과 함께 표시한다. 동일 영상 ID/slug 중복을 확인한다.
 - RSS도 복수 item으로 늘리고 기존 김치찌개 item을 보존한다. XML 특수문자를 escape한다. 새 item 제목·URL·내용이 새 레시피와 일치해야 한다.
-- Recipe는 상세에만. 대표 이미지와 단계 image는 자체 이미지의 공개 절대주소, HowToStep URL은 새 상세+실제 step anchor.
+- Recipe는 상세에만. 자체 이미지가 없으므로 단계 image를 넣지 않는다. HowToStep URL은 새 상세+실제 step anchor.
 - 기준 recipeYield/recipeIngredient는 1–2인분, 큰 분량은 본문에 나란히 둔다. 사용자 변경 시 함께 수정.
 - canonical은 상세 URL. 도메인 `gibalpeople.com`을 맞춘다.
-- 홈 목록에는 원본 유튜브 썸네일과 채널 표시. OG는 기본적으로 해당 페이지의 자체 대표 이미지.
+- 홈 목록에는 원본 유튜브 썸네일과 채널 표시. 자체 대표·단계 이미지는 만들지 않는다.
 - 새 글 링크를 소개 페이지 등 의미 있는 위치에만 추가한다. 관련 없는 링크를 억지로 늘리지 않는다.
 - 날짜를 넣을 경우 실제 공개일을 사용한다. 로컬 초안 작성일을 공개일로 꾸미지 않는다.
 
@@ -72,10 +70,10 @@ Astro에서 스크립트를 빌드가 재가공하지 않도록 현행 `is:inlin
 ## 검증 및 배포
 
 1. build 및 verify:built. 현재 verifier의 기존 김치찌개 회귀 검사는 지우지 않는다. 새 글도 검증하도록 확장하거나 스킬 audit 도구를 병행한다.
-2. 스킬 audit은 빌드 산출물에서 새 상세의 canonical/Recipe/단계 이미지, 목록 링크, RSS item, sitemap, 광고 코드의 연결을 검사한다. 내용·그림·SEO 성과는 판정하지 않는다.
+2. 스킬 audit은 빌드 산출물에서 새 상세의 canonical/Recipe, 목록 링크, RSS item, sitemap, 광고 코드의 연결을 검사한다. 내용·SEO 성과는 판정하지 않는다.
 3. 브라우저에서 새 글과 기존 김치찌개 글 양쪽을 확인한다. 도구에 Playwright가 있으면 사용하고 특정 사용자의 npm 캐시 경로를 전제로 하지 않는다.
 4. 배포가 승인된 경우에만 `bash scripts/deploy.sh 'deploy: add <slug> recipe'`. 이 스크립트가 임시 checkout에서 gh-pages를 갱신한다. 소스 루트에 dist를 복사하거나 main을 임의로 덮어쓰지 않는다.
-5. 배포 완료 후 홈·새 상세·RSS·사이트맵·이미지의 실제 응답을 확인한다. push 성공만으로 공개 반영됐다고 말하지 않는다.
+5. 배포 완료 후 홈·새 상세·RSS·사이트맵의 실제 응답을 확인한다. push 성공만으로 공개 반영됐다고 말하지 않는다.
 6. Search Console/네이버 도구는 실제 연결이 있을 때만 조작한다. 속성 URL을 받았다는 것과 로그인 권한이 있다는 것은 다르다. 같은 도메인의 기존 등록을 유지한다.
 
 ## 공식 참고

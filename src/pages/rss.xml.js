@@ -3,7 +3,7 @@ const escapeXml = (value) => String(value).replace(/[<>&"']/g, char => ({'<':'&l
 export function GET({ site }) {
   const items = recipes.map(({recipeMeta, ingredients, steps, videoId, measureNote, sourceNote}) => {
     const url = new URL(recipeMeta.path, site).href;
-    const content = `<p>${recipeMeta.description}</p><h2>재료 준비</h2><p>${measureNote}</p><ul>${ingredients.map(([name, small, large]) => `<li>${name}: 1–2인분 ${small} / 3–4인분 ${large}</li>`).join('')}</ul>${steps.map((step, i) => `<h2>${i + 1}. ${step.name}</h2>${step.paragraphs.map(text => `<p>${text}</p>`).join('')}`).join('')}<p>${sourceNote}</p><p><a href="https://www.youtube.com/watch?v=${videoId}">원본 영상</a> · <a href="${url}">그림과 함께 레시피 보기</a></p>`;
+    const content = `<p>${recipeMeta.description}</p><h2>재료 준비</h2><p>${measureNote}</p><ul>${ingredients.map(([name, small, large]) => `<li>${name}: 1–2인분 ${small} / 3–4인분 ${large}</li>`).join('')}</ul>${steps.map((step, i) => `<h2>${i + 1}. ${step.name}</h2>${step.paragraphs.map(text => `<p>${text}</p>`).join('')}`).join('')}<p>${sourceNote}</p><p><a href="https://www.youtube.com/watch?v=${videoId}">원본 영상</a> · <a href="${url}">레시피 보기</a></p>`;
     return `<item><title>${escapeXml(recipeMeta.title)}</title><link>${escapeXml(url)}</link><guid isPermaLink="true">${escapeXml(url)}</guid><description>${escapeXml(recipeMeta.description)}</description><content:encoded>${escapeXml(content)}</content:encoded></item>`;
   }).join('\n');
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>

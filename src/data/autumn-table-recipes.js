@@ -770,5 +770,5 @@ export const autumnTableRecipes = entries.map(entry => ({
   ...entry, imageSizes, intro: [entry.preview], embed: false,
   filterCategory: entry.slug === 'paik-spinach-namul' ? 'side' : entry.slug === 'paik-eomuk-potato' ? 'stir-fry' : 'other',
   measureNote: '물의 컵은 180ml 종이컵이에요. 큰술은 원본의 숟가락 단위를 유지했고 밥숟가락으로 계량할 때는 크기 차이가 있을 수 있어요. 원본에 무게가 함께 있는 재료는 괄호도 참고해주세요.',
-  sourceNote: '백종원 채널 원본 영상 설명란의 재료와 순서를 정리했어요. 인분·단위 환산과 별도 표시한 조절 팁은 편집자가 덧붙였으며 직접 조리 검증 전이에요. 그림은 자체 제작 AI 일러스트이며 원작자와 제휴 관계는 없습니다.',
+  sourceNote: '백종원 채널 원본 영상 설명란의 재료와 순서를 정리했어요. 인분·단위 환산과 별도 표시한 조절 팁은 편집자가 덧붙였으며 직접 조리 검증 전이에요. 원작자와 제휴 관계는 없습니다.',
 }));
