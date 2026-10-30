@@ -30,15 +30,19 @@ const recipe = {
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(recipe).replace(/</g, '\\u003c')} />
   <div class="recipe-layout">
     <article class="post" id="recipe-top">
-      <figure class="post-video">
-        {entry.embed ? <iframe src={`https://www.youtube-nocookie.com/embed/${entry.videoId}`} title={`${entry.channel} ${dish} 원본 영상`} width="1280" height="720" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> : <a class="video-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer"><img src={recipeMeta.image} width={entry.thumbnailWidth ?? 1280} height={entry.thumbnailHeight ?? 720} alt={recipeMeta.imageAlt} decoding="async" /><span>유튜브에서 영상 보기 ↗</span></a>}
-      </figure>
-      <header class="post-header">
-        <a class="category" href="/">{entry.category}</a>
-        <h1>{recipeMeta.title}</h1>
-      </header>
+      <div class="post-hero">
+        <figure class="post-video">
+          {entry.embed ? <iframe src={`https://www.youtube-nocookie.com/embed/${entry.videoId}`} title={`${entry.channel} ${dish} 원본 영상`} width="1280" height="720" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> : <a class="video-source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer"><img src={recipeMeta.image} width={entry.thumbnailWidth ?? 1280} height={entry.thumbnailHeight ?? 720} alt={recipeMeta.imageAlt} decoding="async" /><span>유튜브에서 영상 보기 ↗</span></a>}
+        </figure>
+        <div class="post-hero-text">
+          <header class="post-header">
+            <a class="category" href="/">{entry.category}</a>
+            <h1>{recipeMeta.title}</h1>
+          </header>
+          <div class="post-intro">{entry.intro.map(p => <p set:html={p} />)}</div>
+        </div>
+      </div>
       <div class="post-content">
-        {entry.intro.map(p => <p set:html={p} />)}
         <RecipeBook ingredients={ingredients} groups={entry.ingredientGroups ?? ingredientGroups[entry.slug]} steps={steps} measureNote={entry.measureNote} portionNotes={[entry.portionNote]} tips={tips}>
           {entry.cooked && <CookedSection cooked={entry.cooked} />}
           <aside class="source-note" aria-label="레시피 출처">

@@ -35,7 +35,9 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .category { font-size: 12px; color: var(--accent); text-decoration: none; }
 h1 { font-size: 27px; line-height: 1.55; letter-spacing: -.9px; font-weight: 600; margin: 12px 0 14px; word-break: keep-all; overflow-wrap: break-word; }
 #ingredients, #method, .recipe-step h3 { scroll-margin-top: 62px; }
-.post > .post-video { margin: 0 0 22px; }
+.post-hero > .post-video { margin: 0 0 22px; }
+.post-intro { font-size: 15px; line-height: 1.8; overflow-wrap: break-word; }
+.post-intro p { margin: 0 0 8px; }
 .post-content { font-size: 15px; line-height: 1.8; overflow-wrap: break-word; }
 .post-content p { margin: 0 0 21px; }
 .post-content strong { font-weight: 600; }
@@ -84,7 +86,12 @@ footer nav a { text-decoration: none; display: flex; align-items: center; min-he
   .site-header nav a { font-size: 14px; }
   .recipe-layout { max-width: 1040px; margin: 0 auto; padding: 44px 32px 72px; }
   .post { max-width: none; min-width: 0; width: 100%; margin: 0; padding: 0; }
-  .post > .post-video, .post-header, .post-content > :not(.recipe-book) { max-width: 760px; }
+  .post-content > :not(.recipe-book) { max-width: 760px; }
+  /* Thumbnail and title side by side so the header spans the same width as the recipe below. */
+  .post-hero { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .post-hero .post-video { margin: 0; }
+  .post-hero .post-header { padding-bottom: 14px; }
+  .post-hero h1 { margin-top: 10px; }
   .post-header { padding-bottom: 28px; }
   h1 { font-size: 32px; line-height: 1.5; margin: 14px 0 18px; }
   .post-content { font-size: 16px; line-height: 1.8; }
