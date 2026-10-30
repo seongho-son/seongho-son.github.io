@@ -34,11 +34,6 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .post-header { margin: 0; padding: 0 0 20px; }
 .category { font-size: 12px; color: var(--accent); text-decoration: none; }
 h1 { font-size: 27px; line-height: 1.55; letter-spacing: -.9px; font-weight: 600; margin: 12px 0 14px; word-break: keep-all; overflow-wrap: break-word; }
-.byline { margin: 0; font-size: 12px; color: #888; }
-.recipe-jump { position: sticky; top: 0; z-index: 5; display: flex; gap: 24px; align-items: center; background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 27px; padding: 3px 0; }
-.jump-label { color: #888; font-size: 12px; }
-.recipe-jump a { display: flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.recipe-jump a:hover { color: var(--accent); }
 #ingredients, #method, .recipe-step h3 { scroll-margin-top: 62px; }
 .post > .post-video { margin: 0 0 22px; }
 .post-content { font-size: 15px; line-height: 1.8; overflow-wrap: break-word; }
@@ -50,7 +45,7 @@ h1 { font-size: 27px; line-height: 1.55; letter-spacing: -.9px; font-weight: 600
 .post-content h3 { font-size: 18px; line-height: 1.6; letter-spacing: -.3px; font-weight: 600; margin: 35px 0 16px; }
 .post-image, .post-video { margin: 25px 0; }
 .post-image img { display: block; width: 100%; height: auto; }
-.post-image figcaption, .post-video figcaption { color: #777; font-size: 13px; line-height: 1.8; margin-top: 10px; }
+.post-image figcaption { color: #777; font-size: 13px; line-height: 1.8; margin-top: 10px; }
 .post-video iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; background: #f5f5f5; }
 .video-source-link { display: block; text-decoration: none; }
 .video-source-link img { display: block; width: 100%; height: auto; }
@@ -92,13 +87,11 @@ footer nav a { text-decoration: none; display: flex; align-items: center; min-he
   .post > .post-video, .post-header, .post-content > :not(.recipe-book) { max-width: 760px; }
   .post-header { padding-bottom: 28px; }
   h1 { font-size: 32px; line-height: 1.5; margin: 14px 0 18px; }
-  .byline { font-size: 13px; }
-  .recipe-jump { display: none; }
   .post-content { font-size: 16px; line-height: 1.8; }
   .post-content h2 { font-size: 25px; margin-top: 52px; }
   .post-content h3 { font-size: 21px; margin-top: 40px; }
   th, td { padding: 14px 18px; font-size: 15px; }
-  .post-image figcaption, .post-video figcaption, .source-note { font-size: 14px; }
+  .post-image figcaption, .source-note { font-size: 14px; }
   #ingredients, #method, .recipe-step h3, #recipe-top { scroll-margin-top: 24px; }
 }
 @media (min-width: 641px) and (max-width: 900px) {
@@ -115,13 +108,6 @@ footer nav a { text-decoration: none; display: flex; align-items: center; min-he
   .post { padding: 24px 20px 40px; }
   h1 { font-size: 23px; line-height: 1.55; letter-spacing: -.7px; }
   .post-header { padding-bottom: 17px; }
-  .recipe-jump { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 -20px 23px; padding: env(safe-area-inset-top) 12px 0; gap: 0; border-top: 0; border-bottom: 1px solid var(--line); }
-  .recipe-jump .jump-label { display: none; }
-  .recipe-jump a { justify-content: center; gap: 8px; min-height: 44px; font-size: 13px; font-weight: 600; }
-  .recipe-jump a + a { position: relative; }
-  .recipe-jump a + a::before { content: ''; position: absolute; left: 0; height: 14px; width: 1px; background: var(--line); }
-  .recipe-jump a::after { content: ''; width: 5px; height: 5px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: translateY(-2px) rotate(45deg); opacity: .6; }
-  .recipe-jump a:active { background: #f7f7f5; color: var(--accent); }
   #ingredients, #method, .recipe-step h3 { scroll-margin-top: calc(62px + env(safe-area-inset-top)); }
   .post-content h2 { font-size: 20px; margin-top: 36px; }
   .post-content h3 { font-size: 18px; }
@@ -138,7 +124,7 @@ footer nav a { text-decoration: none; display: flex; align-items: center; min-he
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media print {
-  .site-header, footer, .recipe-jump, .post-video { display: none; }
+  .site-header, footer, .post-video { display: none; }
   .recipe-layout { display: block; padding: 0; }
   .post { padding: 0; }
   .post-image { break-inside: avoid; max-width: 420px; margin: 20px auto; }
