@@ -50,3 +50,7 @@ slug="$(python3 -c "import json,os;m=[x for x in json.load(open(os.environ['INST
 python3 scripts/instagram/growth.py report || fail "게시 후 운영 기록 갱신 실패"
 echo "✓ 게시 완료: $slug"
 notify "게시 완료" "$slug"
+
+# 이미 게시된 글의 옛 안내 문구를 하루 3개씩 정리한다(캡션 수정 횟수 제한 때문에 나눠서). 실패해도 게시 결과에는 영향 없음.
+echo "▶ caption cleanup"
+python3 scripts/instagram/edit-captions.py 3 || notify "캡션 정리 중단" "다음 실행에서 이어서 진행 (로그: $LOG)"
