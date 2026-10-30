@@ -24,3 +24,6 @@ npm-debug.log*
 
 # Recipe illustration PNG masters stay local; publish the optimized WebP files.
 output/imagegen/recipe-batch/*.png
+
+# Python bytecode
+__pycache__/
