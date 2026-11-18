@@ -28,6 +28,14 @@ cd "$REPO_DIR" || fail "저장소 없음"
 # 블로그 발행이 진행 중이면(작업 트리 변경) 최신 글 반영을 다음 실행으로 미룬다.
 if [[ -z "$(git status --porcelain)" ]]; then git pull --ff-only --quiet || echo "pull 실패 — 현재 데이터로 진행"; else echo "작업 트리 사용 중 — pull 생략"; fi
 
+# Repair already shared posts before schedule checks; never create replacements.
+if [[ "${DRY_RUN:-0}" != 1 ]]; then
+  pending="$(python3 -c "import json,os;m=json.load(open(os.environ['INSTAGRAM_DIR']+'/manifest.json'));print(sum(x['status'] in ('published_pending_verification','published_caption_rate_limited','publish_submitted') for x in m))")" || fail "게시 상태 확인 실패"
+  if [[ "$pending" -gt 0 ]]; then
+    python3 scripts/instagram/publish.py --reconcile || fail "기존 게시물 복구·검증 실패 — 신규 발행 중단"
+  fi
+fi
+
 python3 scripts/instagram/growth.py report || fail "운영 기록 갱신 실패"
 if [[ "${DRY_RUN:-0}" != 1 ]]; then
   due="$(python3 scripts/instagram/growth.py due)" || fail "발행 일정 확인 실패"
@@ -45,7 +53,13 @@ echo "대기 중인 게시물: $queued"
 
 echo "▶ publish"
 orca status --json | grep -q '"reachable": true' || fail "Orca 런타임에 연결 안 됨 (Orca 앱 실행 필요)"
-python3 scripts/instagram/publish.py 1 || fail "게시 실패 — manifest 상태 확인 후 재시도"
+if ! python3 scripts/instagram/publish.py 1; then
+  pending="$(python3 -c "import json,os;m=json.load(open(os.environ['INSTAGRAM_DIR']+'/manifest.json'));print(sum(x['status']=='published_pending_verification' for x in m))")"
+  if [[ "$pending" -gt 0 ]]; then
+    fail "업로드 완료, 캡션·카드 검증 실패 — 재게시 없이 복구 대기"
+  fi
+  fail "게시 절차 중단 — 상태 확인 후 복구 필요"
+fi
 slug="$(python3 -c "import json,os;m=[x for x in json.load(open(os.environ['INSTAGRAM_DIR']+'/manifest.json')) if x.get('published_at')];m.sort(key=lambda x:x['published_at']);print(m[-1]['slug'],m[-1]['url'])")"
 python3 scripts/instagram/growth.py report || fail "게시 후 운영 기록 갱신 실패"
 echo "✓ 게시 완료: $slug"

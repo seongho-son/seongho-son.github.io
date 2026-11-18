@@ -2,6 +2,7 @@ from pathlib import Path
 import json,re,html,urllib.request,concurrent.futures,zipfile,subprocess,os
 from playwright.sync_api import sync_playwright
 from growth import PLAN
+from render_cards import capture_cards
 # Existing blue/yellow layout; value-led cover, source-backed tip and follow CTA.
 ROOT=Path(os.environ.get('INSTAGRAM_DIR',Path.home()/'Automation/instagram-library'))
 DATA=json.loads((ROOT/'recipes-source.json').read_text())
@@ -15,20 +16,7 @@ def split_text(s,limit=240):
   buf+=((' ' if buf else '')+p)
  if buf:out.append(buf)
  return out
-# Step text emphasizes only ingredient names (bold + accent), mirroring the site's RecipeBook.
-MODIFIERS={'고운','굵은','다진','썬','송송','것','또는','익은','마무리','선택','고명용','양념장용','밑간용','믹서용'}
-def ingredient_re(ingredients):
- names=set()
- for raw,*_ in ingredients:
-  main=re.sub(r'\(.*?\)','',raw.split('·')[0]).strip()
-  if main:names.add(main)
-  names.update(w for w in main.split() if len(w)>=2 and w not in MODIFIERS)
- if not names:return None
- alts=[re.escape(n)+('(?=[을를이가은는과와도에만로의,·\\s.)]|$)' if len(n)==1 else '') for n in sorted(names,key=len,reverse=True)]
- return re.compile('(?<![가-힣A-Za-z])('+'|'.join(alts)+')')
-def mark(text,rx):
- t=esc(text)
- return rx.sub(r'<strong class="ing">\1</strong>',t) if rx else t
+from ingredient_highlights import ingredient_re, mark
 CSS='''*{box-sizing:border-box}body{margin:0;color:#191919;font-family:'Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;background:#e8e6e0}.card{width:600px;height:750px;position:relative;padding:34px;background:#fff9ed;overflow:hidden;--ink:#191919;--accent:#ffdc35;color:var(--ink)}.brand{font-size:17px;font-weight:800;display:flex;justify-content:space-between;align-items:center}.brand span{font-size:13px}.foot{position:absolute;left:34px;right:34px;bottom:23px;border-top:1.5px solid currentColor;padding-top:12px;font-size:14px;display:flex;justify-content:space-between;gap:20px}.cover{background:#ffdc35}.tag{display:inline-block;background:#191919;color:#fff9ed;font-weight:800;font-size:17px;padding:7px 12px;margin-top:25px;transform:rotate(-3deg)}h1,h2,p{margin:0}h1{font-size:57px;line-height:1.1;font-weight:900;letter-spacing:-3px;word-break:keep-all;margin-top:20px;height:140px;display:flex;align-items:center}h1 span{border-bottom:5px solid currentColor;padding-bottom:6px}.cover img{position:absolute;left:34px;top:310px;width:532px;height:299px;object-fit:contain;border:3px solid #191919;box-shadow:6px 6px 0 #191919}.credit{position:absolute;top:630px;left:34px;right:34px;font-size:13px;line-height:1.4}.label{font-size:17px;font-weight:800;margin:30px 0 12px}.label b{display:inline-grid;place-items:center;min-width:45px;height:45px;background:var(--accent);color:var(--ink);font-size:24px;margin-right:12px;transform:rotate(-4deg)}h2{font-size:43px;line-height:1.16;letter-spacing:-2px;word-break:keep-all;font-weight:900}.content{margin-top:24px}.row,.tablehead{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:10px;align-items:center}.tablehead{font-size:16px;font-weight:800;border-bottom:2px solid currentColor;padding:12px 10px;background:var(--accent)}.row{font-size:21px;line-height:1.3;border-bottom:1px solid #19191935;padding:11px 10px;word-break:keep-all}.row b{font-size:20px;font-weight:400}.note{font-size:16px;line-height:1.4;margin-top:15px;word-break:keep-all}.step .content{font-size:25px;line-height:1.5;word-break:keep-all}.step .content p{margin-bottom:20px}.step .content strong.ing{font-weight:800;color:#ac4c30}.step.alt .content strong.ing{color:#ff9d6e}.step.alt{background:#191919;color:#fff9ed}.step.alt .label b{color:#191919}.step.final{background:#ffdc35}.blue{--ink:#172fc4;--accent:#ffb59f;background:#f2f0e9}.blue .brand{border-bottom:2px solid currentColor;padding-bottom:13px}.blue.cover{background:#172fc4;color:#f2f0e9}.blue.cover .tag{position:absolute;top:89px;left:34px;margin:0;transform:none;background:#f2f0e9;color:#172fc4;font-size:16px}.blue.cover img{top:142px;border:0;box-shadow:none}.blue.cover h1{position:absolute;top:462px;left:34px;right:34px;margin:0;height:130px;color:#ffb59f;font-size:54px}.blue.cover h1 span{border:0}.blue.cover .credit{top:623px}.blue .label b{background:none;color:#172fc4;font-family:Georgia,serif;font-size:46px;transform:none}.blue .tablehead{background:none;border-top:2px solid currentColor}.blue .row{border-bottom-color:#172fc440}.blue.step.alt{background:#f2f0e9;color:#172fc4}.blue.step.final{background:#172fc4;color:#f2f0e9}.blue.step.final .label b{color:#ffb59f}.blue.step .content strong.ing{color:#c2410c}.blue.step.final .content strong.ing{color:#ffb59f}main{display:flex;gap:20px;padding:20px;width:max-content}'''
 
 def thumb(r):
@@ -117,7 +105,6 @@ for entry in manifest:
  old=existing_manifest.get(entry['slug'],{})
  for key in ['status','url','submitted_at','published_at','published_caption_verified','published_slide_count_verified']:
   if key in old:entry[key]=old[key]
-ROOT.joinpath('manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless=True)
  page=browser.new_page(viewport={'width':640,'height':800},device_scale_factor=1.8)
@@ -127,7 +114,7 @@ with sync_playwright() as pw:
   # Fit within each card without cropping; preserve a minimum readable body size.
   result=page.evaluate('''()=>Array.from(document.querySelectorAll('.card')).map(c=>{const foot=c.querySelector('.foot');const end=foot.offsetTop-18;const blocks=c.querySelectorAll('.content,.note');for(let attempt=0;attempt<12;attempt++){const last=blocks[blocks.length-1];if(!last||last.offsetTop+last.offsetHeight<=end)break;for(const e of c.querySelectorAll('.content,.content .row,.content .row b,.note')){const fs=parseFloat(getComputedStyle(e).fontSize);e.style.fontSize=(fs-.5)+'px'}for(const e of c.querySelectorAll('.content p'))e.style.marginBottom='14px'}const last=blocks[blocks.length-1];return {overflow:last?last.offsetTop+last.offsetHeight>end:false,minFont:Math.min(...Array.from(c.querySelectorAll('.content,.row,.row b')).map(e=>parseFloat(getComputedStyle(e).fontSize))),h1:c.querySelector('h1')?.scrollHeight}})''')
   assert not any(x['overflow'] for x in result),(entry['slug'],result)
-  for n,card in enumerate(page.locator('.card').all()):card.screenshot(path=str(p/f'{n+1:02}.png'))
+  capture_cards(page,p,entry['slide_count'])
   entry['layout_checks']=result
   with zipfile.ZipFile(p/'cards.zip','w',zipfile.ZIP_DEFLATED) as z:
    for path in entry['slides']:z.write(path,Path(path).name)
