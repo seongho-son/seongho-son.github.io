@@ -6,6 +6,7 @@ import RelatedRecipes from '../../components/RelatedRecipes.astro';
 import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
 import { ingredients, steps, tips, cooked, recipeMeta } from '../../data/kim-seoul-jeyuk.js';
+import { recipeExtras } from '../../lib/recipe-schema.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const sourceUrl = 'https://www.youtube.com/watch?v=PlLBBlFEmLg';
 const recipe = {
@@ -20,6 +21,7 @@ const recipe = {
     url: `${pageUrl}#step-${i + 1}`,
   })),
   citation: sourceUrl,
+  ...recipeExtras({ path: recipeMeta.path, channel: '킴서울', sourceUrl, tags: '#제육볶음 #킴서울레시피 #앞다리살 #집밥', site: Astro.site.href }),
 };
 ---
 <BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">

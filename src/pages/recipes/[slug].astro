@@ -6,6 +6,7 @@ import RelatedRecipes from '../../components/RelatedRecipes.astro';
 import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
 import { additionalRecipes } from '../../data/more-recipes.js';
+import { recipeExtras } from '../../lib/recipe-schema.js';
 export function getStaticPaths() {
   return additionalRecipes.map(entry => ({ params: { slug: entry.slug }, props: { entry } }));
 }
@@ -24,6 +25,7 @@ const recipe = {
     text:step.paragraphs.map(p => p.replace(/<[^>]*>/g, '')).join(' '),
     url:`${pageUrl}#step-${i + 1}`,
   })), citation:sourceUrl,
+  ...recipeExtras({ path:recipeMeta.path, channel:entry.channel, sourceUrl, tags:entry.tags, site:Astro.site.href }),
 };
 ---
 <BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">

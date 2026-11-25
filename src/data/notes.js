@@ -24,6 +24,20 @@ export const notes = [
     short: '180ml 종이컵, 밥숟가락, 인분 환산 기준 안내',
     description: '이 블로그 레시피의 종이컵(180ml)과 밥숟가락 계량 기준, 무게와 부피를 구분하는 이유, 1–2인분과 3–4인분을 나누는 방법을 정리했어요.',
   },
+  {
+    slug: 'ingredient-swaps',
+    path: '/notes/ingredient-swaps/',
+    title: '재료가 없을 때 대체 노트, 우유·감자·양파 없이 만들기',
+    short: '레시피별로 빠진 재료를 바꿔 쓰는 방법 모음',
+    description: '우유 없는 프렌치토스트, 감자 없는 카레처럼 재료 하나가 없을 때 레시피별로 바꿔 쓸 수 있는 재료와 맛이 어떻게 달라지는지 모았어요.',
+  },
+  {
+    slug: 'too-salty-fix',
+    path: '/notes/too-salty-fix/',
+    title: '찌개·국이 짤 때 되돌리는 법, 싱거울 때 간 더하는 순서',
+    short: '짜거나 싱거울 때 레시피별 간 조절 방법',
+    description: '김치찌개·된장찌개·국이 짤 때 물을 얼마나 더하고 무엇을 함께 넣는지, 싱거울 때는 어떤 순서로 간을 더하는지 레시피별로 정리했어요.',
+  },
 ];
 
 export const findRecipe = path => recipes.find(entry => entry.recipeMeta.path === path);

@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { notes, findRecipe, cell, amount } from '../../data/notes.js';
+
+const note = notes.find(item => item.slug === 'too-salty-fix');
+const others = notes.filter(item => item.slug !== note.slug);
+const compare = notes.find(item => item.slug === 'jjigae-seasoning-compare');
+const measuring = notes.find(item => item.slug === 'paper-cup-measuring');
+
+const kimchi = findRecipe('/recipes/kimchi-jjigae/');
+const doenjang = findRecipe('/recipes/ryu-doenjang-jjigae/');
+const gyeran = findRecipe('/recipes/paik-gyeranjjim/');
+const sundubu = findRecipe('/recipes/ryu-spam-sundubu/');
+const jjageuli = findRecipe('/recipes/aeri-potato-spam-stew/');
+const dak = findRecipe('/recipes/paik-dakbokkeumtang/');
+const muguk = findRecipe('/recipes/paik-beef-radish-soup/');
+const miyeok = findRecipe('/recipes/paik-miyeok-guk/');
+const tteokguk = findRecipe('/recipes/paik-beef-tteokguk/');
+const kongnamul = findRecipe('/recipes/paik-kongnamul-guk/');
+const kalguksu = findRecipe('/recipes/paik-perilla-kalguksu/');
+const rabokki = findRecipe('/recipes/paik-rabokki/');
+const gamjaJorim = findRecipe('/recipes/paik-gamja-jorim/');
+const yeongeun = findRecipe('/recipes/kim-sunyoung-yeongeun-jorim/');
+const dubu = findRecipe('/recipes/paik-dubu-jorim/');
+
+// 표의 '짤 때' 칸은 각 레시피 글의 팁·단계 문장을 줄여 옮긴 것. 분량 칸은 재료표에서 그대로 읽는다.
+const rows = [
+  { recipe: kimchi, label: '김치찌개', pattern: /국간장|새우젓/, keep: '국간장 일부', fix: '물 조금씩 보충' },
+  { recipe: doenjang, label: '차돌 된장찌개', pattern: /된장|쌈장|굵은소금/, keep: '굵은소금', fix: '물 조금씩 보충' },
+  { recipe: sundubu, label: '스팸순두부찌개', pattern: /^간장|굴소스/, keep: '—', fix: '물 조금 더하기' },
+  { recipe: jjageuli, label: '감자짜글이', pattern: /고추장|간장|된장/, keep: '간장·된장(일반 스팸일 때)', fix: '일반 스팸은 데쳐 쓰기' },
+  { recipe: dak, label: '닭볶음탕', pattern: /진간장/, keep: '진간장 일부', fix: '물 조금씩 보충' },
+  { recipe: muguk, label: '소고기뭇국', pattern: /국간장|액젓|꽃소금/, keep: '꽃소금', fix: '물 조금씩, 한소끔 끓이기' },
+  { recipe: miyeok, label: '소고기미역국', pattern: /국간장|액젓/, keep: '멸치액젓', fix: '물 조금 더하기' },
+  { recipe: tteokguk, label: '소고기떡국', pattern: /국간장|액젓|꽃소금/, keep: '꽃소금 일부', fix: '물 2큰술씩' },
+  { recipe: kongnamul, label: '콩나물국', pattern: /꽃소금|국간장/, keep: '국간장 일부', fix: '물 조금 더하기' },
+  { recipe: gamjaJorim, label: '감자조림', pattern: /진간장/, keep: '—', fix: '물 1큰술씩, 불 낮추기' },
+  { recipe: yeongeun, label: '연근조림', pattern: /^간장/, keep: '—', fix: '물 1작은술씩, 불 낮추기' },
+].filter(row => row.recipe);
+const link = recipe => recipe.recipeMeta.path;
+---
+<BaseLayout title={note.title} description={note.description} type="article">
+  <article class="post note-page">
+    <header class="post-header">
+      <span class="category">레시피 비교·계량 노트</span>
+      <h1>{note.title}</h1>
+      <p class="byline">편집 정리 · 레시피 나와라 뚝딱</p>
+    </header>
+    <div class="post-content">
+      <p>국자로 한 번 떠 맛봤는데 생각보다 짜면, 이미 들어간 소금을 다시 꺼낼 방법은 없어요. 그래서 이 블로그의 찌개·국·조림 레시피 글들은 거의 빠짐없이 "간 재료는 일부 남겨두기", "짜졌다면 물을 조금씩"이라는 안내를 달아두고 있어요. 이 노트는 그 안내를 레시피별로 한곳에 모은 정리예요. 이미 짜게 됐을 때 무엇부터 할지, 싱거울 때는 어떤 재료를 어떤 순서로 더할지를 레시피 재료표와 팁에서 그대로 가져와 묶었어요.</p>
+      <p class="note-disclaimer">각 레시피 글의 재료표·조리 단계·팁을 다시 정리한 <strong>편집 정리</strong>예요. 직접 끓여서 짠맛을 비교한 결과가 아니고, 레시피 글에 적힌 보정 방법도 대부분 원본 영상이 아니라 편집자가 덧붙인 안내예요. 아래에서 레시피 글에 없는 일반 조리 원리를 덧붙인 문단은 "편집자가 덧붙인 내용"이라고 따로 밝혔어요. 찌개별 물·양념 분량 자체를 비교하고 싶다면 <a href={compare.path}>{compare.title}</a>를 봐주세요.</p>
+
+      <h2 id="table">레시피별로 남겨둘 재료와 짤 때 보정법</h2>
+      <p>간을 내는 재료 칸의 분량은 각 레시피 재료표의 1–2인분 값을 그대로 가져왔어요. "남겨둘 재료"는 레시피 글이 마지막 간을 보고 넣으라고 안내하는 재료이고, "짤 때"는 레시피 글의 팁과 단계 설명에 적힌 보정 방법을 짧게 줄인 거예요.</p>
+      <div class="note-table-wrap" role="region" aria-label="찌개·국·조림 레시피의 간 재료와 짤 때 보정 방법" tabindex="0">
+        <table class="note-table">
+          <thead><tr><th scope="col">레시피</th><th scope="col">간을 내는 재료(1–2인분)</th><th scope="col">남겨둘 재료</th><th scope="col">짤 때</th></tr></thead>
+          <tbody>
+            {rows.map(row => <tr><th scope="row"><a href={link(row.recipe)}>{row.label}</a></th><td>{cell(row.recipe, row.pattern)}</td><td>{row.keep}</td><td>{row.fix}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+      <p class="note-caption">표가 화면보다 넓으면 옆으로 밀어서 볼 수 있어요. 숟가락 기준은 레시피마다 조금씩 달라서, 정확한 계량은 각 레시피 글의 안내를 따라주세요.</p>
+      <p>표를 보면 짤 때의 답은 거의 한 가지예요. 물을 한꺼번에 붓지 않고 조금씩 넣으며 맛을 다시 보는 것. 차이가 나는 건 "얼마씩"과 "언제 맛을 보느냐"예요. 국물이 많은 찌개와 국은 물을 넣을 여유가 있지만, 국물이 자작한 조림은 1큰술, 1작은술 단위로 훨씬 작게 잡아요.</p>
+
+      <h2 id="kimchi">김치찌개가 짤 때</h2>
+      <p><a href={link(kimchi)}>김치찌개</a>는 장을 쓰지 않고 새우젓 {amount(kimchi, '새우젓')}과 국간장 {amount(kimchi, '국간장')}을 넣어 간을 해요. 짠맛의 큰 몫은 신김치 {amount(kimchi, '신김치')}이 가져가고요. 레시피 글은 짜게 됐을 때 물을 종이컵 ¼컵 정도씩 넣어가며 맞추라고 안내해요. 한꺼번에 많이 부으면 이번에는 싱거워질 수 있고, 간을 맞춘 뒤 오래 졸이면 다시 짜진다는 점도 함께 적어뒀어요. 이 물의 양은 원본에 정해진 값이 아니라 집에서 간을 맞추기 위한 편집 안내예요.</p>
+      <p>짜지지 않게 하는 쪽이 더 쉬운데, 이 레시피에는 그 장치가 순서 안에 들어 있어요. 고기를 10분 이상 끓이는 동안 졸아든 물을 <strong>처음 부었던 높이까지만</strong> 채운 다음 김치와 양념을 넣어요. 종이컵 3컵을 새로 붓는 게 아니라 날아간 만큼만 채우는 거예요. 양념 전에 국물 높이를 맞춰두면 그 뒤 간 보기가 훨씬 편하고, 국간장은 일부를 남겨뒀다가 마지막에 더하라고 해요.</p>
+
+      <h2 id="sour-kimchi">신김치가 짤 때는 새우젓과 국간장을 줄여서 시작해요</h2>
+      <p>김치는 집마다, 익은 정도마다 짠맛이 달라요. 이 레시피 표는 원본 배합이라 김치가 특히 짠 경우를 따로 다루지 않아요. 다만 레시피 글의 참치캔 변형 팁에는 "간이 있는 재료가 들어가면 새우젓과 국간장은 줄여서 시작하라"는 원칙이 적혀 있어요. 짠 신김치도 같은 원리로 생각할 수 있어요.</p>
+      <p>편집자가 덧붙인 내용이에요. 김치를 넣기 전에 한 조각 맛을 보고 평소보다 짜다면, 고기 끓일 때 넣는 새우젓을 표보다 조금 덜 넣고 국간장은 마지막 간을 볼 때까지 미뤄두세요. 김치를 물에 살짝 헹구면 겉의 양념과 짠맛이 줄지만, 김치찌개 국물 맛을 내는 양념도 함께 빠진다는 점은 알아두세요. 이미 끓기 시작했다면 위처럼 물을 조금씩 넣는 방법이 가장 단순해요.</p>
+
+      <h2 id="doenjang">된장찌개가 짤 때</h2>
+      <p><a href={link(doenjang)}>차돌 된장찌개</a>는 된장 {amount(doenjang, '된장')}과 쌈장 {amount(doenjang, '쌈장')}에 굵은소금 {amount(doenjang, '굵은소금')}까지 들어가요. 레시피 글의 팁은 된장과 쌈장마다 짠맛이 다르다는 점을 먼저 짚어요. 평소 쓰는 장이 짠 편이면 굵은소금은 남겨뒀다가 마지막에 간을 보고 넣고, 이미 짜졌다면 물을 조금씩 보충해 맞추라고 해요. 원본은 채소와 장을 처음부터 한 냄비에 넣는 순서라, 소금 한 가지만 뒤로 빼두면 간을 조절할 여지가 생겨요.</p>
+      <p>장을 바꿨을 때도 마찬가지예요. 차돌박이 대신 돼지고기를 쓰는 변형 팁에서도 장을 다 넣은 뒤 간을 보고 소금을 더할지 정하라고 해요. 소금은 표에 있어도 "넣어야 하는 양"이 아니라 "넣을 수 있는 최대치"로 보는 편이 안전해요.</p>
+
+      <h2 id="gyeranjjim">계란찜 새우젓 간은 다져서, 맛보기 어려운 점을 감안해요</h2>
+      <p><a href={link(gyeran)}>계란찜</a>은 새우젓 하나로 간과 감칠맛을 함께 내요. 1–2인분 기준 달걀 {amount(gyeran, '달걀')}에 새우젓 {amount(gyeran, '새우젓')}, 설탕 {amount(gyeran, '설탕')}, 물 {amount(gyeran, '물')}이 들어가요. 새우젓은 잘게 다져야 달걀물에 고르게 섞인다고 레시피 글이 강조해요. 통으로 넣으면 한 숟가락은 싱겁고 새우가 걸린 숟가락만 짜게 되기 쉬워요.</p>
+      <p>계란찜이 찌개와 다른 점은 익히기 전에 맛을 볼 수 없다는 거예요. 날달걀물은 맛보기 어려우니, 레시피 글은 새우젓이 없어 소금으로 대신할 때 아주 조금만 넣고 시작하라고 해요. 다 익은 뒤 싱겁다면 간장을 살짝 곁들이는 편이 처음부터 많이 넣었다가 짜지는 것보다 조절하기 쉽다는 안내도 있어요. 이 대체와 곁들이는 방법은 원본에 없는 편집자 제안이에요.</p>
+      <p>편집자가 덧붙인 내용이에요. 이미 짜게 익은 계란찜은 찌개처럼 물을 더해 되돌릴 수 없어요. 밥이나 간이 약한 반찬과 함께 먹고, 다음에 만들 때 새우젓을 조금 줄여 쓰는 편이 현실적이에요. 새우젓은 제품마다 염도 차이가 크니, 처음 쓰는 새우젓이라면 표의 양에서 조금 덜어 시작해도 돼요.</p>
+
+      <h2 id="guk">국이 짤 때: 뭇국·미역국·떡국·콩나물국</h2>
+      <p>국은 찌개보다 국물이 많아서 물로 되돌리기 쉬운 편이지만, 간을 내는 재료가 두세 가지씩 겹쳐요. <a href={link(muguk)}>소고기뭇국</a>은 국간장 {amount(muguk, '국간장')}, 멸치액젓 {amount(muguk, '멸치액젓')}, 꽃소금 {amount(muguk, '꽃소금')} 세 가지로 간을 해요. 레시피 글은 액젓까지 들어가서 생각보다 빨리 짜질 수 있으니 꽃소금은 양파를 넣고 더 끓인 뒤 맛을 보고 넣으라고 해요. 이미 짜졌다면 물을 조금씩 더해 한소끔 끓이고 다시 간을 보라는 안내이고, 물로 보정하는 건 원본에 없는 편집자 제안이라고 밝혀두었어요.</p>
+      <p><a href={link(miyeok)}>소고기미역국</a>은 미역을 볶을 때 국간장 {amount(miyeok, '국간장')}을 넣고, 물을 끓인 뒤 <strong>마지막에</strong> 멸치액젓 {amount(miyeok, '멸치액젓')}을 넣어 간을 맞춰요. 원본 순서 자체가 "마지막 간은 액젓으로 조금씩"이라 액젓을 한 번에 다 붓지 않으면 짜질 일이 줄어요.</p>
+      <p><a href={link(tteokguk)}>소고기떡국</a>은 짠맛이 늦게 드러나는 경우예요. 떡이 국물을 머금고 끓는 동안 물이 줄면서 간이 진해지거든요. 레시피 글은 떡 속이 아직 단단한데 국물이 짜다면 꽃소금을 더 넣지 말고 물을 2큰술씩 보충해 다시 끓이라고 해요. 국물만 맛보지 말고 떡 한 조각과 함께 맛본 뒤 추가 간을 정하고, 조미김을 고명으로 올릴 거라면 간을 조금 여유 있게 두라는 안내도 있어요.</p>
+      <p><a href={link(kongnamul)}>콩나물국</a>은 물이 끓으면 콩나물과 국간장 {amount(kongnamul, '국간장')}, 꽃소금 {amount(kongnamul, '꽃소금')}을 한꺼번에 넣는 순서예요. 원본이 국간장을 기호에 맞게 조절하도록 안내해서, 레시피 글은 일부를 남겼다가 마지막에 더하라고 덧붙였어요. MSG가 없을 때 맛소금을 쓴다면 꽃소금 <strong>대신</strong> 넣는 것이지 꽃소금에 더하는 게 아니라는 점도 원본이 짚어줘요. 둘 다 넣으면 간이 겹쳐요.</p>
+
+      <h2 id="jjigae-etc">순두부찌개·짜글이·닭볶음탕은 짠맛 재료가 겹쳐요</h2>
+      <p><a href={link(sundubu)}>스팸순두부찌개</a>는 간장 {amount(sundubu, '간장')}과 굴소스 {amount(sundubu, '굴소스')}에 스팸 {amount(sundubu, '스팸')}까지 짠맛을 보태요. 원본은 달걀을 넣기 전 살짝 간간할 때까지 졸이는데, 레시피 글은 끓이는 시간이 늘어 짜졌다면 물을 조금 더해 조절하라고 해요. 물이 {amount(sundubu, '물')}로 적은 자작한 찌개라 조금만 더 졸아도 맛이 크게 달라져요.</p>
+      <p><a href={link(jjageuli)}>감자짜글이</a>의 원본은 덜 짠 라이트 스팸을 권해요. 일반 스팸으로 바꾸면 간이 더 셀 수 있으니 국간장 또는 간장({amount(jjageuli, '국간장 또는 간장')})과 된장({amount(jjageuli, '된장')})을 처음에는 덜 넣고, 감자가 익은 뒤 맛을 보며 더하라는 게 레시피 글의 편집자 제안이에요. 짠 편이라면 스팸을 끓는 물에 잠깐 데쳐 쓰는 방법도 함께 적혀 있어요.</p>
+      <p><a href={link(dak)}>닭볶음탕</a>은 진간장이 {amount(dak, '진간장')}로 많은 편이에요. 레시피 글은 원본 간장량을 그대로 넣고 짰다는 시청자 경험을 소개하면서, 일부를 남겨두고 닭이 충분히 익은 뒤 국물 간을 보며 추가하라고 권해요. 국물이 줄수록 짠맛도 진해지니, 간은 다 익은 시점에 한 번 더 보는 게 좋아요. 다섯 찌개의 간장·장 분량을 나란히 보고 싶다면 <a href={compare.path}>찌개 양념 비교 노트</a>에 표로 정리해두었어요.</p>
+
+      <h2 id="jorim">조림이 짤 때는 물을 아주 작게, 설탕으로 덮지 않아요</h2>
+      <p>조림은 국물을 졸이는 게 목적이라 짜지는 속도가 빨라요. <a href={link(gamjaJorim)}>감자조림</a>은 진간장 {amount(gamjaJorim, '진간장')}을 단맛 양념보다 나중에 넣고 약 7–8분 조려요. 레시피 글은 작은 분량을 넓은 팬에서 조리면 감자가 익기 전에 수분이 빨리 날아갈 수 있다며, 바닥이 마르거나 국물 맛이 너무 진하면 물을 1큰술씩 보충하고 불을 낮추라고 해요. <a href={link(yeongeun)}>연근조림</a>은 절반 분량 양념의 물이 {amount(yeongeun, '물')}뿐이라 물을 1작은술씩 보충하라고 더 작게 잡아요.</p>
+      <p>두 레시피 글에 똑같이 들어 있는 경고가 있어요. 짠맛을 덮으려고 설탕이나 물엿을 더 넣으면 단맛까지 강해진다는 것. 짠맛이 줄어드는 게 아니라 짜고 단 맛이 되니, 먼저 물로 국물 농도를 되돌리고 재료가 익었는지 확인하는 순서를 지키라고 해요.</p>
+      <p><a href={link(dubu)}>두부조림</a>은 새우젓 {amount(dubu, '새우젓')}과 진간장 {amount(dubu, '진간장')}을 물 {amount(dubu, '물')}에 넣고 바로 졸여요. 양념이 처음의 반 정도로 줄면 들기름을 넣고, 국물이 자작하게 남을 때 불을 끄는 게 원본의 마무리예요. 끝까지 바짝 졸이지 않는 것 자체가 짜지지 않게 하는 방법이에요.</p>
+
+      <h2 id="noodle">면 요리는 농도와 간을 따로 봐요</h2>
+      <p><a href={link(kalguksu)}>들깨칼국수</a>는 면의 전분과 들깻가루 때문에 불을 끈 뒤에도 국물이 되직해질 수 있어요. 레시피 글은 뻑뻑하면 뜨거운 물을 2큰술씩 넣어 농도를 보고, 액젓부터 더하면 짠맛만 강해질 수 있으니 물로 농도를 맞춘 다음 국물과 면을 함께 맛보고 부족한 간만 조절하라고 해요. 꽃소금도 {amount(kalguksu, '꽃소금')}처럼 간을 보고 넣는 재료로 적혀 있어요.</p>
+      <p><a href={link(rabokki)}>라볶이</a>는 라면 2개 기준 분말수프를 {amount(rabokki, '분말수프')} 범위로 안내하고, 우선 1봉만 준비하라고 해요. 고추장과 분말수프가 함께 들어가고 양념이 졸아서 끝으로 갈수록 간이 진해지니, 면이 익을 무렵 양념 한 숟갈을 덜어 식혀 맛본 뒤 남은 수프를 넣을지 정하라는 편집자 팁이 붙어 있어요.</p>
+
+      <h2 id="bland">싱거울 때 간 더하는 순서</h2>
+      <p>싱거울 때도 레시피 글들의 안내는 한 방향이에요. 처음부터 다 넣지 않고 남겨둔 재료를, 재료가 다 익은 뒤에 조금씩 더하는 것. 레시피들이 남겨두라고 하는 재료를 모으면 순서가 보여요.</p>
+      <ol class="note-list">
+        <li><strong>먼저 국물 높이와 농도를 확인해요.</strong> 김치찌개는 양념 전에 국물을 처음 높이로 맞추고, 들깨칼국수는 물로 농도를 맞춘 다음 간을 봐요. 졸아든 상태에서 맛을 보면 간이 실제보다 세게 느껴지고, 물을 붓기 전에 간을 더하면 판단이 어긋나요.</li>
+        <li><strong>재료가 다 익은 뒤 건더기와 국물을 함께 맛봐요.</strong> 닭볶음탕은 닭이 충분히 익은 뒤, 감자짜글이는 감자가 익은 뒤, 떡국은 떡 한 조각과 국물을 함께 맛보라고 해요. 감자나 떡처럼 국물을 머금는 재료는 익는 동안 간이 달라져요.</li>
+        <li><strong>남겨둔 간 재료를 조금씩 더해요.</strong> 김치찌개와 콩나물국은 국간장, 된장찌개와 소고기뭇국은 소금, 미역국은 멸치액젓, 떡국은 꽃소금 일부가 마지막 간 재료예요. 한 번 넣고 다시 끓여 맛보는 걸 반복해요.</li>
+        <li><strong>그래도 부족하면 레시피 표의 최대치까지만.</strong> 표의 양을 넘겨서 더 넣을지는 쓰는 장과 김치의 짠맛에 달려 있어요. 레시피 글들은 표를 원본 배합 그대로 두었다고 밝혀두었으니, 표의 양은 넘지 않는 상한으로 보면 실패가 줄어요.</li>
+      </ol>
+      <p>편집자가 덧붙인 내용이에요. 어느 재료를 마지막 간으로 쓸지는 맛의 방향을 생각하면 고르기 쉬워요. 국간장은 색과 장 향이 함께 들어가고, 액젓은 감칠맛과 특유의 향이, 소금은 맛을 크게 바꾸지 않고 짠맛만 더해요. 국물 색을 맑게 두고 싶은 콩나물국이나 뭇국이라면 소금으로 마무리하는 쪽이 원본 색을 유지하기 쉬워요.</p>
+
+      <h2 id="reheat">다음 날 데우면 다시 짜지는 이유</h2>
+      <p>여러 레시피 글의 보관 팁이 같은 점을 짚어요. <a href={link(kimchi)}>김치찌개</a>는 하룻밤 지나며 김치가 국물을 머금고 데우는 동안 국물도 졸아서 처음보다 짜게 느껴질 수 있고, <a href={link(dak)}>닭볶음탕</a>과 <a href={link(jjageuli)}>감자짜글이</a>는 감자가 국물을 머금어 뻑뻑해지고 간이 진해져요. <a href={link(miyeok)}>미역국</a>은 다시 끓일수록 국물이 졸고 미역이 퍼져서 간이 세게 느껴질 수 있으니, 국간장이나 액젓을 습관처럼 더 넣지 말고 먼저 맛을 본 뒤 짜면 물을 조금 더하라고 해요.</p>
+      <p>남은 찌개·국은 한 김 식힌 뒤 냉장 보관하고 1–2일 안에 먹고, 데울 때는 가운데까지 충분히 끓이라는 게 레시피 글들의 공통 안내예요. 짠맛 보정은 그다음에 물을 조금씩 더하는 방식으로 해요. 순두부나 달걀이 들어간 찌개는 특히 오래 두지 않는 편이 좋아요.</p>
+
+      <h2 id="myth">감자를 넣으면 짠맛이 빠질까</h2>
+      <p>편집자가 덧붙인 내용이에요. 국이 짤 때 감자나 무를 넣으면 짠맛을 빨아들인다는 말이 있지만, 이 블로그의 레시피 글 어디에도 그런 보정법은 없고 근거도 분명하지 않아 권하지 않아요. 감자가 국물을 머금는 건 맞지만, 그만큼 감자도 짜지기 때문에 냄비 전체의 짠맛이 사라진다고 보기는 어려워요. 감자짜글이 팁이 "감자가 간을 머금으니 마지막 맛을 기준으로 조절하라"고 하는 것도 같은 이유예요. 재료를 더 넣는다면 물과 함께 건더기 양 자체를 늘려 전체를 묽게 만드는 것으로 생각하는 편이 정확해요. 레시피 글에 있는 방법대로 물을 조금씩 더하는 쪽이 가장 확실해요. 종이컵·숟가락 계량 기준은 <a href={measuring.path}>{measuring.title}</a>에 따로 정리했어요.</p>
+
+      <aside class="source-note" aria-label="노트 출처">
+        <p><strong>이 노트의 근거</strong><br />{[kimchi, doenjang, gyeran, sundubu, jjageuli, dak, muguk, miyeok, tteokguk, kongnamul, kalguksu, rabokki, gamjaJorim, yeongeun, dubu].filter(Boolean).map((recipe, i) => <>{i > 0 && ' · '}<a href={link(recipe)}>{recipe.dish ?? (recipe === kimchi ? '김치찌개' : recipe.recipeMeta.title)}</a></>)}</p>
+        <p>분량은 각 레시피 글의 재료표에서 그대로 가져왔고, 짤 때·싱거울 때의 보정 방법은 레시피 글의 조리 단계와 팁을 다시 묶었어요. 그 보정 방법 중 상당수는 원본 영상이 아니라 레시피 글에서 편집자가 덧붙인 안내예요. 신김치가 짤 때, 짜게 익은 계란찜, 싱거울 때 재료 고르기, 감자 속설에 관한 문단은 이 노트에서 편집자가 일반 조리 원리로 덧붙였어요. 직접 조리 비교는 하지 않았으며 원작자와 제휴 관계는 없습니다.</p>
+      </aside>
+      <nav class="related-recipes" aria-labelledby="other-notes">
+        <h2 id="other-notes">다른 비교·계량 노트</h2>
+        <ul>{others.map(item => <li><a href={item.path}>{item.title}</a></li>)}</ul>
+      </nav>
+    </div>
+  </article>
+</BaseLayout>

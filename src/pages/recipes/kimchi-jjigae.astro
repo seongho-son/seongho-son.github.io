@@ -6,6 +6,7 @@ import RelatedRecipes from '../../components/RelatedRecipes.astro';
 import CookedSection from '../../components/CookedSection.astro';
 import { searchTitle } from '../../data/search-title.js';
 import { ingredients, steps, tips, cooked, recipeMeta } from '../../data/kimchi-jjigae.js';
+import { recipeExtras } from '../../lib/recipe-schema.js';
 const pageUrl = new URL(recipeMeta.path, Astro.site).href;
 const recipe = {
   '@context': 'https://schema.org',
@@ -27,6 +28,7 @@ const recipe = {
     url: `${pageUrl}#step-${i + 1}`,
   })),
   citation: 'https://www.youtube.com/watch?v=qWbHSOplcvY',
+  ...recipeExtras({ path: recipeMeta.path, channel: '백종원 PAIK JONG WON', sourceUrl: 'https://www.youtube.com/watch?v=qWbHSOplcvY', tags: '#김치찌개 #백종원레시피 #돼지고기김치찌개 #집밥', site: Astro.site.href }),
 };
 ---
 <BaseLayout title={searchTitle(recipeMeta)} description={recipeMeta.description} image={recipeMeta.image} imageAlt={recipeMeta.imageAlt} type="article">
